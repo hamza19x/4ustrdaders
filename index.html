@@ -1445,4 +1445,85 @@
                     if (t.status === 'win') stratMap[t.strategy].wins++;
                 }
             });
-            let stratHTML
+           let stratHTML = Object.entries(stratMap).length ? '<div class="form-grid">' + Object.entries(stratMap).map(([s, d]) => {
+    let wr = ((d.wins / d.count) * 100).toFixed(0);
+    return `<div class="journal-stat-box ${d.pnl >= 0 ? 'green' : 'red'}" style="text-align:left;">
+        <div style="font-size:0.85rem; font-weight:700;">${s}</div>
+        <div style="font-size:1.3rem; font-weight:700; margin:6px 0;">${formatJournalMoney(d.pnl)}</div>
+        <div style="font-size:0.75rem; color:var(--text-muted);">${d.count} trades · ${wr}% WR</div>
+    </div>`;
+}).join('') + '</div>' : '<p style="color:var(--text-muted); text-align:center;">Log trades with strategy data to see strategy performance.</p>';
+document.getElementById('strategy-stats').innerHTML = stratHTML;
+
+// Insights
+let insightsHTML = '';
+if (trades.length === 0) {
+    insightsHTML = '<p style="color:var(--text-muted); text-align:center;">Start logging trades to generate insights.</p>';
+} else {
+    let bestPair = Object.entries(pairMap).sort((a, b) => b[1].pnl - a[1].pnl)[0];
+    let worstPair = Object.entries(pairMap).sort((a, b) => a[1].pnl - b[1].pnl)[0];
+    let bestStrat = Object.entries(stratMap).sort((a, b) => b[1].pnl - a[1].pnl)[0];
+    let bestSession = {};
+    trades.forEach(t => {
+        if (t.session) {
+            if (!bestSession[t.session]) bestSession[t.session] = { pnl: 0, count: 0 };
+            bestSession[t.session].pnl += (t.pnl || 0);
+            bestSession[t.session].count++;
+        }
+    });
+    let topSession = Object.entries(bestSession).sort((a, b) => b[1].pnl - a[1].pnl)[0];
+
+    insightsHTML = `<div style="display:flex; flex-direction:column; gap:12px;">`;
+    if (bestPair) insightsHTML += `<div style="padding:12px; background:var(--green-dim); border-radius:8px; border-left:3px solid var(--green);"><strong style="color:var(--green);">Best Performing Pair:</strong> ${bestPair[0]} (${formatJournalMoney(bestPair[1].pnl)})</div>`;
+    if (worstPair && worstPair[1].pnl < 0) insightsHTML += `<div style="padding:12px; background:var(--red-dim); border-radius:8px; border-left:3px solid var(--red);"><strong style="color:var(--red);">Worst Performing Pair:</strong> ${worstPair[0]} (${formatJournalMoney(worstPair[1].pnl)})</div>`;
+    if (bestStrat) insightsHTML += `<div style="padding:12px; background:var(--blue-dim); border-radius:8px; border-left:3px solid var(--blue);"><strong style="color:var(--blue);">Best Strategy:</strong> ${bestStrat[0]} (${formatJournalMoney(bestStrat[1].pnl)})</div>`;
+    if (topSession) insightsHTML += `<div style="padding:12px; background:var(--gold-dim); border-radius:8px; border-left:3px solid var(--gold);"><strong style="color:var(--gold);">Best Session:</strong> ${topSession[0]} (${formatJournalMoney(topSession[1].pnl)})</div>`;
+    
+    let checkedTrades = trades.filter(t => t.checklist && t.checklist.some(c => c));
+    let uncheckedTrades = trades.filter(t => !t.checklist || !t.checklist.some(c => c));
+    if (checkedTrades.length > 0 && uncheckedTrades.length > 0) {
+        let checkedAvg = checkedTrades.reduce((s, t) => s + (t.pnl || 0), 0) / checkedTrades.length;
+        let uncheckedAvg = uncheckedTrades.reduce((s, t) => s + (t.pnl || 0), 0) / uncheckedTrades.length;
+        if (checkedAvg > uncheckedAvg) {
+            insightsHTML += `<div style="padding:12px; background:var(--green-dim); border-radius:8px; border-left:3px solid var(--green);"><strong style="color:var(--green);">Checklist Effect:</strong> Trades with checklist items checked average ${formatJournalMoney(checkedAvg)} vs ${formatJournalMoney(uncheckedAvg)} without.</div>`;
+        }
+    }
+    insightsHTML += `</div>`;
+}
+document.getElementById('insights').innerHTML = insightsHTML;
+}
+
+function exportCSV() {
+    if (trades.length === 0) { alert('No trades to export.'); return; }
+    let csv = 'Date,Pair,Direction,Strategy,Entry,SL,TP,Exit,Lot,PnL,RR,Timeframe,Session,Mood,Status\n';
+    trades.forEach(t => {
+        csv += `${t.date},${t.pair},${t.direction},${t.strategy || ''},${t.entry},${t.sl},${t.tp || ''},${t.exit || ''},${t.lot},${t.pnl || 0},${t.rr || ''},${t.tf},${t.session},${t.mood || ''},${t.status}\n`;
+    });
+    let blob = new Blob([csv], { type: 'text/csv' });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = 'trading_journal_' + new Date().toISOString().split('T')[0] + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function initFilters() {
+    let pairFilter = document.getElementById('filter-pair');
+    let uniquePairs = [...new Set(trades.map(t => t.pair))];
+    uniquePairs.forEach(p => {
+        let opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        pairFilter.appendChild(opt);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initCalc();
+    initFilters();
+    document.getElementById('t-date').valueAsDate = new Date();
+});
+</script>
+</body>
+</html>
