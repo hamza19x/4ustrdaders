@@ -1456,10 +1456,17 @@
             <!-- JOURNAL -->
             <div id="journal" class="app-panel">
                 <div id="account-setup" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,5,0.95); z-index:1000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
-                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:48px; max-width:440px; width:90%; text-align:center; box-shadow:0 25px 80px rgba(0,0,0,0.6);">
+                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:48px; max-width:480px; width:90%; text-align:center; box-shadow:0 25px 80px rgba(0,0,0,0.6);">
                         <div style="font-size:3.5rem; margin-bottom:20px;">💰</div>
                         <h2 style="font-size:1.5rem; margin-bottom:10px; color:var(--text); font-family:Orbitron;">Set Your Account</h2>
-                        <p style="color:var(--text-muted); margin-bottom:28px; font-size:0.95rem;">Enter your starting balance to begin tracking your journal.</p>
+                        <p style="color:var(--text-muted); margin-bottom:28px; font-size:0.95rem;">Configure your account to begin tracking your journal.</p>
+
+                        <!-- Account Type Toggle -->
+                        <div style="display:flex; gap:8px; margin-bottom:24px; background:var(--bg-input); border-radius:12px; padding:4px; border:1px solid var(--border);">
+                            <button id="setup-type-personal" onclick="setSetupType('personal')" style="flex:1; padding:12px; border-radius:10px; border:none; background:var(--red); color:white; font-weight:700; font-size:0.9rem; cursor:pointer; transition:all 0.2s;">👤 Personal</button>
+                            <button id="setup-type-funded" onclick="setSetupType('funded')" style="flex:1; padding:12px; border-radius:10px; border:none; background:transparent; color:var(--text-muted); font-weight:600; font-size:0.9rem; cursor:pointer; transition:all 0.2s;">🎯 Funded</button>
+                        </div>
+
                         <div style="margin-bottom:24px;">
                             <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Account Balance</label>
                             <div style="display:flex; gap:10px; margin-bottom:14px;">
@@ -1479,6 +1486,35 @@
                                 <button onclick="setQuickBalance(100000)" style="padding:10px 18px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; color:var(--text-muted); cursor:pointer; font-size:0.85rem; font-weight:600; transition:all 0.2s;">$100K</button>
                             </div>
                         </div>
+
+                        <!-- Funded Account Fields (hidden by default) -->
+                        <div id="setup-funded-fields" style="display:none; margin-bottom:24px;">
+                            <div style="margin-bottom:16px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Challenge Phase</label>
+                                <select id="setup-phase" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
+                                    <option value="1">Phase 1 — Evaluation</option>
+                                    <option value="2">Phase 2 — Verification</option>
+                                    <option value="3">Phase 3 — Funded Live</option>
+                                </select>
+                            </div>
+                            <div style="margin-bottom:16px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Profit Target</label>
+                                <select id="setup-target" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
+                                    <option value="8">8% Profit Target</option>
+                                    <option value="10" selected>10% Profit Target</option>
+                                    <option value="5">5% Profit Target</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Challenge Status</label>
+                                <select id="setup-status" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
+                                    <option value="active" selected>🟡 Active — In Progress</option>
+                                    <option value="passed">✅ Passed Challenge</option>
+                                    <option value="failed">❌ Failed / Blown</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <button onclick="saveAccountSetup()" style="width:100%; padding:16px; background:linear-gradient(135deg, var(--red), #991b1b); border:none; border-radius:12px; color:white; font-size:1rem; font-weight:700; cursor:pointer; transition:all 0.2s; font-family:Orbitron; box-shadow:0 4px 20px rgba(220,38,38,0.4);">Start Journaling</button>
                         <p style="color:var(--text-dim); font-size:0.75rem; margin-top:14px;">You can change this anytime in settings</p>
                     </div>
@@ -2294,6 +2330,35 @@
             let savedPage = sessionStorage.getItem('currentPage');
             if (savedPage && document.getElementById('page-' + savedPage)) {
                 showPage(savedPage);
+                // Restore trading sub-tab if on trading page
+                if (savedPage === 'trading') {
+                    let savedTab = sessionStorage.getItem('tradingTab');
+                    if (savedTab && document.getElementById(savedTab)) {
+                        document.querySelectorAll('.app-panel').forEach(p => p.classList.remove('active'));
+                        document.querySelectorAll('.app-tab').forEach(b => b.classList.remove('active'));
+                        document.getElementById(savedTab).classList.add('active');
+                        let tabBtn = document.querySelector('.app-tab[onclick*="' + savedTab + '"]');
+                        if (tabBtn) tabBtn.classList.add('active');
+                        if (savedTab === 'journal') {
+                            // Also restore journal sub-tab
+                            let savedJournalTab = sessionStorage.getItem('journalTab');
+                            if (savedJournalTab && document.getElementById(savedJournalTab)) {
+                                document.querySelectorAll('.journal-panel').forEach(p => p.classList.remove('active'));
+                                document.querySelectorAll('.journal-tab').forEach(b => b.classList.remove('active'));
+                                document.getElementById(savedJournalTab).classList.add('active');
+                                let jBtn = document.querySelector('.journal-tab[onclick*="' + savedJournalTab + '"]');
+                                if (jBtn) jBtn.classList.add('active');
+                                if (savedJournalTab === 'j-dashboard') updateDashboard();
+                                if (savedJournalTab === 'j-trades') renderTrades();
+                                if (savedJournalTab === 'j-calendar') renderCalendar();
+                                if (savedJournalTab === 'j-analysis') renderAnalysis();
+                            } else {
+                                updateDashboard();
+                            }
+                        }
+                        if (savedTab === 'calculator') setTimeout(calcProfitability, 100);
+                    }
+                }
             }
         }
         function toggleMobileNav() {
@@ -2535,6 +2600,7 @@
 
         // ==================== APP TABS ====================
         function showAppTab(tabId) {
+            sessionStorage.setItem('tradingTab', tabId);
             document.querySelectorAll('.app-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.app-tab').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
@@ -2731,6 +2797,7 @@
         let trades = JSON.parse(localStorage.getItem('forex_journal_trades') || '[]');
 
         function showJournalTab(id) {
+            sessionStorage.setItem('journalTab', id);
             document.querySelectorAll('.journal-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.journal-tab').forEach(b => b.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -3196,10 +3263,30 @@
         let accountCurrency = localStorage.getItem('forex_journal_currency') || 'USD';
         let calendarView = 'week';
 
+        let setupAccountType = localStorage.getItem('forex_journal_account_type') || 'personal';
+        let setupPhase = localStorage.getItem('forex_journal_phase') || '1';
+        let setupTarget = localStorage.getItem('forex_journal_target') || '10';
+        let setupStatus = localStorage.getItem('forex_journal_status') || 'active';
+
+        function setSetupType(type) {
+            setupAccountType = type;
+            document.getElementById('setup-type-personal').style.background = type === 'personal' ? 'var(--red)' : 'transparent';
+            document.getElementById('setup-type-personal').style.color = type === 'personal' ? 'white' : 'var(--text-muted)';
+            document.getElementById('setup-type-personal').style.fontWeight = type === 'personal' ? '700' : '600';
+            document.getElementById('setup-type-funded').style.background = type === 'funded' ? 'var(--gold)' : 'transparent';
+            document.getElementById('setup-type-funded').style.color = type === 'funded' ? 'white' : 'var(--text-muted)';
+            document.getElementById('setup-type-funded').style.fontWeight = type === 'funded' ? '700' : '600';
+            document.getElementById('setup-funded-fields').style.display = type === 'funded' ? 'block' : 'none';
+        }
+
         function checkAccountSetup() {
             if (accountBalance <= 0) {
                 document.getElementById('account-setup').style.display = 'flex';
                 document.getElementById('account-settings-bar').style.display = 'none';
+                setSetupType(setupAccountType);
+                document.getElementById('setup-phase').value = setupPhase;
+                document.getElementById('setup-target').value = setupTarget;
+                document.getElementById('setup-status').value = setupStatus;
             } else {
                 document.getElementById('account-setup').style.display = 'none';
                 document.getElementById('account-settings-bar').style.display = 'block';
@@ -3222,6 +3309,15 @@
             accountBalance = balance; accountCurrency = currency;
             localStorage.setItem('forex_journal_balance', balance);
             localStorage.setItem('forex_journal_currency', currency);
+            localStorage.setItem('forex_journal_account_type', setupAccountType);
+            if (setupAccountType === 'funded') {
+                setupPhase = document.getElementById('setup-phase').value;
+                setupTarget = document.getElementById('setup-target').value;
+                setupStatus = document.getElementById('setup-status').value;
+                localStorage.setItem('forex_journal_phase', setupPhase);
+                localStorage.setItem('forex_journal_target', setupTarget);
+                localStorage.setItem('forex_journal_status', setupStatus);
+            }
             document.getElementById('account-setup').style.display = 'none';
             document.getElementById('account-settings-bar').style.display = 'block';
             updateAccountDisplay();
@@ -3231,10 +3327,20 @@
             document.getElementById('account-setup').style.display = 'flex';
             document.getElementById('setup-balance').value = accountBalance;
             document.getElementById('setup-currency').value = accountCurrency;
+            setSetupType(setupAccountType);
+            document.getElementById('setup-phase').value = setupPhase;
+            document.getElementById('setup-target').value = setupTarget;
+            document.getElementById('setup-status').value = setupStatus;
         }
         function updateAccountDisplay() {
             let sym = accountCurrency === 'USD' ? '$' : accountCurrency === 'EUR' ? '€' : '£';
-            document.getElementById('account-display').textContent = sym + accountBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            let label = sym + accountBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            if (setupAccountType === 'funded') {
+                let phaseLabel = setupPhase === '1' ? 'P1' : setupPhase === '2' ? 'P2' : 'P3';
+                let statusEmoji = setupStatus === 'passed' ? '✅' : setupStatus === 'failed' ? '❌' : '🟡';
+                label += ' | 🎯 ' + phaseLabel + ' ' + statusEmoji;
+            }
+            document.getElementById('account-display').textContent = label;
         }
         function setTradeRisk(val) { document.getElementById('t-risk').value = val; }
         function setTradeRR(val) { document.getElementById('t-rr-target').value = val; }
@@ -3285,8 +3391,8 @@
             document.getElementById('t-rr-target').value = '';
             let dateInput = document.getElementById('t-date');
             if (dateInput) dateInput.valueAsDate = new Date();
-            checkAccountSetup();
             restorePage();
+            checkAccountSetup();
         });
     </script>
 </body>
