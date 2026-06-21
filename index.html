@@ -1530,6 +1530,7 @@
                     <button class="journal-tab" onclick="showJournalTab('j-trades')">📋 History</button>
                     <button class="journal-tab" onclick="showJournalTab('j-calendar')">📅 Calendar</button>
                     <button class="journal-tab" onclick="showJournalTab('j-analysis')">🧠 Analysis</button>
+                    <button class="journal-tab" onclick="showJournalTab('j-challenge')">🎯 Challenge</button>
                 </div>
 
                 <div id="j-dashboard" class="journal-panel active">
@@ -1766,6 +1767,136 @@
                     <div class="card" style="margin-top:20px;">
                         <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📝</span> Key Insights & Patterns</h2>
                         <div id="insights"></div>
+                    </div>
+                </div>
+
+                <!-- CHALLENGE TRACKER PANEL -->
+                <div id="j-challenge" class="journal-panel">
+                    <div class="card" style="margin-bottom:24px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+                            <h2 style="margin:0; font-size:1.3rem; display:flex; align-items:center; gap:10px; font-family:Orbitron;"><span style="font-size:1.5rem;">🎯</span> Funded Challenge Tracker</h2>
+                            <button onclick="showChallengeSetup()" class="btn btn-outline" style="font-size:0.85rem;">⚙️ Edit Challenge</button>
+                        </div>
+
+                        <!-- Challenge Overview Cards -->
+                        <div id="challenge-overview" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:24px;">
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;">Challenge Phase</div>
+                                <div id="ch-phase-display" style="font-size:1.8rem; font-weight:800; font-family:Orbitron; color:var(--gold);">—</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;">Profit Target</div>
+                                <div id="ch-target-display" style="font-size:1.8rem; font-weight:800; font-family:Orbitron; color:var(--gold);">—</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;">Current P&L</div>
+                                <div id="ch-pnl-display" style="font-size:1.8rem; font-weight:800; font-family:Orbitron; color:var(--text);">$0.00</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;">Progress</div>
+                                <div id="ch-progress-display" style="font-size:1.8rem; font-weight:800; font-family:Orbitron; color:var(--text);">0%</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div style="margin-bottom:32px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                                <span style="color:var(--text-muted); font-size:0.85rem; font-weight:600;">Challenge Progress</span>
+                                <span id="ch-progress-text" style="color:var(--gold); font-weight:700; font-size:0.9rem;">0% / 10%</span>
+                            </div>
+                            <div style="height:24px; background:var(--bg-input); border-radius:12px; overflow:hidden; border:1px solid var(--border);">
+                                <div id="ch-progress-bar" style="height:100%; width:0%; background:linear-gradient(90deg, var(--red), var(--gold)); border-radius:12px; transition:width 0.6s ease; display:flex; align-items:center; justify-content:flex-end; padding-right:12px;">
+                                    <span style="font-size:0.75rem; font-weight:700; color:white; text-shadow:0 1px 2px rgba(0,0,0,0.5);"></span>
+                                </div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-top:8px;">
+                                <span style="font-size:0.7rem; color:var(--text-dim);">Start</span>
+                                <span id="ch-target-label" style="font-size:0.7rem; color:var(--gold); font-weight:700;">Target: 10%</span>
+                                <span style="font-size:0.7rem; color:var(--text-dim);">Passed</span>
+                            </div>
+                        </div>
+
+                        <!-- Phase Steps -->
+                        <h3 style="font-size:1rem; margin-bottom:16px; color:var(--text); font-family:Orbitron;">📍 Challenge Steps</h3>
+                        <div id="challenge-steps" style="display:flex; flex-direction:column; gap:16px; margin-bottom:32px;">
+                            <!-- Steps rendered by JS -->
+                        </div>
+
+                        <!-- Challenge Stats -->
+                        <h3 style="font-size:1rem; margin-bottom:16px; color:var(--text); font-family:Orbitron;">📊 Challenge Stats</h3>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px;">
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Trades in Challenge</div>
+                                <div id="ch-trade-count" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--text);">0</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Win Rate</div>
+                                <div id="ch-winrate" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--text);">0%</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Avg R:R</div>
+                                <div id="ch-avg-rr" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--text);">0.0</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Best Trade</div>
+                                <div id="ch-best-trade" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--green);">$0</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Worst Trade</div>
+                                <div id="ch-worst-trade" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--red);">$0</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Days Active</div>
+                                <div id="ch-days" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--text);">0</div>
+                            </div>
+                        </div>
+
+                        <!-- Status Banner -->
+                        <div id="ch-status-banner" style="margin-top:24px; padding:16px 24px; border-radius:12px; text-align:center; font-weight:700; font-size:1rem; font-family:Orbitron; display:none;">
+                            <!-- Status rendered by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Challenge Setup Modal -->
+                    <div id="challenge-setup-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,5,0.9); z-index:1001; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+                        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:40px; max-width:420px; width:90%; box-shadow:0 25px 80px rgba(0,0,0,0.6);">
+                            <h2 style="font-size:1.3rem; margin-bottom:8px; color:var(--text); font-family:Orbitron;">🎯 Configure Challenge</h2>
+                            <p style="color:var(--text-muted); margin-bottom:24px; font-size:0.9rem;">Set up your funded challenge parameters.</p>
+
+                            <div style="margin-bottom:16px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Starting Balance</label>
+                                <input type="number" id="ch-setup-balance" value="5000" min="100" step="100" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;">
+                            </div>
+
+                            <div style="margin-bottom:16px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Challenge Phase</label>
+                                <select id="ch-setup-phase" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
+                                    <option value="1">Phase 1 — Evaluation (8-10% target)</option>
+                                    <option value="2">Phase 2 — Verification (5% target)</option>
+                                    <option value="3">Phase 3 — Funded Live (No target)</option>
+                                </select>
+                            </div>
+
+                            <div style="margin-bottom:16px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Profit Target (%)</label>
+                                <input type="number" id="ch-setup-target" value="10" min="1" max="50" step="0.5" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;">
+                            </div>
+
+                            <div style="margin-bottom:16px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Max Drawdown (%)</label>
+                                <input type="number" id="ch-setup-drawdown" value="10" min="1" max="50" step="0.5" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;">
+                            </div>
+
+                            <div style="margin-bottom:24px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Daily Loss Limit (%)</label>
+                                <input type="number" id="ch-setup-daily" value="5" min="1" max="20" step="0.5" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;">
+                            </div>
+
+                            <div style="display:flex; gap:10px;">
+                                <button onclick="saveChallengeSetup()" style="flex:1; padding:14px; background:linear-gradient(135deg, var(--red), #991b1b); border:none; border-radius:12px; color:white; font-size:1rem; font-weight:700; cursor:pointer; font-family:Orbitron;">Save</button>
+                                <button onclick="closeChallengeSetup()" style="flex:1; padding:14px; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; color:var(--text-muted); font-size:1rem; font-weight:600; cursor:pointer;">Cancel</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2352,6 +2483,7 @@
                                 if (savedJournalTab === 'j-trades') renderTrades();
                                 if (savedJournalTab === 'j-calendar') renderCalendar();
                                 if (savedJournalTab === 'j-analysis') renderAnalysis();
+                                if (savedJournalTab === 'j-challenge') renderChallenge();
                             } else {
                                 updateDashboard();
                             }
@@ -3381,6 +3513,162 @@
             html += '</div>';
             document.getElementById('day-cal').innerHTML = html;
         }
+
+
+        // ==================== CHALLENGE TRACKER ====================
+        let challengeConfig = JSON.parse(localStorage.getItem('forex_challenge_config') || 'null') || {
+            balance: 5000,
+            phase: '1',
+            target: 10,
+            drawdown: 10,
+            dailyLimit: 5,
+            startDate: new Date().toISOString().split('T')[0],
+            status: 'active'
+        };
+
+        function showChallengeSetup() {
+            document.getElementById('challenge-setup-modal').style.display = 'flex';
+            document.getElementById('ch-setup-balance').value = challengeConfig.balance;
+            document.getElementById('ch-setup-phase').value = challengeConfig.phase;
+            document.getElementById('ch-setup-target').value = challengeConfig.target;
+            document.getElementById('ch-setup-drawdown').value = challengeConfig.drawdown;
+            document.getElementById('ch-setup-daily').value = challengeConfig.dailyLimit;
+        }
+
+        function closeChallengeSetup() {
+            document.getElementById('challenge-setup-modal').style.display = 'none';
+        }
+
+        function saveChallengeSetup() {
+            challengeConfig.balance = parseFloat(document.getElementById('ch-setup-balance').value) || 5000;
+            challengeConfig.phase = document.getElementById('ch-setup-phase').value;
+            challengeConfig.target = parseFloat(document.getElementById('ch-setup-target').value) || 10;
+            challengeConfig.drawdown = parseFloat(document.getElementById('ch-setup-drawdown').value) || 10;
+            challengeConfig.dailyLimit = parseFloat(document.getElementById('ch-setup-daily').value) || 5;
+            localStorage.setItem('forex_challenge_config', JSON.stringify(challengeConfig));
+            closeChallengeSetup();
+            renderChallenge();
+        }
+
+        function renderChallenge() {
+            // Get all funded trades for this challenge
+            let challengeTrades = trades.filter(t => t.accountType === 'funded');
+            let totalPnl = challengeTrades.reduce((s, t) => s + (t.pnl || 0), 0);
+            let progress = (totalPnl / challengeConfig.balance) * 100;
+            let target = challengeConfig.target;
+            let progressPct = Math.min(Math.max((progress / target) * 100, 0), 100);
+            let isPassed = progress >= target;
+            let maxLoss = -(challengeConfig.balance * challengeConfig.drawdown / 100);
+            let isFailed = totalPnl <= maxLoss;
+
+            // Update overview cards
+            let phaseNames = { '1': 'Phase 1', '2': 'Phase 2', '3': 'Funded' };
+            document.getElementById('ch-phase-display').textContent = phaseNames[challengeConfig.phase] || '—';
+            document.getElementById('ch-target-display').textContent = target + '%';
+            document.getElementById('ch-pnl-display').textContent = formatJournalMoney(totalPnl);
+            document.getElementById('ch-pnl-display').style.color = totalPnl >= 0 ? 'var(--green)' : 'var(--red)';
+            document.getElementById('ch-progress-display').textContent = progress.toFixed(2) + '%';
+            document.getElementById('ch-progress-display').style.color = isPassed ? 'var(--green)' : (isFailed ? 'var(--red)' : 'var(--gold)');
+
+            // Progress bar
+            document.getElementById('ch-progress-bar').style.width = progressPct + '%';
+            document.getElementById('ch-progress-text').textContent = progress.toFixed(2) + '% / ' + target + '%';
+            document.getElementById('ch-target-label').textContent = 'Target: ' + target + '%';
+
+            // Render steps
+            let steps = [];
+            if (challengeConfig.phase === '1' || challengeConfig.phase === '2') {
+                let stepPct = target / 4;
+                for (let i = 1; i <= 4; i++) {
+                    let stepTarget = stepPct * i;
+                    let isDone = progress >= stepTarget;
+                    let isCurrent = progress >= stepTarget - stepPct && progress < stepTarget;
+                    steps.push({
+                        label: 'Step ' + i + ' — ' + stepTarget.toFixed(1) + '%',
+                        desc: i === 4 ? 'Final Target!' : 'Keep pushing',
+                        done: isDone,
+                        current: isCurrent,
+                        pct: Math.min((progress / stepTarget) * 100, 100)
+                    });
+                }
+            } else {
+                steps = [
+                    { label: 'Phase 3 — Funded Live', desc: 'No profit target. Focus on consistency.', done: true, current: true, pct: 100 }
+                ];
+            }
+
+            let stepsHTML = '';
+            steps.forEach((step, i) => {
+                let bg = step.done ? 'var(--green-dim)' : (step.current ? 'var(--gold-dim)' : 'var(--bg-input)');
+                let border = step.done ? 'var(--green)' : (step.current ? 'var(--gold)' : 'var(--border)');
+                let icon = step.done ? '✅' : (step.current ? '🔄' : '⏳');
+                let color = step.done ? 'var(--green)' : (step.current ? 'var(--gold)' : 'var(--text-muted)');
+                stepsHTML += `<div style="display:flex; align-items:center; gap:16px; padding:16px; background:${bg}; border:1px solid ${border}; border-radius:14px;">
+                    <div style="font-size:2rem;">${icon}</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:700; color:${color}; font-family:Orbitron; font-size:1rem;">${step.label}</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">${step.desc}</div>
+                        ${!step.done ? `<div style="margin-top:8px; height:6px; background:var(--bg-card); border-radius:3px; overflow:hidden;">
+                            <div style="height:100%; width:${step.pct}%; background:${step.current ? 'var(--gold)' : 'var(--border)'}; border-radius:3px; transition:width 0.4s;"></div>
+                        </div>` : ''}
+                    </div>
+                </div>`;
+            });
+            document.getElementById('challenge-steps').innerHTML = stepsHTML || '<p style="color:var(--text-muted); text-align:center;">No steps configured.</p>';
+
+            // Stats
+            let wins = challengeTrades.filter(t => t.status === 'win').length;
+            let total = challengeTrades.length;
+            let winRate = total > 0 ? ((wins / total) * 100).toFixed(1) : 0;
+            let rrTrades = challengeTrades.filter(t => t.rr);
+            let avgRR = rrTrades.length > 0 ? (rrTrades.reduce((s, t) => s + parseFloat(t.rr), 0) / rrTrades.length).toFixed(2) : '0.0';
+            let best = challengeTrades.length > 0 ? Math.max(...challengeTrades.map(t => t.pnl || 0)) : 0;
+            let worst = challengeTrades.length > 0 ? Math.min(...challengeTrades.map(t => t.pnl || 0)) : 0;
+            let uniqueDays = [...new Set(challengeTrades.map(t => t.date))].length;
+
+            document.getElementById('ch-trade-count').textContent = total;
+            document.getElementById('ch-winrate').textContent = winRate + '%';
+            document.getElementById('ch-avg-rr').textContent = avgRR;
+            document.getElementById('ch-best-trade').textContent = formatJournalMoney(best);
+            document.getElementById('ch-worst-trade').textContent = formatJournalMoney(worst);
+            document.getElementById('ch-days').textContent = uniqueDays;
+
+            // Status banner
+            let banner = document.getElementById('ch-status-banner');
+            banner.style.display = 'block';
+            if (isPassed) {
+                banner.textContent = '🎉 CHALLENGE PASSED! Ready for next phase.';
+                banner.style.background = 'var(--green-dim)';
+                banner.style.color = 'var(--green)';
+                banner.style.border = '1px solid var(--green)';
+            } else if (isFailed) {
+                banner.textContent = '❌ CHALLENGE FAILED. Max drawdown reached.';
+                banner.style.background = 'var(--red-dim)';
+                banner.style.color = 'var(--red)';
+                banner.style.border = '1px solid var(--red)';
+            } else {
+                let remaining = target - progress;
+                banner.textContent = '🟡 CHALLENGE ACTIVE — Need ' + remaining.toFixed(2) + '% more to pass';
+                banner.style.background = 'var(--gold-dim)';
+                banner.style.color = 'var(--gold)';
+                banner.style.border = '1px solid var(--gold)';
+            }
+        }
+
+        // Auto-render challenge when tab is shown
+        let originalShowJournalTab = showJournalTab;
+        showJournalTab = function(id) {
+            sessionStorage.setItem('journalTab', id);
+            document.querySelectorAll('.journal-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.journal-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+            if (id === 'j-dashboard') updateDashboard();
+            if (id === 'j-trades') renderTrades();
+            if (id === 'j-calendar') renderCalendar();
+            if (id === 'j-analysis') renderAnalysis();
+            if (id === 'j-challenge') renderChallenge();
+        };
 
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', function() {
