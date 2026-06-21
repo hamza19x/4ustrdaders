@@ -363,16 +363,53 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 16px;
         }
+        .market-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
         .market-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 24px;
             transition: all 0.2s;
+            position: relative;
+            cursor: pointer;
         }
         .market-card:hover {
-            border-color: var(--border-hover);
+            border-color: var(--red);
             transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.15);
+        }
+        .market-open-chart {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(220, 38, 38, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 2;
+        }
+        .market-card:hover .market-open-chart {
+            opacity: 1;
+        }
+        .market-card:hover .market-chart {
+            opacity: 0.3;
+        }
+        .market-card:hover .market-price {
+            opacity: 0.3;
+        }
+        .market-card:hover .market-header {
+            opacity: 0.3;
         }
         .market-header {
             display: flex;
@@ -1971,19 +2008,26 @@
         function renderMarkets() {
             let grid = document.getElementById('markets-grid');
             if (!grid) return;
-            grid.innerHTML = marketData.map(m => `
+            grid.innerHTML = marketData.map(m => {
+                let tvSymbol = m.pair.replace('/', '');
+                if (tvSymbol === 'XAUUSD') tvSymbol = 'OANDA:XAUUSD';
+                else if (tvSymbol === 'XAGUSD') tvSymbol = 'OANDA:XAGUSD';
+                else tvSymbol = 'OANDA:' + tvSymbol;
+                return \`<a href="https://www.tradingview.com/chart/?symbol=\${tvSymbol}" target="_blank" class="market-card-link">
                 <div class="market-card">
                     <div class="market-header">
                         <div>
-                            <div class="market-name">${m.pair}</div>
-                            <div class="market-sub">${m.name}</div>
+                            <div class="market-name">\${m.pair}</div>
+                            <div class="market-sub">\${m.name}</div>
                         </div>
-                        <div class="market-change ${m.up ? 'up' : 'down'}">${m.up ? '+' : ''}${m.change}%</div>
+                        <div class="market-change \${m.up ? 'up' : 'down'}">\${m.up ? '+' : ''}\${m.change}%</div>
                     </div>
-                    <div class="market-price">${m.price.toLocaleString()}</div>
-                    <div class="market-chart">${generateChartBars(m.up)}</div>
+                    <div class="market-price">\${m.price.toLocaleString()}</div>
+                    <div class="market-chart">\${generateChartBars(m.up)}</div>
+                    <div class="market-open-chart">📈 Open Chart →</div>
                 </div>
-            `).join('');
+            </a>\`;
+            }).join('');
         }
         renderMarkets();
         setInterval(renderMarkets, 5000);
