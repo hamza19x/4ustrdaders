@@ -75,7 +75,7 @@
             gap: 32px;
             list-style: none;
         }
-        .nav-links a, .nav-link {
+        .nav-links a {
             color: var(--text-muted);
             text-decoration: none;
             font-size: 0.85rem;
@@ -84,10 +84,9 @@
             letter-spacing: 1px;
             transition: color 0.2s;
             position: relative;
-            cursor: pointer;
         }
-        .nav-links a:hover, .nav-link:hover, .nav-link.active { color: var(--red); }
-        .nav-link.active::after {
+        .nav-links a:hover, .nav-links a.active { color: var(--red); }
+        .nav-links a.active::after {
             content: '';
             position: absolute;
             bottom: -24px;
@@ -1087,21 +1086,21 @@
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
     </style>
-
-
+<base target="_blank">
+<base target="_blank">
 <base target="_blank">
 </head>
 <body>
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar">
-        <span class="nav-logo" onclick="showPage('home')" style="cursor:pointer;">
+        <a href="#" class="nav-logo" onclick="showPage('home'); return false;">
             <div style="width:42px;height:42px;background:linear-gradient(135deg,var(--red),#991b1b);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:Orbitron;font-weight:900;font-size:1.2rem;color:white;">4</div>
             4U<span>S</span>TRADERS
-        </span>
+        </a>
         <ul class="nav-links">
-            <li><span class="nav-link active" onclick="showPage('home')">Home</span></li>
-            <li><span class="nav-link" onclick="showPage('trading')">Calculator & Journal</span></li>
-            <li><span class="nav-link" onclick="showPage('news')">News</span></li>
+            <li><a href="javascript:void(0)" class="active" onclick="showPage('home'); return false;">Home</a></li>
+            <li><a href="javascript:void(0)" onclick="showPage('trading'); return false;">Calculator & Journal</a></li>
+            <li><a href="javascript:void(0)" onclick="showPage('news'); return false;">News</a></li>
             <li><a href="https://discord.gg/rhJPwF6FG" target="_blank">Community</a></li>
             
         </ul>
@@ -1110,7 +1109,6 @@
             Join Discord
         </a>
         <button class="nav-mobile-toggle" onclick="toggleMobileNav()">☰</button>
-        
     </nav>
 
     <!-- ===== HOME PAGE ===== -->
@@ -1120,12 +1118,12 @@
             <div class="hero-bg"></div>
             <div class="hero-grid">
                 <div class="hero-left">
-                    <div class="hero-welcome" data-i18n="welcome">Welcome to</div>
-                    <h1 class="hero-title" data-i18n="heroTitle">4US<br>TRADING<br><span>COMMUNITY</span></h1>
-                    <p class="hero-desc" data-i18n="heroDesc">A community built for traders, by traders. Learn, trade and grow together while chilling and having fun.</p>
+                    <div class="hero-welcome">Welcome to</div>
+                    <h1 class="hero-title">4US<br>TRADING<br><span>COMMUNITY</span></h1>
+                    <p class="hero-desc">A community built for traders, by traders. Learn, trade and grow together while chilling and having fun.</p>
                     <div class="hero-buttons">
-                        <button class="btn-primary" onclick="showPage('trading'); return false;" data-i18n="openTools">Open Tools →</button>
-                        <button class="btn-secondary" onclick="showPage('trading'); return false;" data-i18n="startJournaling">Start Journaling ↗</button>
+                        <button class="btn-primary" onclick="showPage('trading'); return false;">Open Tools →</button>
+                        <button class="btn-secondary" onclick="showPage('trading'); return false;">Start Journaling ↗</button>
                     </div>
                 </div>
                 <div class="hero-right">
@@ -1138,17 +1136,17 @@
 
         <!-- STATS BAR -->
         <div class="stats-bar">
-            <div class="stat-item"><div class="stat-icon">👥</div><div class="stat-number">3.2K+</div><div class="stat-label" data-i18n="activeTraders">Active Traders</div></div>
-            <div class="stat-item"><div class="stat-icon">🏆</div><div class="stat-number">150+</div><div class="stat-label" data-i18n="tradingSetups">Trading Setups</div></div>
-            <div class="stat-item"><div class="stat-icon">🎯</div><div class="stat-number">85%+</div><div class="stat-label" data-i18n="winRate">Win Rate</div></div>
-            <div class="stat-item"><div class="stat-icon">⏰</div><div class="stat-number">24/7</div><div class="stat-label" data-i18n="support">Support</div></div>
-            <div class="stat-item"><div class="stat-icon">📈</div><div class="stat-number">1.2M+</div><div class="stat-label" data-i18n="pipsTraded">Pips Traded</div></div>
+            <div class="stat-item"><div class="stat-icon">👥</div><div class="stat-number">3.2K+</div><div class="stat-label">Active Traders</div></div>
+            <div class="stat-item"><div class="stat-icon">🏆</div><div class="stat-number">150+</div><div class="stat-label">Trading Setups</div></div>
+            <div class="stat-item"><div class="stat-icon">🎯</div><div class="stat-number">85%+</div><div class="stat-label">Win Rate</div></div>
+            <div class="stat-item"><div class="stat-icon">⏰</div><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
+            <div class="stat-item"><div class="stat-icon">📈</div><div class="stat-number">1.2M+</div><div class="stat-label">Pips Traded</div></div>
         </div>
 
         <!-- LIVE MARKETS -->
         <section class="markets-section" id="markets">
             <div class="section-header">
-                <h2 class="section-title"><span class="live-dot"></span> <span data-i18n="liveMarket">Live Market Overview</span></h2>
+                <h2 class="section-title"><span class="live-dot"></span> Live Market Overview</h2>
                 <select id="add-pair-select" onchange="addMarketPair(this.value)" style="background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:10px 14px; color:var(--text); font-size:0.9rem; min-width:140px;">
                     <option value="">+ Add Pair</option>
                     <option value="XAUUSD|Gold">XAU/USD (Gold)</option>
@@ -1179,25 +1177,25 @@
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">🎓</div>
-                    <h3 class="feature-title" data-i18n="tradingEducation">Trading Education</h3>
+                    <h3 class="feature-title">Trading Education</h3>
                     <p class="feature-desc">From beginner to pro. Access premium courses, guides and live trading sessions.</p>
                     <a href="#" class="feature-link">Explore →</a>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📊</div>
-                    <h3 class="feature-title" data-i18n="dailyAnalysis">Daily Analysis</h3>
+                    <h3 class="feature-title">Daily Analysis</h3>
                     <p class="feature-desc">Daily market analysis, key levels, news breakdowns and high probability setups.</p>
                     <a href="#" class="feature-link">View Analysis →</a>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">👥</div>
-                    <h3 class="feature-title" data-i18n="activeCommunity">Active Community</h3>
+                    <h3 class="feature-title">Active Community</h3>
                     <p class="feature-desc">Join a friendly and active trading community. Share ideas, wins and learn together.</p>
                     <a href="#" class="feature-link">Join Us →</a>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎯</div>
-                    <h3 class="feature-title" data-i18n="provenResults">Proven Results</h3>
+                    <h3 class="feature-title">Proven Results</h3>
                     <p class="feature-desc">Transparent results from our team and community. Real trades. Real profits.</p>
                     <a href="#" class="feature-link">See Results →</a>
                 </div>
@@ -1206,7 +1204,7 @@
 
         <!-- TRUSTED BY -->
         <section class="trusted-section">
-            <div class="trusted-label" data-i18n="trustedBy">Trusted by Traders Worldwide</div>
+            <div class="trusted-label">Trusted by Traders Worldwide</div>
             <div class="trusted-logos">
                 <div class="trusted-logo">FOREX.com</div>
                 <div class="trusted-logo">ICMarkets</div>
@@ -1221,8 +1219,8 @@
     <div id="page-trading" class="page" style="display:none;padding-top:90px;">
         <div class="app-container">
             <div class="app-tabs">
-                <button class="app-tab active" onclick="showAppTab('calculator')">🧮 <span data-i18n="positionCalculator">Position Calculator</span></button>
-                <button class="app-tab" onclick="showAppTab('journal')">📊 <span data-i18n="journal">Journal</span></button>
+                <button class="app-tab active" onclick="showAppTab('calculator')">🧮 Position Calculator</button>
+                <button class="app-tab" onclick="showAppTab('journal')">📊 Journal</button>
             </div>
 
             <!-- CALCULATOR -->
@@ -1232,8 +1230,8 @@
             <div class="card" style="margin-bottom:24px; padding:32px;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:20px; margin-bottom:24px;">
                     <div>
-                        <h2 style="font-family:Orbitron; font-size:1.4rem; color:var(--text); margin-bottom:8px;" data-i18n="profitabilityTitle">Profitability & Win Rate Calculator</h2>
-                        <p style="color:var(--text-muted); font-size:0.9rem;" data-i18n="profitabilityDesc">Find the win rate you need to be consistently profitable based on your risk:reward ratio.</p>
+                        <h2 style="font-family:Orbitron; font-size:1.4rem; color:var(--text); margin-bottom:8px;">Profitability & Win Rate Calculator</h2>
+                        <p style="color:var(--text-muted); font-size:0.9rem;">Find the win rate you need to be consistently profitable based on your risk:reward ratio.</p>
                     </div>
                     <div id="prof-status" style="padding:10px 24px; border-radius:10px; font-size:0.9rem; font-weight:700; font-family:Orbitron; background:var(--green-dim); color:var(--green);">✅ PROFITABLE</div>
                 </div>
@@ -1298,7 +1296,7 @@
 
                 <!-- Personalized Calculator -->
                 <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:16px; padding:24px;">
-                    <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:20px; color:var(--text);" data-i18n="personalizedCalculator">Personalized Calculator</h3>
+                    <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:20px; color:var(--text);">Personalized Calculator</h3>
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:20px; margin-bottom:24px;">
                         <div>
                             <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Risk:Reward Ratio (Reward Side)</label>
@@ -1327,19 +1325,19 @@
                     <!-- Results -->
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px;">
                         <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
-                            <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;" data-i18n="breakevenWinRate">Breakeven Win Rate</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Breakeven Win Rate</div>
                             <div style="font-size:1.5rem; font-weight:800; color:var(--gold); font-family:Orbitron;" id="prof-breakeven">33.3%</div>
                         </div>
                         <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
-                            <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;" data-i18n="expectedValue">Expected Value / Trade</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Expected Value / Trade</div>
                             <div style="font-size:1.5rem; font-weight:800; color:var(--green); font-family:Orbitron;" id="prof-ev">+$50.00</div>
                         </div>
                         <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
-                            <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;" data-i18n="totalExpectedPL">Total Expected P&L</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Total Expected P&L</div>
                             <div style="font-size:1.5rem; font-weight:800; color:var(--green); font-family:Orbitron;" id="prof-total">+$5,000</div>
                         </div>
                         <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
-                            <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;" data-i18n="profitFactor2">Profit Factor</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Profit Factor</div>
                             <div style="font-size:1.5rem; font-weight:800; color:var(--green); font-family:Orbitron;" id="prof-pf">2.00</div>
                         </div>
                     </div>
@@ -1348,13 +1346,13 @@
 
             <div class="calc-grid">
                     <div class="card">
-                        <div class="card-title">🧮 <span data-i18n="tradeParameters">Trade Parameters</span></div>
+                        <div class="card-title">🧮 Trade Parameters</div>
                         <div class="form-group full">
-                            <label data-i18n="accountBalance">Account Balance</label>
+                            <label>Account Balance</label>
                             <input type="number" id="balance" value="10000" min="0" step="100">
                         </div>
                         <div class="form-group">
-                            <label data-i18n="accountCurrency">Account Currency</label>
+                            <label>Account Currency</label>
                             <select id="accountCurrency">
                                 <option value="USD">USD — US Dollar</option>
                                 <option value="EUR">EUR — Euro</option>
@@ -1372,7 +1370,7 @@
                         </div>
                         <div class="form-group full">
                             <div class="risk-value" id="riskDisplay">1.0%</div>
-                            <label data-i18n="riskPerTrade">Risk Per Trade</label>
+                            <label>Risk Per Trade</label>
                             <input type="range" id="riskSlider" class="risk-slider" min="0.1" max="10" step="0.1" value="1.0">
                             <div class="presets">
                                 <button class="preset-btn" onclick="setRisk(0.5)">0.5%</button>
@@ -1382,19 +1380,19 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label data-i18n="stopLoss">Stop Loss (pips)</label>
+                            <label>Stop Loss (pips)</label>
                             <input type="number" id="stopLoss" value="50" min="1">
                         </div>
                         <div class="form-group">
-                            <label data-i18n="takeProfit">Take Profit (pips)</label>
+                            <label>Take Profit (pips)</label>
                             <input type="number" id="takeProfit" value="" min="1" placeholder="e.g. 100">
                         </div>
                         <div class="form-group">
-                            <label data-i18n="entryPrice">Entry Price</label>
+                            <label>Entry Price</label>
                             <input type="number" id="entryPrice" value="1.08500" step="0.00001">
                         </div>
                         <div class="form-group">
-                            <label data-i18n="leverage">Leverage</label>
+                            <label>Leverage</label>
                             <select id="leverage">
                                 <option value="1">1:1</option>
                                 <option value="10">1:10</option>
@@ -1414,20 +1412,20 @@
                     </div>
 
                     <div class="card">
-                        <div class="card-title">🎯 <span data-i18n="positionSize">Position Size</span></div>
+                        <div class="card-title">🎯 Position Size</div>
                         <div class="result-big">
-                            <div class="result-label" data-i18n="lotSize">Lot Size</div>
+                            <div class="result-label">Lot Size</div>
                             <div class="result-number" id="lotSize">0.00</div>
-                            <div class="result-unit" data-i18n="standardLots">Standard Lots</div>
+                            <div class="result-unit">Standard Lots</div>
                         </div>
                         <div class="stats-grid">
-                            <div class="stat-box"><div class="stat-label" data-i18n="units">Units</div><div class="stat-value cyan" id="units">0</div></div>
-                            <div class="stat-box"><div class="stat-label" data-i18n="riskAmount">Risk Amount</div><div class="stat-value red" id="riskAmount">$0.00</div></div>
+                            <div class="stat-box"><div class="stat-label">Units</div><div class="stat-value cyan" id="units">0</div></div>
+                            <div class="stat-box"><div class="stat-label">Risk Amount</div><div class="stat-value red" id="riskAmount">$0.00</div></div>
                         </div>
                         <div class="lot-breakdown">
-                            <div class="lot-row"><span class="lot-name" data-i18n="standardLots">Standard Lots</span><span class="lot-val" id="stdLots">0.00</span></div>
-                            <div class="lot-row"><span class="lot-name" data-i18n="miniLots">Mini Lots (0.10)</span><span class="lot-val" id="miniLots">0.00</span></div>
-                            <div class="lot-row"><span class="lot-name" data-i18n="microLots">Micro Lots (0.01)</span><span class="lot-val" id="microLots">0.00</span></div>
+                            <div class="lot-row"><span class="lot-name">Standard Lots</span><span class="lot-val" id="stdLots">0.00</span></div>
+                            <div class="lot-row"><span class="lot-name">Mini Lots (0.10)</span><span class="lot-val" id="miniLots">0.00</span></div>
+                            <div class="lot-row"><span class="lot-name">Micro Lots (0.01)</span><span class="lot-val" id="microLots">0.00</span></div>
                         </div>
                         <div class="risk-bar-container">
                             <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
@@ -1441,16 +1439,16 @@
                 </div>
 
                 <div class="card" style="margin-top:24px;">
-                    <div class="card-title">📋 <span data-i18n="tradeDetails">Trade Details</span></div>
+                    <div class="card-title">📋 Trade Details</div>
                     <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
-                        <div class="stat-box"><div class="stat-label" data-i18n="pipValue">Pip Value</div><div class="stat-value amber" id="pipValue">$0.00</div></div>
-                        <div class="stat-box"><div class="stat-label" data-i18n="valuePerPip">Value per Pip</div><div class="stat-value amber" id="valuePerPip">$0.00</div></div>
-                        <div class="stat-box"><div class="stat-label" data-i18n="riskReward">Risk : Reward</div><div class="stat-value cyan" id="riskReward">—</div></div>
-                        <div class="stat-box"><div class="stat-label" data-i18n="maxLoss">Max Loss</div><div class="stat-value red" id="maxLoss">$0.00</div></div>
-                        <div class="stat-box"><div class="stat-label" data-i18n="potentialProfit">Potential Profit</div><div class="stat-value green" id="potentialProfit">—</div></div>
-                        <div class="stat-box"><div class="stat-label" data-i18n="marginRequired">Approx. Margin</div><div class="stat-value" id="marginRequired">$0.00</div></div>
-                        <div class="stat-box"><div class="stat-label" data-i18n="balanceIfSL">Balance if SL</div><div class="stat-value" id="remainingBalance">$0.00</div></div>
-                        <div class="stat-box"><div class="stat-label" data-i18n="slDistance">SL Distance</div><div class="stat-value" id="slDistance">50 pips</div></div>
+                        <div class="stat-box"><div class="stat-label">Pip Value</div><div class="stat-value amber" id="pipValue">$0.00</div></div>
+                        <div class="stat-box"><div class="stat-label">Value per Pip</div><div class="stat-value amber" id="valuePerPip">$0.00</div></div>
+                        <div class="stat-box"><div class="stat-label">Risk : Reward</div><div class="stat-value cyan" id="riskReward">—</div></div>
+                        <div class="stat-box"><div class="stat-label">Max Loss</div><div class="stat-value red" id="maxLoss">$0.00</div></div>
+                        <div class="stat-box"><div class="stat-label">Potential Profit</div><div class="stat-value green" id="potentialProfit">—</div></div>
+                        <div class="stat-box"><div class="stat-label">Approx. Margin</div><div class="stat-value" id="marginRequired">$0.00</div></div>
+                        <div class="stat-box"><div class="stat-label">Balance if SL</div><div class="stat-value" id="remainingBalance">$0.00</div></div>
+                        <div class="stat-box"><div class="stat-label">SL Distance</div><div class="stat-value" id="slDistance">50 pips</div></div>
                     </div>
                 </div>
             </div>
@@ -1460,7 +1458,7 @@
                 <div id="account-setup" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,5,0.95); z-index:1000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
                     <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:48px; max-width:480px; width:90%; text-align:center; box-shadow:0 25px 80px rgba(0,0,0,0.6);">
                         <div style="font-size:3.5rem; margin-bottom:20px;">💰</div>
-                        <h2 style="font-size:1.5rem; margin-bottom:10px; color:var(--text); font-family:Orbitron;" data-i18n="setYourAccount">Set Your Account</h2>
+                        <h2 style="font-size:1.5rem; margin-bottom:10px; color:var(--text); font-family:Orbitron;">Set Your Account</h2>
                         <p style="color:var(--text-muted); margin-bottom:28px; font-size:0.95rem;">Configure your account to begin tracking your journal.</p>
 
                         <!-- Account Type Toggle -->
@@ -1470,7 +1468,7 @@
                         </div>
 
                         <div style="margin-bottom:24px;">
-                            <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;" data-i18n="startingBalance">Account Balance</label>
+                            <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Account Balance</label>
                             <div style="display:flex; gap:10px; margin-bottom:14px;">
                                 <select id="setup-currency" style="width:100px; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
                                     <option value="USD">$ USD</option>
@@ -1492,29 +1490,32 @@
                         <!-- Funded Account Fields (hidden by default) -->
                         <div id="setup-funded-fields" style="display:none; margin-bottom:24px;">
                             <div style="margin-bottom:16px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;" data-i18n="challengePhase2">Challenge Phase</label>
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Challenge Phase</label>
                                 <select id="setup-phase" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
-                                    <option value="1" data-i18n="phase1">Phase 1 — Evaluation</option>
-                                    <option value="2" data-i18n="phase2">Phase 2 — Verification</option>
+                                    <option value="1">Phase 1 — Evaluation</option>
+                                    <option value="2">Phase 2 — Verification</option>
                                     <option value="3">Phase 3 — Funded Live</option>
                                 </select>
                             </div>
                             <div style="margin-bottom:16px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;" data-i18n="challengeTarget">Profit Target (%)</label>
-                                <input type="number" id="setup-target" value="10" min="0.1" max="100" step="0.1" placeholder="e.g. 10" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;">
-                                <p style="color:var(--text-dim); font-size:0.7rem; margin-top:6px;">Type any value (e.g. 8, 10, 12.5, 15, 20...)</p>
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Profit Target</label>
+                                <select id="setup-target" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
+                                    <option value="8">8% Profit Target</option>
+                                    <option value="10" selected>10% Profit Target</option>
+                                    <option value="5">5% Profit Target</option>
+                                </select>
                             </div>
                             <div>
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;" data-i18n="challengeStatus">Challenge Status</label>
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Challenge Status</label>
                                 <select id="setup-status" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
-                                    <option value="active" selected data-i18n="active">🟡 Active — In Progress</option>
-                                    <option value="passed" data-i18n="passed">✅ Passed Challenge</option>
-                                    <option value="failed" data-i18n="failed">❌ Failed / Blown</option>
+                                    <option value="active" selected>🟡 Active — In Progress</option>
+                                    <option value="passed">✅ Passed Challenge</option>
+                                    <option value="failed">❌ Failed / Blown</option>
                                 </select>
                             </div>
                         </div>
 
-                        <button onclick="saveAccountSetup()" style="width:100%; padding:16px; background:linear-gradient(135deg, var(--red), #991b1b); border:none; border-radius:12px; color:white; font-size:1rem; font-weight:700; cursor:pointer; transition:all 0.2s; font-family:Orbitron; box-shadow:0 4px 20px rgba(220,38,38,0.4);" data-i18n="startJournaling2">Start Journaling</button>
+                        <button onclick="saveAccountSetup()" style="width:100%; padding:16px; background:linear-gradient(135deg, var(--red), #991b1b); border:none; border-radius:12px; color:white; font-size:1rem; font-weight:700; cursor:pointer; transition:all 0.2s; font-family:Orbitron; box-shadow:0 4px 20px rgba(220,38,38,0.4);">Start Journaling</button>
                         <p style="color:var(--text-dim); font-size:0.75rem; margin-top:14px;">You can change this anytime in settings</p>
                     </div>
                 </div>
@@ -1524,41 +1525,41 @@
                 </div>
 
                 <div class="journal-tabs">
-                    <button class="journal-tab active" onclick="showJournalTab('j-dashboard')">📈 <span data-i18n="dashboard">Dashboard</span></button>
-                    <button class="journal-tab" onclick="showJournalTab('j-new-trade')">➕ <span data-i18n="newTrade">New Trade</span></button>
-                    <button class="journal-tab" onclick="showJournalTab('j-trades')">📋 <span data-i18n="history">History</span></button>
-                    <button class="journal-tab" onclick="showJournalTab('j-calendar')">📅 <span data-i18n="calendar">Calendar</span></button>
-                    <button class="journal-tab" onclick="showJournalTab('j-analysis')">🧠 <span data-i18n="analysis">Analysis</span></button>
-                    <button class="journal-tab" onclick="showJournalTab('j-challenge')">🎯 <span data-i18n="challenge">Challenge</span></button>
+                    <button class="journal-tab active" onclick="showJournalTab('j-dashboard')">📈 Dashboard</button>
+                    <button class="journal-tab" onclick="showJournalTab('j-new-trade')">➕ New Trade</button>
+                    <button class="journal-tab" onclick="showJournalTab('j-trades')">📋 History</button>
+                    <button class="journal-tab" onclick="showJournalTab('j-calendar')">📅 Calendar</button>
+                    <button class="journal-tab" onclick="showJournalTab('j-analysis')">🧠 Analysis</button>
+                    <button class="journal-tab" onclick="showJournalTab('j-challenge')">🎯 Challenge</button>
                 </div>
 
                 <div id="j-dashboard" class="journal-panel active">
                     <div class="journal-stats-grid">
-                        <div class="journal-stat-box green"><div class="label" data-i18n="totalPL">Total P&L</div><div class="value" id="dash-pnl">$0.00</div></div>
-                        <div class="journal-stat-box blue"><div class="label" data-i18n="winRate">Win Rate</div><div class="value" id="dash-winrate">0%</div></div>
-                        <div class="journal-stat-box gold"><div class="label" data-i18n="totalTrades">Total Trades</div><div class="value" id="dash-total">0</div></div>
-                        <div class="journal-stat-box" id="dash-pf-box"><div class="label" data-i18n="profitFactor">Profit Factor</div><div class="value" id="dash-pf">0.00</div></div>
-                        <div class="journal-stat-box red"><div class="label" data-i18n="maxDrawdown">Max Drawdown</div><div class="value" id="dash-drawdown">$0</div></div>
-                        <div class="journal-stat-box"><div class="label" data-i18n="avgRR">Avg R:R</div><div class="value" id="dash-rr">0.0</div></div>
+                        <div class="journal-stat-box green"><div class="label">Total P&L</div><div class="value" id="dash-pnl">$0.00</div></div>
+                        <div class="journal-stat-box blue"><div class="label">Win Rate</div><div class="value" id="dash-winrate">0%</div></div>
+                        <div class="journal-stat-box gold"><div class="label">Total Trades</div><div class="value" id="dash-total">0</div></div>
+                        <div class="journal-stat-box" id="dash-pf-box"><div class="label">Profit Factor</div><div class="value" id="dash-pf">0.00</div></div>
+                        <div class="journal-stat-box red"><div class="label">Max Drawdown</div><div class="value" id="dash-drawdown">$0</div></div>
+                        <div class="journal-stat-box"><div class="label">Avg R:R</div><div class="value" id="dash-rr">0.0</div></div>
                     </div>
                     <div class="card">
-                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px;"><span style="font-size:1.3rem;">📊</span> <span data-i18n="performanceByPair">Performance by Pair</span></h2>
+                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px;"><span style="font-size:1.3rem;">📊</span> Performance by Pair</h2>
                         <div id="pair-stats"></div>
                     </div>
                     <div class="card" style="margin-top:20px;">
-                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px;"><span style="font-size:1.3rem;">🧠</span> <span data-i18n="recentNotes">Recent Trading Notes</span></h2>
+                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px;"><span style="font-size:1.3rem;">🧠</span> Recent Trading Notes</h2>
                         <div id="recent-notes"></div>
                     </div>
                 </div>
 
                 <div id="j-new-trade" class="journal-panel">
                     <div class="card">
-                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">➕</span> <span data-i18n="logNewTrade">Log New Trade</span></h2>
+                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">➕</span> Log New Trade</h2>
                         <form id="tradeForm" onsubmit="addTrade(event)">
                             <div class="form-grid">
-                                <div class="form-group"><label data-i18n="date">Date</label><input type="date" id="t-date" required></div>
+                                <div class="form-group"><label>Date</label><input type="date" id="t-date" required></div>
                                 <div class="form-group">
-                                    <label data-i18n="pair">Pair</label>
+                                    <label>Pair</label>
                                     <select id="t-pair" required>
                                         <option value="">Select Pair</option>
                                         <option value="XAUUSD">XAU/USD (Gold)</option>
@@ -1576,14 +1577,14 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label data-i18n="direction">Direction</label>
+                                    <label>Direction</label>
                                     <select id="t-dir" required>
                                         <option value="Buy">Buy (Long)</option>
                                         <option value="Sell">Sell (Short)</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label data-i18n="strategy">Strategy</label>
+                                    <label>Strategy</label>
                                     <select id="t-strategy">
                                         <option value="">Select Strategy</option>
                                         <option value="Breakout">Breakout</option>
@@ -1604,13 +1605,13 @@
                                         <option value="Other">Other</option>
                                     </select>
                                 </div>
-                                <div class="form-group"><label data-i18n="entryPrice">Entry Price</label><input type="number" id="t-entry" step="0.00001" placeholder="e.g. 1.08500 (optional)"></div>
-                                <div class="form-group"><label data-i18n="stopLoss">Stop Loss</label><input type="number" id="t-sl" step="0.00001" placeholder="e.g. 1.08000 (optional)"></div>
-                                <div class="form-group"><label data-i18n="takeProfit">Take Profit</label><input type="number" id="t-tp" step="0.00001" placeholder="e.g. 1.09500"></div>
-                                <div class="form-group"><label data-i18n="exitPrice">Exit Price</label><input type="number" id="t-exit" step="0.00001" placeholder="Leave blank if open"></div>
-                                <div class="form-group"><label data-i18n="lotSize2">Lot Size</label><input type="number" id="t-lot" step="0.01" placeholder="e.g. 0.10 (optional)"></div>
+                                <div class="form-group"><label>Entry Price</label><input type="number" id="t-entry" step="0.00001" placeholder="e.g. 1.08500 (optional)"></div>
+                                <div class="form-group"><label>Stop Loss</label><input type="number" id="t-sl" step="0.00001" placeholder="e.g. 1.08000 (optional)"></div>
+                                <div class="form-group"><label>Take Profit</label><input type="number" id="t-tp" step="0.00001" placeholder="e.g. 1.09500"></div>
+                                <div class="form-group"><label>Exit Price</label><input type="number" id="t-exit" step="0.00001" placeholder="Leave blank if open"></div>
+                                <div class="form-group"><label>Lot Size</label><input type="number" id="t-lot" step="0.01" placeholder="e.g. 0.10 (optional)"></div>
                                 <div class="form-group">
-                                    <label data-i18n="riskPercent">Risk %</label>
+                                    <label>Risk %</label>
                                     <input type="number" id="t-risk" step="0.1" min="0.1" max="100" placeholder="e.g. 1.0" style="text-align:center; font-weight:600;">
                                     <div style="display:flex; gap:4px; margin-top:6px;">
                                         <button type="button" onclick="setTradeRisk(0.5)" style="flex:1; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">0.5%</button>
@@ -1620,7 +1621,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label data-i18n="rrTarget">R:R Target</label>
+                                    <label>R:R Target</label>
                                     <input type="text" id="t-rr-target" placeholder="e.g. 1:2" style="text-align:center; font-weight:600;" readonly>
                                     <div style="display:flex; gap:4px; margin-top:6px;">
                                         <button type="button" onclick="setTradeRR('1:1.5')" style="flex:1; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:1.5</button>
@@ -1629,9 +1630,9 @@
                                         <button type="button" onclick="setTradeRR('1:5')" style="flex:1; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:5</button>
                                     </div>
                                 </div>
-                                <div class="form-group"><label data-i18n="pl">P&L ($)</label><input type="number" id="t-pnl" step="0.01" placeholder="Auto-calculated or manual"></div>
+                                <div class="form-group"><label>P&L ($)</label><input type="number" id="t-pnl" step="0.01" placeholder="Auto-calculated or manual"></div>
                                 <div class="form-group">
-                                    <label data-i18n="timeframe">Timeframe</label>
+                                    <label>Timeframe</label>
                                     <select id="t-tf">
                                         <option value="M1">M1</option>
                                         <option value="M5">M5</option>
@@ -1644,7 +1645,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label data-i18n="session">Session</label>
+                                    <label>Session</label>
                                     <select id="t-session">
                                         <option value="Asian">Asian</option>
                                         <option value="London">London</option>
@@ -1653,35 +1654,39 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label data-i18n="accountType">Account Type</label>
+                                    <label>Account Type</label>
                                     <select id="t-account-type" onchange="toggleFundedFields()">
-                                        <option value="personal" data-i18n="personalAccount">Personal Account</option>
-                                        <option value="funded" data-i18n="fundedAccount">Funded Account</option>
+                                        <option value="personal">Personal Account</option>
+                                        <option value="funded">Funded Account</option>
                                     </select>
                                 </div>
                                 <div class="form-group" id="funded-phase-group" style="display:none;">
-                                    <label data-i18n="challengePhase2">Challenge Phase</label>
+                                    <label>Challenge Phase</label>
                                     <select id="t-phase">
-                                        <option value="1" data-i18n="phase1">Phase 1 — Evaluation</option>
-                                        <option value="2" data-i18n="phase2">Phase 2 — Verification</option>
-                                        <option value="3" data-i18n="phase3">Phase 3 — Funded</option>
+                                        <option value="1">Phase 1 — Evaluation</option>
+                                        <option value="2">Phase 2 — Verification</option>
+                                        <option value="3">Phase 3 — Funded</option>
                                     </select>
                                 </div>
                                 <div class="form-group" id="funded-target-group" style="display:none;">
-                                    <label data-i18n="challengeTarget">Challenge Target (%)</label>
-                                    <input type="number" id="t-target" min="0.1" max="100" step="0.1" placeholder="e.g. 10" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;">
-                                    <p class="hint">Enter any profit target percentage manually</p>
+                                    <label>Challenge Target</label>
+                                    <select id="t-target">
+                                        <option value="8">8% Profit Target</option>
+                                        <option value="10">10% Profit Target</option>
+                                        <option value="5">5% Profit Target</option>
+                                        <option value="custom">Custom</option>
+                                    </select>
                                 </div>
                                 <div class="form-group" id="funded-status-group" style="display:none;">
-                                    <label data-i18n="challengeStatus">Challenge Status</label>
+                                    <label>Challenge Status</label>
                                     <select id="t-challenge-status">
-                                        <option value="active" data-i18n="active">🟡 Active — In Progress</option>
-                                        <option value="passed" data-i18n="passed">✅ Passed Challenge</option>
-                                        <option value="failed" data-i18n="failed">❌ Failed / Blown</option>
+                                        <option value="active">🟡 Active — In Progress</option>
+                                        <option value="passed">✅ Passed Challenge</option>
+                                        <option value="failed">❌ Failed / Blown</option>
                                     </select>
                                 </div>
                                 <div class="form-group full">
-                                    <label data-i18n="preTradeChecklist">Pre-Trade Checklist</label>
+                                    <label>Pre-Trade Checklist</label>
                                     <div class="checklist">
                                         <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" onchange="event.stopPropagation()"><span>✅ Higher timeframe alignment</span></div>
                                         <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" onchange="event.stopPropagation()"><span>✅ Key level identified (S/R, Supply/Demand)</span></div>
@@ -1692,7 +1697,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group full">
-                                    <label data-i18n="preTradeMood">Pre-Trade Mood</label>
+                                    <label>Pre-Trade Mood</label>
                                     <div class="mood-rating">
                                         <div class="mood-option" onclick="selectMood(this)">😤 Revenge</div>
                                         <div class="mood-option" onclick="selectMood(this)">😰 Nervous</div>
@@ -1702,12 +1707,12 @@
                                     </div>
                                     <input type="hidden" id="t-mood" value="">
                                 </div>
-                                <div class="form-group full"><label data-i18n="tradeSetup">Trade Setup / Reasoning</label><textarea id="t-setup" placeholder="Describe your trade setup, confluences, and why you took this trade..."></textarea></div>
-                                <div class="form-group full"><label data-i18n="postTradeReview">Post-Trade Review / Lessons</label><textarea id="t-review" placeholder="What went well? What could be improved? What did you learn?"></textarea></div>
+                                <div class="form-group full"><label>Trade Setup / Reasoning</label><textarea id="t-setup" placeholder="Describe your trade setup, confluences, and why you took this trade..."></textarea></div>
+                                <div class="form-group full"><label>Post-Trade Review / Lessons</label><textarea id="t-review" placeholder="What went well? What could be improved? What did you learn?"></textarea></div>
                             </div>
                             <div style="margin-top: 20px; display: flex; gap: 12px;">
-                                <button type="submit" class="btn btn-primary" data-i18n="saveTrade">💾 Save Trade</button>
-                                <button type="button" class="btn btn-outline" onclick="document.getElementById('tradeForm').reset(); document.querySelectorAll('.mood-option').forEach(m=>m.classList.remove('selected')); document.querySelectorAll('.check-item').forEach(c=>{c.classList.remove('checked');c.querySelector('input').checked=false;}); toggleFundedFields();" data-i18n="clearForm">🔄 Clear Form</button>
+                                <button type="submit" class="btn btn-primary">💾 Save Trade</button>
+                                <button type="button" class="btn btn-outline" onclick="document.getElementById('tradeForm').reset(); document.querySelectorAll('.mood-option').forEach(m=>m.classList.remove('selected')); document.querySelectorAll('.check-item').forEach(c=>{c.classList.remove('checked');c.querySelector('input').checked=false;}); toggleFundedFields();">🔄 Clear Form</button>
                             </div>
                         </form>
                     </div>
@@ -1716,7 +1721,7 @@
                 <div id="j-trades" class="journal-panel">
                     <div class="card">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
-                            <h2 style="margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📋</span> <span data-i18n="tradeHistory">Trade History</span></h2>
+                            <h2 style="margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📋</span> Trade History</h2>
                             <div style="display:flex; gap:8px; flex-wrap:wrap;">
                                 <select id="filter-pair" onchange="renderTrades()" style="width:auto; min-width:120px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:10px 14px; color:var(--text); font-size:0.9rem;"><option value="">All Pairs</option></select>
                                 <select id="filter-result" onchange="renderTrades()" style="width:auto; min-width:120px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:10px 14px; color:var(--text); font-size:0.9rem;">
@@ -1735,32 +1740,32 @@
                 <div id="j-calendar" class="journal-panel">
                     <div class="card">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
-                            <h2 style="margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📅</span> <span data-i18n="plCalendar">P&L Calendar</span></h2>
+                            <h2 style="margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📅</span> P&L Calendar</h2>
                             <div style="display:flex; gap:4px; background:var(--bg-input); border-radius:10px; padding:4px; border:1px solid var(--border);">
-                                <button id="cal-week-btn" onclick="setCalendarView('week')" style="padding:10px 18px; border-radius:8px; border:none; background:var(--red); color:white; font-weight:700; font-size:0.85rem; cursor:pointer; transition:all 0.2s;" data-i18n="weekly">Weekly</button>
-                                <button id="cal-day-btn" onclick="setCalendarView('day')" style="padding:10px 18px; border-radius:8px; border:none; background:transparent; color:var(--text-muted); font-weight:600; font-size:0.85rem; cursor:pointer; transition:all 0.2s;" data-i18n="daily">Daily</button>
+                                <button id="cal-week-btn" onclick="setCalendarView('week')" style="padding:10px 18px; border-radius:8px; border:none; background:var(--red); color:white; font-weight:700; font-size:0.85rem; cursor:pointer; transition:all 0.2s;">Weekly</button>
+                                <button id="cal-day-btn" onclick="setCalendarView('day')" style="padding:10px 18px; border-radius:8px; border:none; background:transparent; color:var(--text-muted); font-weight:600; font-size:0.85rem; cursor:pointer; transition:all 0.2s;">Daily</button>
                             </div>
                         </div>
                         <div id="week-cal" class="week-calendar"></div>
                         <div id="day-cal" style="display:none;"></div>
                     </div>
                     <div class="card" style="margin-top:20px;">
-                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📈</span> <span data-i18n="monthlyPerformance">Monthly Performance</span></h2>
+                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📈</span> Monthly Performance</h2>
                         <div id="monthly-chart" style="text-align:center; padding:40px; color:var(--text-muted);">Monthly chart visualization would appear here with a charting library.</div>
                     </div>
                 </div>
 
                 <div id="j-analysis" class="journal-panel">
                     <div class="card">
-                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">🧠</span> <span data-i18n="tradingPsychology">Trading Psychology Analysis</span></h2>
+                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">🧠</span> Trading Psychology Analysis</h2>
                         <div id="psych-analysis"></div>
                     </div>
                     <div class="card" style="margin-top:20px;">
-                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📊</span> <span data-i18n="strategyPerformance">Strategy Performance</span></h2>
+                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📊</span> Strategy Performance</h2>
                         <div id="strategy-stats"></div>
                     </div>
                     <div class="card" style="margin-top:20px;">
-                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📝</span> <span data-i18n="keyInsights">Key Insights & Patterns</span></h2>
+                        <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📝</span> Key Insights & Patterns</h2>
                         <div id="insights"></div>
                     </div>
                 </div>
@@ -1769,26 +1774,26 @@
                 <div id="j-challenge" class="journal-panel">
                     <div class="card" style="margin-bottom:24px;">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
-                            <h2 style="margin:0; font-size:1.3rem; display:flex; align-items:center; gap:10px; font-family:Orbitron;"><span style="font-size:1.5rem;">🎯</span> <span data-i18n="fundedChallengeTracker">Funded Challenge Tracker</span></h2>
-                            <button onclick="showChallengeSetup()" class="btn btn-outline" style="font-size:0.85rem;" data-i18n="editChallenge">⚙️ Edit Challenge</button>
+                            <h2 style="margin:0; font-size:1.3rem; display:flex; align-items:center; gap:10px; font-family:Orbitron;"><span style="font-size:1.5rem;">🎯</span> Funded Challenge Tracker</h2>
+                            <button onclick="showChallengeSetup()" class="btn btn-outline" style="font-size:0.85rem;">⚙️ Edit Challenge</button>
                         </div>
 
                         <!-- Challenge Overview Cards -->
                         <div id="challenge-overview" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:24px;">
                             <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:center;">
-                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;" data-i18n="challengePhase">Challenge Phase</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;">Challenge Phase</div>
                                 <div id="ch-phase-display" style="font-size:1.8rem; font-weight:800; font-family:Orbitron; color:var(--gold);">—</div>
                             </div>
                             <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:center;">
-                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;" data-i18n="profitTarget">Profit Target</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;">Profit Target</div>
                                 <div id="ch-target-display" style="font-size:1.8rem; font-weight:800; font-family:Orbitron; color:var(--gold);">—</div>
                             </div>
                             <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:center;">
-                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;" data-i18n="currentPL">Current P&L</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;">Current P&L</div>
                                 <div id="ch-pnl-display" style="font-size:1.8rem; font-weight:800; font-family:Orbitron; color:var(--text);">$0.00</div>
                             </div>
                             <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:center;">
-                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;" data-i18n="progress">Progress</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:8px;">Progress</div>
                                 <div id="ch-progress-display" style="font-size:1.8rem; font-weight:800; font-family:Orbitron; color:var(--text);">0%</div>
                             </div>
                         </div>
@@ -1796,7 +1801,7 @@
                         <!-- Progress Bar -->
                         <div style="margin-bottom:32px;">
                             <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                                <span style="color:var(--text-muted); font-size:0.85rem; font-weight:600;" data-i18n="challengeProgress">Challenge Progress</span>
+                                <span style="color:var(--text-muted); font-size:0.85rem; font-weight:600;">Challenge Progress</span>
                                 <span id="ch-progress-text" style="color:var(--gold); font-weight:700; font-size:0.9rem;">0% / 10%</span>
                             </div>
                             <div style="height:24px; background:var(--bg-input); border-radius:12px; overflow:hidden; border:1px solid var(--border);">
@@ -1812,36 +1817,36 @@
                         </div>
 
                         <!-- Phase Steps -->
-                        <h3 style="font-size:1rem; margin-bottom:16px; color:var(--text); font-family:Orbitron;" data-i18n="challengeSteps">📍 Challenge Steps</h3>
+                        <h3 style="font-size:1rem; margin-bottom:16px; color:var(--text); font-family:Orbitron;">📍 Challenge Steps</h3>
                         <div id="challenge-steps" style="display:flex; flex-direction:column; gap:16px; margin-bottom:32px;">
                             <!-- Steps rendered by JS -->
                         </div>
 
                         <!-- Challenge Stats -->
-                        <h3 style="font-size:1rem; margin-bottom:16px; color:var(--text); font-family:Orbitron;" data-i18n="challengeStats">📊 Challenge Stats</h3>
+                        <h3 style="font-size:1rem; margin-bottom:16px; color:var(--text); font-family:Orbitron;">📊 Challenge Stats</h3>
                         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px;">
                             <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
-                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;" data-i18n="tradesInChallenge">Trades in Challenge</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Trades in Challenge</div>
                                 <div id="ch-trade-count" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--text);">0</div>
                             </div>
                             <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
-                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;" data-i18n="winRate2">Win Rate</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Win Rate</div>
                                 <div id="ch-winrate" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--text);">0%</div>
                             </div>
                             <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
-                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;" data-i18n="avgRR">Avg R:R</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Avg R:R</div>
                                 <div id="ch-avg-rr" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--text);">0.0</div>
                             </div>
                             <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
-                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;" data-i18n="bestTrade">Best Trade</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Best Trade</div>
                                 <div id="ch-best-trade" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--green);">$0</div>
                             </div>
                             <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
-                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;" data-i18n="worstTrade">Worst Trade</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Worst Trade</div>
                                 <div id="ch-worst-trade" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--red);">$0</div>
                             </div>
                             <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
-                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;" data-i18n="daysActive">Days Active</div>
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Days Active</div>
                                 <div id="ch-days" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--text);">0</div>
                             </div>
                         </div>
@@ -1855,42 +1860,41 @@
                     <!-- Challenge Setup Modal -->
                     <div id="challenge-setup-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,5,0.9); z-index:1001; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
                         <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:40px; max-width:420px; width:90%; box-shadow:0 25px 80px rgba(0,0,0,0.6);">
-                            <h2 style="font-size:1.3rem; margin-bottom:8px; color:var(--text); font-family:Orbitron;" data-i18n="configureChallenge">🎯 Configure Challenge</h2>
+                            <h2 style="font-size:1.3rem; margin-bottom:8px; color:var(--text); font-family:Orbitron;">🎯 Configure Challenge</h2>
                             <p style="color:var(--text-muted); margin-bottom:24px; font-size:0.9rem;">Set up your funded challenge parameters.</p>
 
                             <div style="margin-bottom:16px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;" data-i18n="startingBalance">Starting Balance</label>
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Starting Balance</label>
                                 <input type="number" id="ch-setup-balance" value="5000" min="100" step="100" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;">
                             </div>
 
                             <div style="margin-bottom:16px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;" data-i18n="challengePhase2">Challenge Phase</label>
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Challenge Phase</label>
                                 <select id="ch-setup-phase" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
-                                    <option value="1" data-i18n="phase1">Phase 1 — Evaluation (8-10% target)</option>
-                                    <option value="2" data-i18n="phase2">Phase 2 — Verification (5% target)</option>
-                                    <option value="3" data-i18n="phase3">Phase 3 — Funded Live (No target)</option>
+                                    <option value="1">Phase 1 — Evaluation (8-10% target)</option>
+                                    <option value="2">Phase 2 — Verification (5% target)</option>
+                                    <option value="3">Phase 3 — Funded Live (No target)</option>
                                 </select>
                             </div>
 
                             <div style="margin-bottom:16px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;" data-i18n="challengeTarget">Profit Target (%)</label>
-                                <input type="number" id="ch-setup-target" value="10" min="0.1" max="100" step="0.1" placeholder="e.g. 10" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;">
-                                <p style="color:var(--text-dim); font-size:0.7rem; margin-top:6px;">Enter any value manually (e.g. 8, 10, 12.5, 15...)</p>
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Profit Target (%)</label>
+                                <input type="number" id="ch-setup-target" value="10" min="1" max="50" step="0.5" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;">
                             </div>
 
                             <div style="margin-bottom:16px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;" data-i18n="maxDrawdown2">Max Drawdown (%)</label>
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Max Drawdown (%)</label>
                                 <input type="number" id="ch-setup-drawdown" value="10" min="1" max="50" step="0.5" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;">
                             </div>
 
                             <div style="margin-bottom:24px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;" data-i18n="dailyLossLimit">Daily Loss Limit (%)</label>
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Daily Loss Limit (%)</label>
                                 <input type="number" id="ch-setup-daily" value="5" min="1" max="20" step="0.5" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;">
                             </div>
 
                             <div style="display:flex; gap:10px;">
-                                <button onclick="saveChallengeSetup()" style="flex:1; padding:14px; background:linear-gradient(135deg, var(--red), #991b1b); border:none; border-radius:12px; color:white; font-size:1rem; font-weight:700; cursor:pointer; font-family:Orbitron;" data-i18n="save">Save</button>
-                                <button onclick="closeChallengeSetup()" style="flex:1; padding:14px; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; color:var(--text-muted); font-size:1rem; font-weight:600; cursor:pointer;" data-i18n="cancel">Cancel</button>
+                                <button onclick="saveChallengeSetup()" style="flex:1; padding:14px; background:linear-gradient(135deg, var(--red), #991b1b); border:none; border-radius:12px; color:white; font-size:1rem; font-weight:700; cursor:pointer; font-family:Orbitron;">Save</button>
+                                <button onclick="closeChallengeSetup()" style="flex:1; padding:14px; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; color:var(--text-muted); font-size:1rem; font-weight:600; cursor:pointer;">Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -1903,8 +1907,8 @@
     <!-- ===== NEWS PAGE ===== -->
     <div id="page-news" class="page" style="display:none;">
         <div class="app-container" style="padding-top:90px;">
-            <h1 style="font-family:Orbitron; font-size:2rem; margin-bottom:8px; text-align:center;" data-i18n="newsTitle">📰 Forex News & Economic Calendar</h1>
-            <p style="color:var(--text-muted); text-align:center; margin-bottom:32px;" data-i18n="newsSubtitle">High-impact events with market direction expectations — Updated June 2026</p>
+            <h1 style="font-family:Orbitron; font-size:2rem; margin-bottom:8px; text-align:center;">📰 Forex News & Economic Calendar</h1>
+            <p style="color:var(--text-muted); text-align:center; margin-bottom:32px;">High-impact events with market direction expectations — Updated June 2026</p>
 
             <!-- Probability Calculator -->
             
@@ -1948,7 +1952,7 @@
 
             <!-- Live Market Sentiment -->
             <div class="card" style="margin-bottom:24px; padding:24px;">
-                <h3 style="font-family:Orbitron; font-size:1rem; color:var(--red); margin-bottom:16px; display:flex; align-items:center; gap:10px;" data-i18n="currentMarketSentiment">📊 Current Market Sentiment (June 2026)</h3>
+                <h3 style="font-family:Orbitron; font-size:1rem; color:var(--red); margin-bottom:16px; display:flex; align-items:center; gap:10px;">📊 Current Market Sentiment (June 2026)</h3>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
                     <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
                         <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">🇺🇸 USD</div>
@@ -2290,7 +2294,7 @@
 
             <!-- Pair Impact Reference Table -->
             <div class="card" style="margin-top:24px;">
-                <h3 style="font-family:Orbitron; font-size:1.1rem; color:var(--red); margin-bottom:20px; display:flex; align-items:center; gap:10px;" data-i18n="pairImpactReference">📊 Which News Affects Which Pairs</h3>
+                <h3 style="font-family:Orbitron; font-size:1.1rem; color:var(--red); margin-bottom:20px; display:flex; align-items:center; gap:10px;">📊 Which News Affects Which Pairs</h3>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:16px;">
                     <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px;">
                         <div style="font-size:0.85rem; font-weight:700; color:var(--red); margin-bottom:8px; font-family:Orbitron;">🇺🇸 USD Pairs</div>
@@ -2337,7 +2341,7 @@
 
             <!-- Trading Tips During News -->
             <div class="card" style="margin-top:24px;">
-                <h3 style="font-family:Orbitron; font-size:1.1rem; color:var(--red); margin-bottom:20px; display:flex; align-items:center; gap:10px;" data-i18n="newsTradingRules">⚠️ News Trading Rules</h3>
+                <h3 style="font-family:Orbitron; font-size:1.1rem; color:var(--red); margin-bottom:20px; display:flex; align-items:center; gap:10px;">⚠️ News Trading Rules</h3>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
                     <div style="display:flex; align-items:flex-start; gap:12px; padding:16px; background:var(--red-dim); border:1px solid rgba(220,38,38,0.3); border-radius:12px;">
                         <div style="font-size:1.5rem;">🚫</div>
@@ -2372,7 +2376,7 @@
 
             <!-- Current Headlines -->
             <div class="card" style="margin-top:24px;">
-                <h3 style="font-family:Orbitron; font-size:1.1rem; color:var(--red); margin-bottom:20px; display:flex; align-items:center; gap:10px;" data-i18n="latestHeadlines">📰 Latest Headlines</h3>
+                <h3 style="font-family:Orbitron; font-size:1.1rem; color:var(--red); margin-bottom:20px; display:flex; align-items:center; gap:10px;">📰 Latest Headlines</h3>
                 <div style="display:flex; flex-direction:column; gap:12px;">
                     <div style="padding:14px; background:var(--bg-input); border-radius:10px; border-left:3px solid var(--red);">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
@@ -2417,12 +2421,12 @@
         <div class="footer-content">
             <div class="footer-left">
                 <div class="footer-logo">4U<span>S</span>TRADERS</div>
-                <div class="footer-tagline" data-i18n="footerTagline">Chilling and Having Fun</div>
+                <div class="footer-tagline">Chilling and Having Fun</div>
             </div>
             <div class="footer-links">
-                <a href="#" data-i18n="privacyPolicy">Privacy Policy</a>
-                <a href="#" data-i18n="termsOfService">Terms of Service</a>
-                <a href="#" data-i18n="riskDisclaimer">Risk Disclaimer</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Risk Disclaimer</a>
             </div>
             <div class="footer-social">
                 <a href="#" title="Discord">💬</a>
@@ -2440,8 +2444,8 @@
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
             let pageEl = document.getElementById('page-' + pageId);
             if (pageEl) pageEl.style.display = 'block';
-            document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
-            let navLinks = document.querySelectorAll('.nav-link');
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            let navLinks = document.querySelectorAll('.nav-links a');
             navLinks.forEach(a => {
                 if (a.getAttribute('onclick') && a.getAttribute('onclick').includes("showPage('" + pageId + "')")) {
                     a.classList.add('active');
@@ -3666,7 +3670,6 @@
             if (id === 'j-challenge') renderChallenge();
         };
 
-
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', function() {
             renderMarkets();
@@ -3679,363 +3682,6 @@
             restorePage();
             checkAccountSetup();
         });
-    
-
-        // ==================== TRANSLATION SYSTEM ====================
-        const translations = {
-            en: {
-                home: 'Home',
-                calculator: 'Calculator & Journal',
-                news: 'News',
-                community: 'Community',
-                joinDiscord: 'Join Discord',
-                welcome: 'Welcome to',
-                heroTitle: '4US TRADING COMMUNITY',
-                heroDesc: 'A community built for traders, by traders. Learn, trade and grow together while chilling and having fun.',
-                openTools: 'Open Tools →',
-                startJournaling: 'Start Journaling ↗',
-                activeTraders: 'Active Traders',
-                tradingSetups: 'Trading Setups',
-                winRate: 'Win Rate',
-                support: 'Support',
-                pipsTraded: 'Pips Traded',
-                liveMarket: 'Live Market Overview',
-                addPair: '+ Add Pair',
-                tradingEducation: 'Trading Education',
-                dailyAnalysis: 'Daily Analysis',
-                activeCommunity: 'Active Community',
-                provenResults: 'Proven Results',
-                trustedBy: 'Trusted by Traders Worldwide',
-                positionCalculator: 'Position Calculator',
-                journal: 'Journal',
-                tradeParameters: 'Trade Parameters',
-                accountBalance: 'Account Balance',
-                accountCurrency: 'Account Currency',
-                riskPerTrade: 'Risk Per Trade',
-                stopLoss: 'Stop Loss (pips)',
-                takeProfit: 'Take Profit (pips)',
-                entryPrice: 'Entry Price',
-                leverage: 'Leverage',
-                positionSize: 'Position Size',
-                lotSize: 'Lot Size',
-                standardLots: 'Standard Lots',
-                miniLots: 'Mini Lots (0.10)',
-                microLots: 'Micro Lots (0.01)',
-                tradeDetails: 'Trade Details',
-                pipValue: 'Pip Value',
-                valuePerPip: 'Value per Pip',
-                riskReward: 'Risk : Reward',
-                maxLoss: 'Max Loss',
-                potentialProfit: 'Potential Profit',
-                marginRequired: 'Approx. Margin',
-                balanceIfSL: 'Balance if SL',
-                slDistance: 'SL Distance',
-                dashboard: 'Dashboard',
-                newTrade: 'New Trade',
-                history: 'History',
-                calendar: 'Calendar',
-                analysis: 'Analysis',
-                challenge: 'Challenge',
-                totalPL: 'Total P&L',
-                totalTrades: 'Total Trades',
-                profitFactor: 'Profit Factor',
-                maxDrawdown: 'Max Drawdown',
-                avgRR: 'Avg R:R',
-                performanceByPair: 'Performance by Pair',
-                recentNotes: 'Recent Trading Notes',
-                logNewTrade: 'Log New Trade',
-                date: 'Date',
-                pair: 'Pair',
-                direction: 'Direction',
-                strategy: 'Strategy',
-                exitPrice: 'Exit Price',
-                lotSize2: 'Lot Size',
-                riskPercent: 'Risk %',
-                rrTarget: 'R:R Target',
-                pl: 'P&L ($)',
-                timeframe: 'Timeframe',
-                session: 'Session',
-                preTradeChecklist: 'Pre-Trade Checklist',
-                preTradeMood: 'Pre-Trade Mood',
-                tradeSetup: 'Trade Setup / Reasoning',
-                postTradeReview: 'Post-Trade Review / Lessons',
-                saveTrade: 'Save Trade',
-                clearForm: 'Clear Form',
-                tradeHistory: 'Trade History',
-                allPairs: 'All Pairs',
-                allResults: 'All Results',
-                wins: 'Wins',
-                losses: 'Losses',
-                exportCSV: 'Export CSV',
-                clearAll: 'Clear All',
-                plCalendar: 'P&L Calendar',
-                weekly: 'Weekly',
-                daily: 'Daily',
-                monthlyPerformance: 'Monthly Performance',
-                tradingPsychology: 'Trading Psychology Analysis',
-                strategyPerformance: 'Strategy Performance',
-                keyInsights: 'Key Insights & Patterns',
-                setYourAccount: 'Set Your Account',
-                startingBalance: 'Account Balance',
-                startJournaling2: 'Start Journaling',
-                profitabilityTitle: 'Profitability & Win Rate Calculator',
-                profitabilityDesc: 'Find the win rate you need to be consistently profitable based on your risk:reward ratio.',
-                personalizedCalculator: 'Personalized Calculator',
-                breakevenWinRate: 'Breakeven Win Rate',
-                expectedValue: 'Expected Value / Trade',
-                totalExpectedPL: 'Total Expected P&L',
-                profitFactor2: 'Profit Factor',
-                fundedChallengeTracker: 'Funded Challenge Tracker',
-                editChallenge: 'Edit Challenge',
-                challengePhase: 'Challenge Phase',
-                profitTarget: 'Profit Target',
-                currentPL: 'Current P&L',
-                progress: 'Progress',
-                challengeProgress: 'Challenge Progress',
-                challengeSteps: 'Challenge Steps',
-                challengeStats: 'Challenge Stats',
-                tradesInChallenge: 'Trades in Challenge',
-                winRate2: 'Win Rate',
-                bestTrade: 'Best Trade',
-                worstTrade: 'Worst Trade',
-                daysActive: 'Days Active',
-                configureChallenge: 'Configure Challenge',
-                maxDrawdown2: 'Max Drawdown (%)',
-                dailyLossLimit: 'Daily Loss Limit (%)',
-                save: 'Save',
-                cancel: 'Cancel',
-                accountType: 'Account Type',
-                personalAccount: 'Personal Account',
-                fundedAccount: 'Funded Account',
-                challengePhase2: 'Challenge Phase',
-                phase1: 'Phase 1 — Evaluation',
-                phase2: 'Phase 2 — Verification',
-                phase3: 'Phase 3 — Funded Live',
-                challengeTarget: 'Challenge Target (%)',
-                challengeStatus: 'Challenge Status',
-                active: 'Active — In Progress',
-                passed: 'Passed Challenge',
-                failed: 'Failed / Blown',
-                newsTitle: 'Forex News & Economic Calendar',
-                newsSubtitle: 'High-impact events with market direction expectations',
-                currentMarketSentiment: 'Current Market Sentiment',
-                newsImpactLegend: 'News Impact Legend',
-                highImpact: 'High Impact — 100+ pip moves',
-                mediumImpact: 'Medium Impact — 50-100 pip moves',
-                lowImpact: 'Low Impact — <50 pip moves',
-                expectationLegend: 'Expectation Legend',
-                bullish60: 'BULLISH 60%+',
-                bullish50: 'BULLISH 50-59%',
-                neutral: 'NEUTRAL',
-                bearish50: 'BEARISH 50-59%',
-                bearish60: 'BEARISH 60%+',
-                pairImpactReference: 'Which News Affects Which Pairs',
-                newsTradingRules: 'News Trading Rules',
-                latestHeadlines: 'Latest Headlines',
-                privacyPolicy: 'Privacy Policy',
-                termsOfService: 'Terms of Service',
-                riskDisclaimer: 'Risk Disclaimer',
-                dontTrade30min: 'Don't Trade 30min Before/After',
-                reducePosition: 'Reduce Position Size by 50%',
-                tradeTechnical: 'Trade the Technical Setup After',
-                widerStops: 'Use Wider Stops During News',
-                footerTagline: 'Chilling and Having Fun',
-            },
-            fr: {
-                home: 'Accueil',
-                calculator: 'Calculateur & Journal',
-                news: 'Actualités',
-                community: 'Communauté',
-                joinDiscord: 'Rejoindre Discord',
-                welcome: 'Bienvenue sur',
-                heroTitle: '4US COMMUNAUTÉ DE TRADING',
-                heroDesc: 'Une communauté construite pour les traders, par les traders. Apprenez, tradez et progressez ensemble tout en vous amusant.',
-                openTools: 'Ouvrir les Outils →',
-                startJournaling: 'Commencer le Journal ↗',
-                activeTraders: 'Traders Actifs',
-                tradingSetups: 'Setups de Trading',
-                winRate: 'Taux de Réussite',
-                support: 'Support',
-                pipsTraded: 'Pips Tradés',
-                liveMarket: 'Aperçu du Marché en Direct',
-                addPair: '+ Ajouter une Paire',
-                tradingEducation: 'Éducation au Trading',
-                dailyAnalysis: 'Analyse Quotidienne',
-                activeCommunity: 'Communauté Active',
-                provenResults: 'Résultats Prouvés',
-                trustedBy: 'Reconnu par les Traders du Monde Entier',
-                positionCalculator: 'Calculateur de Position',
-                journal: 'Journal',
-                tradeParameters: 'Paramètres du Trade',
-                accountBalance: 'Solde du Compte',
-                accountCurrency: 'Devise du Compte',
-                riskPerTrade: 'Risque par Trade',
-                stopLoss: 'Stop Loss (pips)',
-                takeProfit: 'Take Profit (pips)',
-                entryPrice: 'Prix d'Entrée',
-                leverage: 'Effet de Levier',
-                positionSize: 'Taille de Position',
-                lotSize: 'Taille du Lot',
-                standardLots: 'Lots Standards',
-                miniLots: 'Mini Lots (0.10)',
-                microLots: 'Micro Lots (0.01)',
-                tradeDetails: 'Détails du Trade',
-                pipValue: 'Valeur du Pip',
-                valuePerPip: 'Valeur par Pip',
-                riskReward: 'Risque : Récompense',
-                maxLoss: 'Perte Max',
-                potentialProfit: 'Profit Potentiel',
-                marginRequired: 'Marge Requise',
-                balanceIfSL: 'Solde si SL',
-                slDistance: 'Distance SL',
-                dashboard: 'Tableau de Bord',
-                newTrade: 'Nouveau Trade',
-                history: 'Historique',
-                calendar: 'Calendrier',
-                analysis: 'Analyse',
-                challenge: 'Challenge',
-                totalPL: 'P&L Total',
-                totalTrades: 'Trades Total',
-                profitFactor: 'Facteur de Profit',
-                maxDrawdown: 'Drawdown Max',
-                avgRR: 'R:R Moyen',
-                performanceByPair: 'Performance par Paire',
-                recentNotes: 'Notes de Trading Récentes',
-                logNewTrade: 'Enregistrer un Nouveau Trade',
-                date: 'Date',
-                pair: 'Paire',
-                direction: 'Direction',
-                strategy: 'Stratégie',
-                exitPrice: 'Prix de Sortie',
-                lotSize2: 'Taille du Lot',
-                riskPercent: 'Risque %',
-                rrTarget: 'Objectif R:R',
-                pl: 'P&L ($)',
-                timeframe: 'Unité de Temps',
-                session: 'Session',
-                preTradeChecklist: 'Checklist Pré-Trade',
-                preTradeMood: 'Humeur Pré-Trade',
-                tradeSetup: 'Setup / Raisonnement',
-                postTradeReview: 'Revue Post-Trade / Leçons',
-                saveTrade: 'Sauvegarder le Trade',
-                clearForm: 'Vider le Formulaire',
-                tradeHistory: 'Historique des Trades',
-                allPairs: 'Toutes les Paires',
-                allResults: 'Tous les Résultats',
-                wins: 'Gains',
-                losses: 'Pertes',
-                exportCSV: 'Exporter CSV',
-                clearAll: 'Tout Effacer',
-                plCalendar: 'Calendrier P&L',
-                weekly: 'Hebdomadaire',
-                daily: 'Quotidien',
-                monthlyPerformance: 'Performance Mensuelle',
-                tradingPsychology: 'Analyse Psychologique',
-                strategyPerformance: 'Performance par Stratégie',
-                keyInsights: 'Insights & Patterns Clés',
-                setYourAccount: 'Configurer votre Compte',
-                startingBalance: 'Solde du Compte',
-                startJournaling2: 'Commencer le Journal',
-                profitabilityTitle: 'Calculateur de Rentabilité & Taux de Réussite',
-                profitabilityDesc: 'Trouvez le taux de réussite nécessaire pour être rentable en fonction de votre ratio risque/récompense.',
-                personalizedCalculator: 'Calculateur Personnalisé',
-                breakevenWinRate: 'Taux de Réussite Seuil',
-                expectedValue: 'Valeur Attendue / Trade',
-                totalExpectedPL: 'P&L Attendu Total',
-                profitFactor2: 'Facteur de Profit',
-                fundedChallengeTracker: 'Suivi du Challenge Financé',
-                editChallenge: 'Modifier le Challenge',
-                challengePhase: 'Phase du Challenge',
-                profitTarget: 'Objectif de Profit',
-                currentPL: 'P&L Actuel',
-                progress: 'Progression',
-                challengeProgress: 'Progression du Challenge',
-                challengeSteps: 'Étapes du Challenge',
-                challengeStats: 'Statistiques du Challenge',
-                tradesInChallenge: 'Trades dans le Challenge',
-                winRate2: 'Taux de Réussite',
-                bestTrade: 'Meilleur Trade',
-                worstTrade: 'Pire Trade',
-                daysActive: 'Jours Actifs',
-                configureChallenge: 'Configurer le Challenge',
-                maxDrawdown2: 'Drawdown Max (%)',
-                dailyLossLimit: 'Limite de Perte Journalière (%)',
-                save: 'Sauvegarder',
-                cancel: 'Annuler',
-                accountType: 'Type de Compte',
-                personalAccount: 'Compte Personnel',
-                fundedAccount: 'Compte Financé',
-                challengePhase2: 'Phase du Challenge',
-                phase1: 'Phase 1 — Évaluation',
-                phase2: 'Phase 2 — Vérification',
-                phase3: 'Phase 3 — Financé Live',
-                challengeTarget: 'Objectif du Challenge (%)',
-                challengeStatus: 'Statut du Challenge',
-                active: '🟡 Actif — En Cours',
-                passed: '✅ Challenge Réussi',
-                failed: '❌ Échoué / Grille',
-                newsTitle: 'Actualités Forex & Calendrier Économique',
-                newsSubtitle: 'Événements à fort impact avec attentes de direction du marché',
-                currentMarketSentiment: 'Sentiment du Marché Actuel',
-                newsImpactLegend: 'Légende d'Impact des News',
-                highImpact: 'Fort Impact — 100+ pips',
-                mediumImpact: 'Impact Moyen — 50-100 pips',
-                lowImpact: 'Faible Impact — <50 pips',
-                expectationLegend: 'Légende des Attentes',
-                bullish60: 'HAUSSIER 60%+',
-                bullish50: 'HAUSSIER 50-59%',
-                neutral: 'NEUTRE',
-                bearish50: 'BAISSIER 50-59%',
-                bearish60: 'BAISSIER 60%+',
-                pairImpactReference: 'Quelles News Affectent Quelles Paires',
-                newsTradingRules: 'Règles de Trading sur News',
-                latestHeadlines: 'Dernières Actualités',
-                privacyPolicy: 'Politique de Confidentialité',
-                termsOfService: 'Conditions d'Utilisation',
-                riskDisclaimer: 'Avertissement sur les Risques',
-                dontTrade30min: 'Ne Pas Trader 30min Avant/Après',
-                reducePosition: 'Réduire la Taille de Position de 50%',
-                tradeTechnical: 'Trader le Setup Technique Après',
-                widerStops: 'Utiliser des Stops Plus Largess Pendant les News',
-                footerTagline: 'Se Détendre et S'amuser',
-            }
-        };
-
-        let currentLang = localStorage.getItem('4us_language') || 'en';
-
-        function setLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('4us_language', lang);
-            document.getElementById('lang-switcher').value = lang;
-            applyTranslations();
-        }
-
-        function t(key) {
-            return translations[currentLang]?.[key] || translations['en']?.[key] || key;
-        }
-
-        function applyTranslations() {
-            // Nav
-            const navLinks = document.querySelectorAll('.nav-links a');
-            if (navLinks[0]) navLinks[0].textContent = t('home');
-            if (navLinks[1]) navLinks[1].textContent = t('calculator');
-            if (navLinks[2]) navLinks[2].textContent = t('news');
-            if (navLinks[3]) navLinks[3].textContent = t('community');
-
-            // Update all elements with data-i18n attribute
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[currentLang][key]) {
-                    el.textContent = translations[currentLang][key];
-                }
-            });
-        }
-
-        // Apply on load
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('lang-switcher').value = currentLang;
-            applyTranslations();
-        });
-</script>
+    </script>
 </body>
 </html>
