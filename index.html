@@ -1098,9 +1098,9 @@
             4U<span>S</span>TRADERS
         </a>
         <ul class="nav-links">
-            <li><a href="javascript:void(0)" class="active" onclick="showPage('home'); return false;">Home</a></li>
-            <li><a href="javascript:void(0)" onclick="showPage('trading'); return false;">Calculator & Journal</a></li>
-            <li><a href="javascript:void(0)" onclick="showPage('news'); return false;">News</a></li>
+            <li><a href="javascript:void(0)" class="active" onclick="showPage('home'); return false;" data-t="home">Home</a></li>
+            <li><a href="javascript:void(0)" onclick="showPage('trading'); return false;" data-t="calc">Calculator & Journal</a></li>
+            <li><a href="javascript:void(0)" onclick="showPage('news'); return false;" data-t="news">News</a></li>
             <li><a href="https://discord.gg/rhJPwF6FG" target="_blank">Community</a></li>
             
         </ul>
@@ -3668,6 +3668,143 @@
             if (id === 'j-challenge') renderChallenge();
         };
 
+
+        // ==================== LANGUAGE SWITCHER ====================
+        const i18n = {
+            en: {
+                home:'Home', calc:'Calculator & Journal', news:'News', comm:'Community',
+                welcome:'Welcome to', heroDesc:'A community built for traders, by traders. Learn, trade and grow together while chilling and having fun.',
+                openTools:'Open Tools →', startJournal:'Start Journaling ↗',
+                activeTraders:'Active Traders', setups:'Trading Setups', winRate:'Win Rate',
+                support:'Support', pipsTraded:'Pips Traded',
+                liveMarket:'Live Market Overview', addPair:'+ Add Pair',
+                edu:'Trading Education', daily:'Daily Analysis', community:'Active Community', results:'Proven Results',
+                trusted:'Trusted by Traders Worldwide',
+                posCalc:'Position Calculator', journal:'Journal',
+                tradeParams:'Trade Parameters', accBal:'Account Balance', accCurr:'Account Currency',
+                riskTrade:'Risk Per Trade', sl:'Stop Loss (pips)', tp:'Take Profit (pips)',
+                entry:'Entry Price', leverage:'Leverage',
+                posSize:'Position Size', lotSize:'Lot Size', stdLots:'Standard Lots', miniLots:'Mini Lots (0.10)', microLots:'Micro Lots (0.01)',
+                tradeDetails:'Trade Details', pipVal:'Pip Value', valPerPip:'Value per Pip',
+                riskReward:'Risk : Reward', maxLoss:'Max Loss', potProfit:'Potential Profit',
+                margin:'Approx. Margin', balSL:'Balance if SL', slDist:'SL Distance',
+                dashboard:'Dashboard', newTrade:'New Trade', history:'History', calendar:'Calendar',
+                analysis:'Analysis', challenge:'Challenge',
+                totalPL:'Total P&L', totalTrades:'Total Trades', profitFactor:'Profit Factor',
+                maxDD:'Max Drawdown', avgRR:'Avg R:R',
+                perfPair:'Performance by Pair', recentNotes:'Recent Trading Notes',
+                logTrade:'Log New Trade', date:'Date', pair:'Pair', dir:'Direction', strategy:'Strategy',
+                exit:'Exit Price', lot:'Lot Size', riskPct:'Risk %', rrTarget:'R:R Target', pl:'P&L ($)',
+                tf:'Timeframe', session:'Session', checklist:'Pre-Trade Checklist', mood:'Pre-Trade Mood',
+                setup:'Trade Setup / Reasoning', review:'Post-Trade Review / Lessons',
+                saveTrade:'Save Trade', clearForm:'Clear Form',
+                tradeHist:'Trade History', allPairs:'All Pairs', allResults:'All Results',
+                wins:'Wins', losses:'Losses', exportCSV:'Export CSV', clearAll:'Clear All',
+                plCal:'P&L Calendar', weekly:'Weekly', daily:'Daily', monthlyPerf:'Monthly Performance',
+                psych:'Trading Psychology Analysis', stratPerf:'Strategy Performance', insights:'Key Insights & Patterns',
+                setAcc:'Set Your Account', startBal:'Account Balance', startJournaling:'Start Journaling',
+                profTitle:'Profitability & Win Rate Calculator', profDesc:'Find the win rate you need to be consistently profitable.',
+                persCalc:'Personalized Calculator', beWinRate:'Breakeven Win Rate', expVal:'Expected Value / Trade',
+                totalExpPL:'Total Expected P&L', pf:'Profit Factor',
+                fundedTracker:'Funded Challenge Tracker', editChal:'Edit Challenge',
+                chPhase:'Challenge Phase', chTarget:'Profit Target', chPL:'Current P&L', chProgress:'Progress',
+                chProgressBar:'Challenge Progress', chSteps:'Challenge Steps', chStats:'Challenge Stats',
+                chTrades:'Trades in Challenge', chWR:'Win Rate', chBest:'Best Trade', chWorst:'Worst Trade', chDays:'Days Active',
+                configChal:'Configure Challenge', maxDDpct:'Max Drawdown (%)', dailyLimit:'Daily Loss Limit (%)',
+                save:'Save', cancel:'Cancel',
+                accType:'Account Type', personal:'Personal Account', funded:'Funded Account',
+                phase1:'Phase 1 — Evaluation', phase2:'Phase 2 — Verification', phase3:'Phase 3 — Funded Live',
+                chalTarget:'Challenge Target (%)', chalStatus:'Challenge Status',
+                active:'🟡 Active — In Progress', passed:'✅ Passed Challenge', failed:'❌ Failed / Blown',
+                newsTitle:'Forex News & Economic Calendar', newsSub:'High-impact events with market direction expectations',
+                marketSentiment:'Current Market Sentiment', newsLegend:'News Impact Legend',
+                highImp:'High Impact — 100+ pip moves', medImp:'Medium Impact — 50-100 pip moves', lowImp:'Low Impact — <50 pip moves',
+                expLegend:'Expectation Legend', bull60:'BULLISH 60%+', bull50:'BULLISH 50-59%', neutral:'NEUTRAL',
+                bear50:'BEARISH 50-59%', bear60:'BEARISH 60%+',
+                pairImpact:'Which News Affects Which Pairs', newsRules:'News Trading Rules', headlines:'Latest Headlines',
+                privacy:'Privacy Policy', terms:'Terms of Service', riskDisc:'Risk Disclaimer',
+                tagline:'Chilling and Having Fun'
+            },
+            fr: {
+                home:'Accueil', calc:'Calculateur & Journal', news:'Actualités', comm:'Communauté',
+                welcome:'Bienvenue sur', heroDesc:'Une communauté construite pour les traders, par les traders. Apprenez, tradez et progressez ensemble.',
+                openTools:'Ouvrir les Outils →', startJournal:'Commencer le Journal ↗',
+                activeTraders:'Traders Actifs', setups:'Setups de Trading', winRate:'Taux de Réussite',
+                support:'Support', pipsTraded:'Pips Tradés',
+                liveMarket:'Aperçu du Marché en Direct', addPair:'+ Ajouter une Paire',
+                edu:'Éducation au Trading', daily:'Analyse Quotidienne', community:'Communauté Active', results:'Résultats Prouvés',
+                trusted:'Reconnu par les Traders du Monde Entier',
+                posCalc:'Calculateur de Position', journal:'Journal',
+                tradeParams:'Paramètres du Trade', accBal:'Solde du Compte', accCurr:'Devise du Compte',
+                riskTrade:'Risque par Trade', sl:'Stop Loss (pips)', tp:'Take Profit (pips)',
+                entry:'Prix d'Entrée', leverage:'Effet de Levier',
+                posSize:'Taille de Position', lotSize:'Taille du Lot', stdLots:'Lots Standards', miniLots:'Mini Lots (0.10)', microLots:'Micro Lots (0.01)',
+                tradeDetails:'Détails du Trade', pipVal:'Valeur du Pip', valPerPip:'Valeur par Pip',
+                riskReward:'Risque : Récompense', maxLoss:'Perte Max', potProfit:'Profit Potentiel',
+                margin:'Marge Requise', balSL:'Solde si SL', slDist:'Distance SL',
+                dashboard:'Tableau de Bord', newTrade:'Nouveau Trade', history:'Historique', calendar:'Calendrier',
+                analysis:'Analyse', challenge:'Challenge',
+                totalPL:'P&L Total', totalTrades:'Trades Total', profitFactor:'Facteur de Profit',
+                maxDD:'Drawdown Max', avgRR:'R:R Moyen',
+                perfPair:'Performance par Paire', recentNotes:'Notes de Trading Récentes',
+                logTrade:'Enregistrer un Trade', date:'Date', pair:'Paire', dir:'Direction', strategy:'Stratégie',
+                exit:'Prix de Sortie', lot:'Taille du Lot', riskPct:'Risque %', rrTarget:'Objectif R:R', pl:'P&L ($)',
+                tf:'Unité de Temps', session:'Session', checklist:'Checklist Pré-Trade', mood:'Humeur Pré-Trade',
+                setup:'Setup / Raisonnement', review:'Revue Post-Trade / Leçons',
+                saveTrade:'Sauvegarder le Trade', clearForm:'Vider le Formulaire',
+                tradeHist:'Historique des Trades', allPairs:'Toutes les Paires', allResults:'Tous les Résultats',
+                wins:'Gains', losses:'Pertes', exportCSV:'Exporter CSV', clearAll:'Tout Effacer',
+                plCal:'Calendrier P&L', weekly:'Hebdomadaire', daily:'Quotidien', monthlyPerf:'Performance Mensuelle',
+                psych:'Analyse Psychologique', stratPerf:'Performance par Stratégie', insights:'Insights & Patterns Clés',
+                setAcc:'Configurer votre Compte', startBal:'Solde du Compte', startJournaling:'Commencer le Journal',
+                profTitle:'Calculateur de Rentabilité & Taux de Réussite', profDesc:'Trouvez le taux de réussite nécessaire pour être rentable.',
+                persCalc:'Calculateur Personnalisé', beWinRate:'Taux de Réussite Seuil', expVal:'Valeur Attendue / Trade',
+                totalExpPL:'P&L Attendu Total', pf:'Facteur de Profit',
+                fundedTracker:'Suivi du Challenge Financé', editChal:'Modifier le Challenge',
+                chPhase:'Phase du Challenge', chTarget:'Objectif de Profit', chPL:'P&L Actuel', chProgress:'Progression',
+                chProgressBar:'Progression du Challenge', chSteps:'Étapes du Challenge', chStats:'Statistiques du Challenge',
+                chTrades:'Trades dans le Challenge', chWR:'Taux de Réussite', chBest:'Meilleur Trade', chWorst:'Pire Trade', chDays:'Jours Actifs',
+                configChal:'Configurer le Challenge', maxDDpct:'Drawdown Max (%)', dailyLimit:'Limite de Perte Journalière (%)',
+                save:'Sauvegarder', cancel:'Annuler',
+                accType:'Type de Compte', personal:'Compte Personnel', funded:'Compte Financé',
+                phase1:'Phase 1 — Évaluation', phase2:'Phase 2 — Vérification', phase3:'Phase 3 — Financé Live',
+                chalTarget:'Objectif du Challenge (%)', chalStatus:'Statut du Challenge',
+                active:'🟡 Actif — En Cours', passed:'✅ Challenge Réussi', failed:'❌ Échoué / Grille',
+                newsTitle:'Actualités Forex & Calendrier Économique', newsSub:'Événements à fort impact avec attentes de direction du marché',
+                marketSentiment:'Sentiment du Marché Actuel', newsLegend:'Légende d'Impact des News',
+                highImp:'Fort Impact — 100+ pips', medImp:'Impact Moyen — 50-100 pips', lowImp:'Faible Impact — <50 pips',
+                expLegend:'Légende des Attentes', bull60:'HAUSSIER 60%+', bull50:'HAUSSIER 50-59%', neutral:'NEUTRE',
+                bear50:'BAISSIER 50-59%', bear60:'BAISSIER 60%+',
+                pairImpact:'Quelles News Affectent Quelles Paires', newsRules:'Règles de Trading sur News', headlines:'Dernières Actualités',
+                privacy:'Politique de Confidentialité', terms:'Conditions d'Utilisation', riskDisc:'Avertissement sur les Risques',
+                tagline:'Se Détendre et S'amuser'
+            }
+        };
+
+        let currentLang = localStorage.getItem('4us_lang') || 'en';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('4us_lang', lang);
+            document.getElementById('lang-switcher').value = lang;
+            applyLang();
+        }
+
+        function _(key) {
+            return i18n[currentLang]?.[key] || i18n['en']?.[key] || key;
+        }
+
+        function applyLang() {
+            document.querySelectorAll('[data-t]').forEach(el => {
+                const k = el.getAttribute('data-t');
+                if (i18n[currentLang][k]) el.textContent = i18n[currentLang][k];
+            });
+            document.querySelectorAll('[data-t-placeholder]').forEach(el => {
+                const k = el.getAttribute('data-t-placeholder');
+                if (i18n[currentLang][k]) el.placeholder = i18n[currentLang][k];
+            });
+        }
+
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', function() {
             renderMarkets();
@@ -3679,6 +3816,8 @@
             if (dateInput) dateInput.valueAsDate = new Date();
             restorePage();
             checkAccountSetup();
+            document.getElementById('lang-switcher').value = currentLang;
+            applyLang();
         });
     
 
