@@ -481,6 +481,7 @@
             .journal-stats-grid { grid-template-columns: 1fr; }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
     <div class="container">
@@ -1353,6 +1354,7 @@
                     <td><span class="badge badge-${t.status}">${t.status.toUpperCase()}</span></td>
                     <td>
                         <button class="btn btn-outline" style="padding:6px 12px; font-size:0.8rem;" onclick="toggleDetail(${t.id})">👁️</button>
+                        <button class="btn btn-outline" style="padding:6px 12px; font-size:0.8rem; border-color:var(--gold); color:var(--gold);" onclick="editTrade(${t.id})">✏️</button>
                         <button class="btn btn-danger" style="padding:6px 12px; font-size:0.8rem;" onclick="deleteTrade(${t.id})">🗑️</button>
                     </td>
                 </tr>
@@ -1445,85 +1447,222 @@
                     if (t.status === 'win') stratMap[t.strategy].wins++;
                 }
             });
-           let stratHTML = Object.entries(stratMap).length ? '<div class="form-grid">' + Object.entries(stratMap).map(([s, d]) => {
-    let wr = ((d.wins / d.count) * 100).toFixed(0);
-    return `<div class="journal-stat-box ${d.pnl >= 0 ? 'green' : 'red'}" style="text-align:left;">
-        <div style="font-size:0.85rem; font-weight:700;">${s}</div>
-        <div style="font-size:1.3rem; font-weight:700; margin:6px 0;">${formatJournalMoney(d.pnl)}</div>
-        <div style="font-size:0.75rem; color:var(--text-muted);">${d.count} trades · ${wr}% WR</div>
-    </div>`;
-}).join('') + '</div>' : '<p style="color:var(--text-muted); text-align:center;">Log trades with strategy data to see strategy performance.</p>';
-document.getElementById('strategy-stats').innerHTML = stratHTML;
+            let stratHTML = Object.entries(stratMap).length ? '<div class="form-grid">' + Object.entries(stratMap).map(([s, d]) => {
+                let wr = ((d.wins / d.count) * 100).toFixed(0);
+                return `<div class="journal-stat-box ${d.pnl >= 0 ? 'green' : 'red'}" style="text-align:left;">
+                    <div style="font-size:0.85rem; font-weight:700;">${s}</div>
+                    <div style="font-size:1.3rem; font-weight:700; margin:6px 0;">${formatJournalMoney(d.pnl)}</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">${d.count} trades &middot; ${wr}% WR</div>
+                </div>`;
+            }).join('') + '</div>' : '<p style="color:var(--text-muted); text-align:center;">Log trades with strategy data to see strategy performance.</p>';
+            document.getElementById('strategy-stats').innerHTML = stratHTML;
 
-// Insights
-let insightsHTML = '';
-if (trades.length === 0) {
-    insightsHTML = '<p style="color:var(--text-muted); text-align:center;">Start logging trades to generate insights.</p>';
-} else {
-    let bestPair = Object.entries(pairMap).sort((a, b) => b[1].pnl - a[1].pnl)[0];
-    let worstPair = Object.entries(pairMap).sort((a, b) => a[1].pnl - b[1].pnl)[0];
-    let bestStrat = Object.entries(stratMap).sort((a, b) => b[1].pnl - a[1].pnl)[0];
-    let bestSession = {};
-    trades.forEach(t => {
-        if (t.session) {
-            if (!bestSession[t.session]) bestSession[t.session] = { pnl: 0, count: 0 };
-            bestSession[t.session].pnl += (t.pnl || 0);
-            bestSession[t.session].count++;
+            // Insights
+            let insightsHTML = '';
+            if (trades.length === 0) {
+                insightsHTML = '<p style="color:var(--text-muted); text-align:center;">Start logging trades to generate insights.</p>';
+            } else {
+                let bestPair = Object.entries(pairMap).sort((a, b) => b[1].pnl - a[1].pnl)[0];
+                let worstPair = Object.entries(pairMap).sort((a, b) => a[1].pnl - b[1].pnl)[0];
+                let bestStrat = Object.entries(stratMap).sort((a, b) => b[1].pnl - a[1].pnl)[0];
+                let bestSession = {};
+                trades.forEach(t => {
+                    if (t.session) {
+                        if (!bestSession[t.session]) bestSession[t.session] = { pnl: 0, count: 0 };
+                        bestSession[t.session].pnl += (t.pnl || 0);
+                        bestSession[t.session].count++;
+                    }
+                });
+                let topSession = Object.entries(bestSession).sort((a, b) => b[1].pnl - a[1].pnl)[0];
+
+                insightsHTML = `<div style="display:flex; flex-direction:column; gap:12px;">`;
+                if (bestPair) insightsHTML += `<div style="padding:12px; background:var(--green-dim); border-radius:8px; border-left:3px solid var(--green);"><strong style="color:var(--green);">Best Performing Pair:</strong> ${bestPair[0]} (${formatJournalMoney(bestPair[1].pnl)})</div>`;
+                if (worstPair && worstPair[1].pnl < 0) insightsHTML += `<div style="padding:12px; background:var(--red-dim); border-radius:8px; border-left:3px solid var(--red);"><strong style="color:var(--red);">Worst Performing Pair:</strong> ${worstPair[0]} (${formatJournalMoney(worstPair[1].pnl)})</div>`;
+                if (bestStrat) insightsHTML += `<div style="padding:12px; background:var(--blue-dim); border-radius:8px; border-left:3px solid var(--blue);"><strong style="color:var(--blue);">Best Strategy:</strong> ${bestStrat[0]} (${formatJournalMoney(bestStrat[1].pnl)})</div>`;
+                if (topSession) insightsHTML += `<div style="padding:12px; background:var(--gold-dim); border-radius:8px; border-left:3px solid var(--gold);"><strong style="color:var(--gold);">Best Session:</strong> ${topSession[0]} (${formatJournalMoney(topSession[1].pnl)})</div>`;
+
+                let checkedTrades = trades.filter(t => t.checklist && t.checklist.some(c => c));
+                let uncheckedTrades = trades.filter(t => !t.checklist || !t.checklist.some(c => c));
+                if (checkedTrades.length > 0 && uncheckedTrades.length > 0) {
+                    let checkedAvg = checkedTrades.reduce((s, t) => s + (t.pnl || 0), 0) / checkedTrades.length;
+                    let uncheckedAvg = uncheckedTrades.reduce((s, t) => s + (t.pnl || 0), 0) / uncheckedTrades.length;
+                    if (checkedAvg > uncheckedAvg) {
+                        insightsHTML += `<div style="padding:12px; background:var(--green-dim); border-radius:8px; border-left:3px solid var(--green);"><strong style="color:var(--green);">Checklist Effect:</strong> Trades with checklist items checked average ${formatJournalMoney(checkedAvg)} vs ${formatJournalMoney(uncheckedAvg)} without.</div>`;
+                    }
+                }
+                insightsHTML += `</div>`;
+            }
+            document.getElementById('insights').innerHTML = insightsHTML;
         }
-    });
-    let topSession = Object.entries(bestSession).sort((a, b) => b[1].pnl - a[1].pnl)[0];
 
-    insightsHTML = `<div style="display:flex; flex-direction:column; gap:12px;">`;
-    if (bestPair) insightsHTML += `<div style="padding:12px; background:var(--green-dim); border-radius:8px; border-left:3px solid var(--green);"><strong style="color:var(--green);">Best Performing Pair:</strong> ${bestPair[0]} (${formatJournalMoney(bestPair[1].pnl)})</div>`;
-    if (worstPair && worstPair[1].pnl < 0) insightsHTML += `<div style="padding:12px; background:var(--red-dim); border-radius:8px; border-left:3px solid var(--red);"><strong style="color:var(--red);">Worst Performing Pair:</strong> ${worstPair[0]} (${formatJournalMoney(worstPair[1].pnl)})</div>`;
-    if (bestStrat) insightsHTML += `<div style="padding:12px; background:var(--blue-dim); border-radius:8px; border-left:3px solid var(--blue);"><strong style="color:var(--blue);">Best Strategy:</strong> ${bestStrat[0]} (${formatJournalMoney(bestStrat[1].pnl)})</div>`;
-    if (topSession) insightsHTML += `<div style="padding:12px; background:var(--gold-dim); border-radius:8px; border-left:3px solid var(--gold);"><strong style="color:var(--gold);">Best Session:</strong> ${topSession[0]} (${formatJournalMoney(topSession[1].pnl)})</div>`;
-    
-    let checkedTrades = trades.filter(t => t.checklist && t.checklist.some(c => c));
-    let uncheckedTrades = trades.filter(t => !t.checklist || !t.checklist.some(c => c));
-    if (checkedTrades.length > 0 && uncheckedTrades.length > 0) {
-        let checkedAvg = checkedTrades.reduce((s, t) => s + (t.pnl || 0), 0) / checkedTrades.length;
-        let uncheckedAvg = uncheckedTrades.reduce((s, t) => s + (t.pnl || 0), 0) / uncheckedTrades.length;
-        if (checkedAvg > uncheckedAvg) {
-            insightsHTML += `<div style="padding:12px; background:var(--green-dim); border-radius:8px; border-left:3px solid var(--green);"><strong style="color:var(--green);">Checklist Effect:</strong> Trades with checklist items checked average ${formatJournalMoney(checkedAvg)} vs ${formatJournalMoney(uncheckedAvg)} without.</div>`;
+        function exportCSV() {
+            if (trades.length === 0) { alert('No trades to export.'); return; }
+            let csv = 'Date,Pair,Direction,Strategy,Entry,SL,TP,Exit,Lot,PnL,RR,Timeframe,Session,Mood,Status\n';
+            trades.forEach(t => {
+                csv += `${t.date},${t.pair},${t.direction},${t.strategy || ''},${t.entry},${t.sl},${t.tp || ''},${t.exit || ''},${t.lot},${t.pnl || 0},${t.rr || ''},${t.tf},${t.session},${t.mood || ''},${t.status}\n`;
+            });
+            let blob = new Blob([csv], { type: 'text/csv' });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = 'trading_journal_' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
         }
-    }
-    insightsHTML += `</div>`;
-}
-document.getElementById('insights').innerHTML = insightsHTML;
-}
 
-function exportCSV() {
-    if (trades.length === 0) { alert('No trades to export.'); return; }
-    let csv = 'Date,Pair,Direction,Strategy,Entry,SL,TP,Exit,Lot,PnL,RR,Timeframe,Session,Mood,Status\n';
-    trades.forEach(t => {
-        csv += `${t.date},${t.pair},${t.direction},${t.strategy || ''},${t.entry},${t.sl},${t.tp || ''},${t.exit || ''},${t.lot},${t.pnl || 0},${t.rr || ''},${t.tf},${t.session},${t.mood || ''},${t.status}\n`;
-    });
-    let blob = new Blob([csv], { type: 'text/csv' });
-    let url = URL.createObjectURL(blob);
-    let a = document.createElement('a');
-    a.href = url;
-    a.download = 'trading_journal_' + new Date().toISOString().split('T')[0] + '.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-}
+        function initFilters() {
+            let pairFilter = document.getElementById('filter-pair');
+            pairFilter.innerHTML = '<option value="">All Pairs</option>';
+            let uniquePairs = [...new Set(trades.map(t => t.pair))];
+            uniquePairs.forEach(p => {
+                let opt = document.createElement('option');
+                opt.value = p;
+                opt.textContent = p;
+                pairFilter.appendChild(opt);
+            });
+        }
 
-function initFilters() {
-    let pairFilter = document.getElementById('filter-pair');
-    let uniquePairs = [...new Set(trades.map(t => t.pair))];
-    uniquePairs.forEach(p => {
-        let opt = document.createElement('option');
-        opt.value = p;
-        opt.textContent = p;
-        pairFilter.appendChild(opt);
-    });
-}
+        // ==================== EDIT TRADE ====================
+        let editingTradeId = null;
 
-document.addEventListener('DOMContentLoaded', function() {
-    initCalc();
-    initFilters();
-    document.getElementById('t-date').valueAsDate = new Date();
-});
-</script>
+        function editTrade(id) {
+            let trade = trades.find(t => t.id === id);
+            if (!trade) return;
+
+            editingTradeId = id;
+
+            // Populate form
+            document.getElementById('t-date').value = trade.date;
+            document.getElementById('t-pair').value = trade.pair;
+            document.getElementById('t-dir').value = trade.direction;
+            document.getElementById('t-strategy').value = trade.strategy || '';
+            document.getElementById('t-entry').value = trade.entry;
+            document.getElementById('t-sl').value = trade.sl;
+            document.getElementById('t-tp').value = trade.tp || '';
+            document.getElementById('t-exit').value = trade.exit || '';
+            document.getElementById('t-lot').value = trade.lot;
+            document.getElementById('t-pnl').value = trade.pnl || '';
+            document.getElementById('t-tf').value = trade.tf;
+            document.getElementById('t-session').value = trade.session;
+            document.getElementById('t-setup').value = trade.setup || '';
+            document.getElementById('t-review').value = trade.review || '';
+            document.getElementById('t-mood').value = trade.mood || '';
+
+            // Set mood selection
+            document.querySelectorAll('.mood-option').forEach(m => {
+                m.classList.remove('selected');
+                if (trade.mood && m.textContent === trade.mood) m.classList.add('selected');
+            });
+
+            // Set checklist
+            let checkboxes = document.querySelectorAll('.check-item input');
+            let checkItems = document.querySelectorAll('.check-item');
+            if (trade.checklist) {
+                trade.checklist.forEach((checked, i) => {
+                    if (checkboxes[i]) {
+                        checkboxes[i].checked = checked;
+                        checkItems[i].classList.toggle('checked', checked);
+                    }
+                });
+            }
+
+            // Switch to New Trade tab and show update button
+            showJournalTab('j-new-trade');
+            document.querySelectorAll('.journal-tab').forEach(b => b.classList.remove('active'));
+            document.querySelector('.journal-tab[onclick="showJournalTab(\'j-new-trade\')"]').classList.add('active');
+
+            // Change submit button to Update
+            let submitBtn = document.querySelector('#tradeForm button[type="submit"]');
+            submitBtn.textContent = 'Update Trade';
+            submitBtn.onclick = function(e) { updateTrade(e); };
+
+            // Add cancel edit button if not exists
+            let cancelBtn = document.getElementById('cancel-edit-btn');
+            if (!cancelBtn) {
+                cancelBtn = document.createElement('button');
+                cancelBtn.id = 'cancel-edit-btn';
+                cancelBtn.type = 'button';
+                cancelBtn.className = 'btn btn-outline';
+                cancelBtn.textContent = 'Cancel Edit';
+                cancelBtn.style.cssText = 'display:inline-flex; align-items:center; gap:8px; padding:12px 24px; border-radius:8px; border:1px solid var(--border); color:var(--text); background:transparent; font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:inherit;';
+                cancelBtn.onmouseenter = function() { this.style.borderColor = 'var(--blue)'; this.style.color = 'var(--blue)'; };
+                cancelBtn.onmouseleave = function() { this.style.borderColor = 'var(--border)'; this.style.color = 'var(--text)'; };
+                cancelBtn.onclick = cancelEdit;
+                submitBtn.parentNode.insertBefore(cancelBtn, submitBtn.nextSibling);
+            }
+            cancelBtn.style.display = 'inline-flex';
+
+            // Scroll to form
+            document.getElementById('tradeForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateTrade(e) {
+            e.preventDefault();
+            if (!editingTradeId) return;
+
+            let idx = trades.findIndex(t => t.id === editingTradeId);
+            if (idx === -1) return;
+
+            let pair = document.getElementById('t-pair').value;
+            let entry = parseFloat(document.getElementById('t-entry').value);
+            let exit = parseFloat(document.getElementById('t-exit').value) || null;
+            let dir = document.getElementById('t-dir').value;
+            let lot = parseFloat(document.getElementById('t-lot').value);
+            let manualPnl = document.getElementById('t-pnl').value;
+
+            let pnl = manualPnl ? parseFloat(manualPnl) : (exit ? calcAutoPnL(dir, entry, exit, lot, pair) : 0);
+
+            trades[idx] = {
+                id: editingTradeId,
+                date: document.getElementById('t-date').value,
+                pair: pair,
+                direction: dir,
+                strategy: document.getElementById('t-strategy').value,
+                entry: entry,
+                sl: parseFloat(document.getElementById('t-sl').value),
+                tp: parseFloat(document.getElementById('t-tp').value) || null,
+                exit: exit,
+                lot: lot,
+                pnl: pnl,
+                rr: calcRR(entry, parseFloat(document.getElementById('t-sl').value), parseFloat(document.getElementById('t-tp').value)),
+                tf: document.getElementById('t-tf').value,
+                session: document.getElementById('t-session').value,
+                mood: document.getElementById('t-mood').value,
+                setup: document.getElementById('t-setup').value,
+                review: document.getElementById('t-review').value,
+                checklist: Array.from(document.querySelectorAll('.check-item input')).map(cb => cb.checked),
+                status: exit ? (pnl >= 0 ? 'win' : 'loss') : 'open'
+            };
+
+            localStorage.setItem('forex_journal_trades', JSON.stringify(trades));
+            alert('Trade updated successfully!');
+            cancelEdit();
+            updateDashboard();
+            renderTrades();
+        }
+
+        function cancelEdit() {
+            editingTradeId = null;
+            document.getElementById('tradeForm').reset();
+            document.querySelectorAll('.mood-option').forEach(m => m.classList.remove('selected'));
+            document.querySelectorAll('.check-item').forEach(c => { c.classList.remove('checked'); c.querySelector('input').checked = false; });
+
+            let submitBtn = document.querySelector('#tradeForm button[type="submit"]');
+            submitBtn.textContent = 'Save Trade';
+            submitBtn.onclick = function(e) { addTrade(e); };
+
+            let cancelBtn = document.getElementById('cancel-edit-btn');
+            if (cancelBtn) cancelBtn.style.display = 'none';
+
+            document.getElementById('t-date').valueAsDate = new Date();
+        }
+
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initCalc();
+            initFilters();
+            document.getElementById('t-date').valueAsDate = new Date();
+        });
+    </script>
 </body>
 </html>
