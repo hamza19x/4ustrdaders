@@ -1567,8 +1567,8 @@
                                         <option value="Other">Other</option>
                                     </select>
                                 </div>
-                                <div class="form-group"><label>Entry Price</label><input type="number" id="t-entry" step="0.00001" required placeholder="e.g. 1.08500"></div>
-                                <div class="form-group"><label>Stop Loss</label><input type="number" id="t-sl" step="0.00001" required placeholder="e.g. 1.08000"></div>
+                                <div class="form-group"><label>Entry Price</label><input type="number" id="t-entry" step="0.00001" placeholder="e.g. 1.08500 (optional)"></div>
+                                <div class="form-group"><label>Stop Loss</label><input type="number" id="t-sl" step="0.00001" placeholder="e.g. 1.08000 (optional)"></div>
                                 <div class="form-group"><label>Take Profit</label><input type="number" id="t-tp" step="0.00001" placeholder="e.g. 1.09500"></div>
                                 <div class="form-group"><label>Exit Price</label><input type="number" id="t-exit" step="0.00001" placeholder="Leave blank if open"></div>
                                 <div class="form-group"><label>Lot Size</label><input type="number" id="t-lot" step="0.01" required placeholder="e.g. 0.10"></div>
@@ -2735,12 +2735,12 @@
         function addTrade(e) {
             e.preventDefault();
             let pair = document.getElementById('t-pair').value;
-            let entry = parseFloat(document.getElementById('t-entry').value);
+            let entry = parseFloat(document.getElementById('t-entry').value) || null;
             let exit = parseFloat(document.getElementById('t-exit').value) || null;
             let dir = document.getElementById('t-dir').value;
-            let lot = parseFloat(document.getElementById('t-lot').value);
+            let lot = parseFloat(document.getElementById('t-lot').value) || null;
             let manualPnl = document.getElementById('t-pnl').value;
-            let pnl = manualPnl ? parseFloat(manualPnl) : (exit ? calcAutoPnL(dir, entry, exit, lot, pair) : 0);
+            let pnl = manualPnl ? parseFloat(manualPnl) : (entry && exit && lot ? calcAutoPnL(dir, entry, exit, lot, pair) : 0);
             let trade = {
                 id: Date.now(),
                 date: document.getElementById('t-date').value,
@@ -2748,21 +2748,21 @@
                 direction: dir,
                 strategy: document.getElementById('t-strategy').value,
                 entry: entry,
-                sl: parseFloat(document.getElementById('t-sl').value),
+                sl: parseFloat(document.getElementById('t-sl').value) || null,
                 tp: parseFloat(document.getElementById('t-tp').value) || null,
                 exit: exit,
                 lot: lot,
                 risk: parseFloat(document.getElementById('t-risk').value) || null,
                 rrTarget: document.getElementById('t-rr-target').value || null,
                 pnl: pnl,
-                rr: calcRR(entry, parseFloat(document.getElementById('t-sl').value), parseFloat(document.getElementById('t-tp').value)),
+                rr: calcRR(entry, parseFloat(document.getElementById('t-sl').value) || null, parseFloat(document.getElementById('t-tp').value) || null),
                 tf: document.getElementById('t-tf').value,
                 session: document.getElementById('t-session').value,
                 mood: document.getElementById('t-mood').value,
                 setup: document.getElementById('t-setup').value,
                 review: document.getElementById('t-review').value,
                 checklist: Array.from(document.querySelectorAll('.check-item input')).map(cb => cb.checked),
-                status: exit ? (pnl >= 0 ? 'win' : 'loss') : 'open'
+                status: manualPnl ? (pnl >= 0 ? 'win' : 'loss') : (exit ? (pnl >= 0 ? 'win' : 'loss') : 'open')
             };
             trades.unshift(trade);
             localStorage.setItem('forex_journal_trades', JSON.stringify(trades));
@@ -3078,28 +3078,28 @@
             let idx = trades.findIndex(t => t.id === editingTradeId);
             if (idx === -1) return;
             let pair = document.getElementById('t-pair').value;
-            let entry = parseFloat(document.getElementById('t-entry').value);
+            let entry = parseFloat(document.getElementById('t-entry').value) || null;
             let exit = parseFloat(document.getElementById('t-exit').value) || null;
             let dir = document.getElementById('t-dir').value;
-            let lot = parseFloat(document.getElementById('t-lot').value);
+            let lot = parseFloat(document.getElementById('t-lot').value) || null;
             let manualPnl = document.getElementById('t-pnl').value;
-            let pnl = manualPnl ? parseFloat(manualPnl) : (exit ? calcAutoPnL(dir, entry, exit, lot, pair) : 0);
+            let pnl = manualPnl ? parseFloat(manualPnl) : (entry && exit && lot ? calcAutoPnL(dir, entry, exit, lot, pair) : 0);
             trades[idx] = {
                 id: editingTradeId,
                 date: document.getElementById('t-date').value,
                 pair: pair, direction: dir,
                 strategy: document.getElementById('t-strategy').value,
-                entry: entry, sl: parseFloat(document.getElementById('t-sl').value),
+                entry: entry, sl: parseFloat(document.getElementById('t-sl').value) || null,
                 tp: parseFloat(document.getElementById('t-tp').value) || null,
                 exit: exit, lot: lot,
                 risk: parseFloat(document.getElementById('t-risk').value) || null,
                 rrTarget: document.getElementById('t-rr-target').value || null,
-                pnl: pnl, rr: calcRR(entry, parseFloat(document.getElementById('t-sl').value), parseFloat(document.getElementById('t-tp').value)),
+                pnl: pnl, rr: calcRR(entry, parseFloat(document.getElementById('t-sl').value) || null, parseFloat(document.getElementById('t-tp').value) || null),
                 tf: document.getElementById('t-tf').value, session: document.getElementById('t-session').value,
                 mood: document.getElementById('t-mood').value, setup: document.getElementById('t-setup').value,
                 review: document.getElementById('t-review').value,
                 checklist: Array.from(document.querySelectorAll('.check-item input')).map(cb => cb.checked),
-                status: exit ? (pnl >= 0 ? 'win' : 'loss') : 'open'
+                status: manualPnl ? (pnl >= 0 ? 'win' : 'loss') : (exit ? (pnl >= 0 ? 'win' : 'loss') : 'open')
             };
             localStorage.setItem('forex_journal_trades', JSON.stringify(trades));
             alert('Trade updated successfully!');
