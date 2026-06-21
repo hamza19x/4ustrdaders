@@ -815,6 +815,13 @@
                                     <option value="Support/Resistance">Support/Resistance</option>
                                     <option value="Supply/Demand">Supply/Demand</option>
                                     <option value="Scalping">Scalping</option>
+                                    <option value="H4">H4 (4-Hour Setup)</option>
+                                    <option value="CRT">CRT — Candle Range Theory</option>
+                                    <option value="OrderFlow">Order Flow</option>
+                                    <option value="ICT">ICT — Inner Circle Trader</option>
+                                    <option value="SMC">SMC — Smart Money Concepts</option>
+                                    <option value="Wyckoff">Wyckoff Method</option>
+                                    <option value="PriceAction">Price Action</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
@@ -846,6 +853,16 @@
                                     <button type="button" onclick="setTradeRisk(1.0)" style="flex:1; padding:4px 8px; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#94a3b8; cursor:pointer; font-size:0.75rem;">1%</button>
                                     <button type="button" onclick="setTradeRisk(2.0)" style="flex:1; padding:4px 8px; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#94a3b8; cursor:pointer; font-size:0.75rem;">2%</button>
                                     <button type="button" onclick="setTradeRisk(3.0)" style="flex:1; padding:4px 8px; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#94a3b8; cursor:pointer; font-size:0.75rem;">3%</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>R:R Target</label>
+                                <input type="text" id="t-rr-target" placeholder="e.g. 1:2" style="text-align:center; font-weight:600;" readonly>
+                                <div style="display:flex; gap:4px; margin-top:6px;">
+                                    <button type="button" onclick="setTradeRR('1:1.5')" style="flex:1; padding:4px 8px; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#94a3b8; cursor:pointer; font-size:0.75rem;">1:1.5</button>
+                                    <button type="button" onclick="setTradeRR('1:2')" style="flex:1; padding:4px 8px; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#94a3b8; cursor:pointer; font-size:0.75rem;">1:2</button>
+                                    <button type="button" onclick="setTradeRR('1:3')" style="flex:1; padding:4px 8px; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#94a3b8; cursor:pointer; font-size:0.75rem;">1:3</button>
+                                    <button type="button" onclick="setTradeRR('1:5')" style="flex:1; padding:4px 8px; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#94a3b8; cursor:pointer; font-size:0.75rem;">1:5</button>
                                 </div>
                             </div>
 
@@ -1288,6 +1305,7 @@
                 exit: exit,
                 lot: lot,
                 risk: parseFloat(document.getElementById('t-risk').value) || null,
+                rrTarget: document.getElementById('t-rr-target').value || null,
                 pnl: pnl,
                 rr: calcRR(entry, parseFloat(document.getElementById('t-sl').value), parseFloat(document.getElementById('t-tp').value)),
                 tf: document.getElementById('t-tf').value,
@@ -1393,7 +1411,7 @@
             let html = `<table class="trade-table">
                 <thead><tr>
                     <th>Date</th><th>Pair</th><th>Dir</th><th>Entry</th><th>SL</th><th>TP</th><th>Exit</th>
-                    <th>Lot</th><th>Risk</th><th>R:R</th><th>P&L</th><th>Status</th><th>Action</th>
+                    <th>Lot</th><th>Risk</th><th>R:R Target</th><th>R:R Actual</th><th>P&L</th><th>Status</th><th>Action</th>
                 </tr></thead><tbody>`;
             
             filtered.forEach(t => {
@@ -1407,6 +1425,7 @@
                     <td>${t.exit || '-'}</td>
                     <td>${t.lot}</td>
                     <td>${t.risk ? t.risk + '%' : '-'}</td>
+                    <td>${t.rrTarget || '-'}</td>
                     <td>1:${t.rr || '-'}</td>
                     <td style="color:${(t.pnl||0)>=0?'var(--green)':'var(--red)'}; font-weight:600;">${formatJournalMoney(t.pnl)}</td>
                     <td><span class="badge badge-${t.status}">${t.status.toUpperCase()}</span></td>
@@ -1423,6 +1442,7 @@
                             <div class="detail-item"><strong>Timeframe</strong>${t.tf}</div>
                             <div class="detail-item"><strong>Session</strong>${t.session}</div>
                             <div class="detail-item"><strong>Risk</strong>${t.risk ? t.risk + '%' : '-'}</div>
+                            <div class="detail-item"><strong>R:R Target</strong>${t.rrTarget || '-'}</div>
                             <div class="detail-item"><strong>Mood</strong>${t.mood || '-'}</div>
                             <div class="detail-item" style="grid-column:1/-1;"><strong>Setup</strong>${t.setup || '-'}</div>
                             <div class="detail-item" style="grid-column:1/-1;"><strong>Review</strong>${t.review || '-'}</div>
@@ -1556,9 +1576,9 @@
 
         function exportCSV() {
             if (trades.length === 0) { alert('No trades to export.'); return; }
-            let csv = 'Date,Pair,Direction,Strategy,Entry,SL,TP,Exit,Lot,Risk%,PnL,RR,Timeframe,Session,Mood,Status\n';
+            let csv = 'Date,Pair,Direction,Strategy,Entry,SL,TP,Exit,Lot,Risk%,RRTarget,PnL,RRActual,Timeframe,Session,Mood,Status\n';
             trades.forEach(t => {
-                csv += `${t.date},${t.pair},${t.direction},${t.strategy || ''},${t.entry},${t.sl},${t.tp || ''},${t.exit || ''},${t.lot},${t.risk || ''},${t.pnl || 0},${t.rr || ''},${t.tf},${t.session},${t.mood || ''},${t.status}\n`;
+                csv += `${t.date},${t.pair},${t.direction},${t.strategy || ''},${t.entry},${t.sl},${t.tp || ''},${t.exit || ''},${t.lot},${t.risk || ''},${t.rrTarget || ''},${t.pnl || 0},${t.rr || ''},${t.tf},${t.session},${t.mood || ''},${t.status}\n`;
             });
             let blob = new Blob([csv], { type: 'text/csv' });
             let url = URL.createObjectURL(blob);
@@ -1601,6 +1621,7 @@
             document.getElementById('t-exit').value = trade.exit || '';
             document.getElementById('t-lot').value = trade.lot;
             document.getElementById('t-risk').value = trade.risk || '';
+            document.getElementById('t-rr-target').value = trade.rrTarget || '';
             document.getElementById('t-pnl').value = trade.pnl || '';
             document.getElementById('t-tf').value = trade.tf;
             document.getElementById('t-session').value = trade.session;
@@ -1684,6 +1705,7 @@
                 exit: exit,
                 lot: lot,
                 risk: parseFloat(document.getElementById('t-risk').value) || null,
+                rrTarget: document.getElementById('t-rr-target').value || null,
                 pnl: pnl,
                 rr: calcRR(entry, parseFloat(document.getElementById('t-sl').value), parseFloat(document.getElementById('t-tp').value)),
                 tf: document.getElementById('t-tf').value,
@@ -1715,6 +1737,7 @@
             let cancelBtn = document.getElementById('cancel-edit-btn');
             if (cancelBtn) cancelBtn.style.display = 'none';
 
+            document.getElementById('t-rr-target').value = '';
             document.getElementById('t-date').valueAsDate = new Date();
         }
 
@@ -1775,6 +1798,9 @@
         // ==================== TRADE RISK PRESETS ====================
         function setTradeRisk(val) {
             document.getElementById('t-risk').value = val;
+        }
+        function setTradeRR(val) {
+            document.getElementById('t-rr-target').value = val;
         }
 
         // ==================== CALENDAR VIEWS ====================
@@ -1843,6 +1869,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             initCalc();
             initFilters();
+            document.getElementById('t-rr-target').value = '';
             document.getElementById('t-date').valueAsDate = new Date();
             checkAccountSetup();
         });
