@@ -1089,6 +1089,7 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
     <!-- ===== NAVBAR ===== -->
@@ -1302,7 +1303,19 @@
                             <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Risk:Reward Ratio (Reward Side)</label>
                             <div style="display:flex; align-items:center; gap:8px;">
                                 <span style="color:var(--text-muted); font-weight:700; font-family:Orbitron;">1:</span>
-                                <input type="number" id="prof-rr" value="2" min="0.5" max="10" step="0.5" style="flex:1; background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:1rem; font-family:Orbitron;" oninput="calcProfitability()">
+                                <input type="number" id="prof-rr" value="2" min="0.1" max="1000" step="0.1" style="flex:1; background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:1rem; font-family:Orbitron;" oninput="calcProfitability()">
+                            </div>
+                            <div style="display:flex; gap:4px; margin-top:8px; flex-wrap:wrap;">
+                                <button type="button" onclick="setProfRR(1.2)" style="flex:1; min-width:50px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1.2</button>
+                                <button type="button" onclick="setProfRR(1.3)" style="flex:1; min-width:50px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1.3</button>
+                                <button type="button" onclick="setProfRR(1.4)" style="flex:1; min-width:50px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1.4</button>
+                                <button type="button" onclick="setProfRR(1.5)" style="flex:1; min-width:50px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1.5</button>
+                                <button type="button" onclick="setProfRR(2)" style="flex:1; min-width:50px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">2</button>
+                                <button type="button" onclick="setProfRR(3)" style="flex:1; min-width:50px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">3</button>
+                                <button type="button" onclick="setProfRR(5)" style="flex:1; min-width:50px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">5</button>
+                                <button type="button" onclick="setProfRR(10)" style="flex:1; min-width:50px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">10</button>
+                                <button type="button" onclick="setProfRR(50)" style="flex:1; min-width:50px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">50</button>
+                                <button type="button" onclick="setProfRR(100)" style="flex:1; min-width:50px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">100</button>
                             </div>
                         </div>
                         <div>
@@ -1498,12 +1511,15 @@
                                 </select>
                             </div>
                             <div style="margin-bottom:16px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Profit Target</label>
-                                <select id="setup-target" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
-                                    <option value="8">8% Profit Target</option>
-                                    <option value="10" selected>10% Profit Target</option>
-                                    <option value="5">5% Profit Target</option>
-                                </select>
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Profit Target (%)</label>
+                                <input type="number" id="setup-target" value="10" min="1" max="100" step="0.5" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center; margin-bottom:10px;">
+                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                    <button type="button" onclick="document.getElementById('setup-target').value=5" style="flex:1; min-width:60px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">5%</button>
+                                    <button type="button" onclick="document.getElementById('setup-target').value=8" style="flex:1; min-width:60px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">8%</button>
+                                    <button type="button" onclick="document.getElementById('setup-target').value=10" style="flex:1; min-width:60px; padding:8px; background:var(--red); border:1px solid var(--red); border-radius:8px; color:white; cursor:pointer; font-size:0.8rem; font-weight:700;">10%</button>
+                                    <button type="button" onclick="document.getElementById('setup-target').value=15" style="flex:1; min-width:60px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">15%</button>
+                                    <button type="button" onclick="document.getElementById('setup-target').value=20" style="flex:1; min-width:60px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">20%</button>
+                                </div>
                             </div>
                             <div>
                                 <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Challenge Status</label>
@@ -1531,6 +1547,7 @@
                     <button class="journal-tab" onclick="showJournalTab('j-calendar')">📅 Calendar</button>
                     <button class="journal-tab" onclick="showJournalTab('j-analysis')">🧠 Analysis</button>
                     <button class="journal-tab" onclick="showJournalTab('j-challenge')">🎯 Challenge</button>
+                    <button class="journal-tab" onclick="showJournalTab('j-risk')">🛡️ Risk & Money</button>
                 </div>
 
                 <div id="j-dashboard" class="journal-panel active">
@@ -1605,10 +1622,10 @@
                                         <option value="Other">Other</option>
                                     </select>
                                 </div>
-                                <div class="form-group"><label>Entry Price</label><input type="number" id="t-entry" step="0.00001" placeholder="e.g. 1.08500 (optional)"></div>
+                                <div class="form-group"><label>Entry Price <span style="color:var(--red);">*</span> <span style="font-size:0.7rem; color:var(--text-dim); font-weight:400;">(required for auto P&L)</span></label><input type="number" id="t-entry" step="0.00001" placeholder="e.g. 1.08500" required></div>
                                 <div class="form-group"><label>Stop Loss</label><input type="number" id="t-sl" step="0.00001" placeholder="e.g. 1.08000 (optional)"></div>
                                 <div class="form-group"><label>Take Profit</label><input type="number" id="t-tp" step="0.00001" placeholder="e.g. 1.09500"></div>
-                                <div class="form-group"><label>Exit Price</label><input type="number" id="t-exit" step="0.00001" placeholder="Leave blank if open"></div>
+                                <div class="form-group"><label>Exit Price <span style="color:var(--red);">*</span> <span style="font-size:0.7rem; color:var(--text-dim); font-weight:400;">(required for auto P&L, or use manual P&L below)</span></label><input type="number" id="t-exit" step="0.00001" placeholder="e.g. 1.09500"></div>
                                 <div class="form-group"><label>Lot Size</label><input type="number" id="t-lot" step="0.01" placeholder="e.g. 0.10 (optional)"></div>
                                 <div class="form-group">
                                     <label>Risk %</label>
@@ -1622,15 +1639,21 @@
                                 </div>
                                 <div class="form-group">
                                     <label>R:R Target</label>
-                                    <input type="text" id="t-rr-target" placeholder="e.g. 1:2" style="text-align:center; font-weight:600;" readonly>
-                                    <div style="display:flex; gap:4px; margin-top:6px;">
-                                        <button type="button" onclick="setTradeRR('1:1.5')" style="flex:1; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:1.5</button>
-                                        <button type="button" onclick="setTradeRR('1:2')" style="flex:1; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:2</button>
-                                        <button type="button" onclick="setTradeRR('1:3')" style="flex:1; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:3</button>
-                                        <button type="button" onclick="setTradeRR('1:5')" style="flex:1; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:5</button>
+                                    <input type="text" id="t-rr-target" placeholder="Type your R:R (e.g. 1:2, 1.2, 1:1.4)" style="text-align:center; font-weight:600;" oninput="parseRRInput(this.value)">
+                                    <div style="display:flex; gap:4px; margin-top:6px; flex-wrap:wrap;">
+                                        <button type="button" onclick="setTradeRR('1:1.2')" style="flex:1; min-width:55px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:1.2</button>
+                                        <button type="button" onclick="setTradeRR('1:1.3')" style="flex:1; min-width:55px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:1.3</button>
+                                        <button type="button" onclick="setTradeRR('1:1.4')" style="flex:1; min-width:55px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:1.4</button>
+                                        <button type="button" onclick="setTradeRR('1:1.5')" style="flex:1; min-width:55px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:1.5</button>
+                                        <button type="button" onclick="setTradeRR('1:2')" style="flex:1; min-width:55px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:2</button>
+                                        <button type="button" onclick="setTradeRR('1:3')" style="flex:1; min-width:55px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:3</button>
+                                        <button type="button" onclick="setTradeRR('1:5')" style="flex:1; min-width:55px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:5</button>
+                                        <button type="button" onclick="setTradeRR('1:10')" style="flex:1; min-width:55px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:10</button>
+                                        <button type="button" onclick="setTradeRR('1:50')" style="flex:1; min-width:55px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:50</button>
+                                        <button type="button" onclick="setTradeRR('1:100')" style="flex:1; min-width:55px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1:100</button>
                                     </div>
                                 </div>
-                                <div class="form-group"><label>P&L ($)</label><input type="number" id="t-pnl" step="0.01" placeholder="Auto-calculated or manual"></div>
+                                <div class="form-group"><label>P&L ($) <span style="font-size:0.7rem; color:var(--gold); font-weight:400;">— Optional: override auto-calculation</span></label><input type="number" id="t-pnl" step="0.01" placeholder="Leave blank for auto-calc from Entry/Exit"></div>
                                 <div class="form-group">
                                     <label>Timeframe</label>
                                     <select id="t-tf">
@@ -1669,13 +1692,14 @@
                                     </select>
                                 </div>
                                 <div class="form-group" id="funded-target-group" style="display:none;">
-                                    <label>Challenge Target</label>
-                                    <select id="t-target">
-                                        <option value="8">8% Profit Target</option>
-                                        <option value="10">10% Profit Target</option>
-                                        <option value="5">5% Profit Target</option>
-                                        <option value="custom">Custom</option>
-                                    </select>
+                                    <label>Challenge Target (%)</label>
+                                    <input type="number" id="t-target" value="10" min="1" max="100" step="0.5" placeholder="e.g. 10" style="text-align:center; font-weight:600; font-family:Orbitron;">
+                                    <div style="display:flex; gap:4px; margin-top:6px; flex-wrap:wrap;">
+                                        <button type="button" onclick="document.getElementById('t-target').value=5" style="flex:1; min-width:50px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">5%</button>
+                                        <button type="button" onclick="document.getElementById('t-target').value=8" style="flex:1; min-width:50px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">8%</button>
+                                        <button type="button" onclick="document.getElementById('t-target').value=10" style="flex:1; min-width:50px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">10%</button>
+                                        <button type="button" onclick="document.getElementById('t-target').value=15" style="flex:1; min-width:50px; padding:6px 8px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">15%</button>
+                                    </div>
                                 </div>
                                 <div class="form-group" id="funded-status-group" style="display:none;">
                                     <label>Challenge Status</label>
@@ -1904,7 +1928,184 @@
     </div>
 
     
-    <!-- ===== NEWS PAGE ===== -->
+    
+                <!-- RISK & MONEY MANAGEMENT PANEL -->
+                <div id="j-risk" class="journal-panel">
+                    <!-- Loss Limit Alarm Banner -->
+                    <div id="risk-alarm-banner" style="display:none; margin-bottom:24px; padding:16px 24px; border-radius:12px; text-align:center; font-weight:700; font-size:1rem; font-family:Orbitron; background:var(--red-dim); color:var(--red); border:1px solid var(--red);">
+                        ⚠️ ALARM: Daily/Weekly loss limit exceeded!
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:24px; margin-bottom:24px;">
+                        <!-- Loss Limits Settings -->
+                        <div class="card">
+                            <h2 style="font-size:1.1rem; margin-bottom:20px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">🚨</span> Loss Limit Alarm</h2>
+
+                            <div style="margin-bottom:20px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Daily Loss Limit ($)</label>
+                                <input type="number" id="risk-daily-limit" value="100" min="1" step="10" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;" onchange="checkRiskAlarms()">
+                                <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+                                    <button onclick="document.getElementById('risk-daily-limit').value=50" style="flex:1; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">$50</button>
+                                    <button onclick="document.getElementById('risk-daily-limit').value=100" style="flex:1; padding:8px; background:var(--red); border:1px solid var(--red); border-radius:8px; color:white; cursor:pointer; font-size:0.8rem; font-weight:700;">$100</button>
+                                    <button onclick="document.getElementById('risk-daily-limit').value=200" style="flex:1; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">$200</button>
+                                    <button onclick="document.getElementById('risk-daily-limit').value=500" style="flex:1; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">$500</button>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:20px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Weekly Loss Limit ($)</label>
+                                <input type="number" id="risk-weekly-limit" value="300" min="1" step="10" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center;" onchange="checkRiskAlarms()">
+                                <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+                                    <button onclick="document.getElementById('risk-weekly-limit').value=150" style="flex:1; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">$150</button>
+                                    <button onclick="document.getElementById('risk-weekly-limit').value=300" style="flex:1; padding:8px; background:var(--red); border:1px solid var(--red); border-radius:8px; color:white; cursor:pointer; font-size:0.8rem; font-weight:700;">$300</button>
+                                    <button onclick="document.getElementById('risk-weekly-limit').value=500" style="flex:1; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">$500</button>
+                                    <button onclick="document.getElementById('risk-weekly-limit').value=1000" style="flex:1; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">$1K</button>
+                                </div>
+                            </div>
+
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+                                <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                    <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Today's P&L</div>
+                                    <div id="risk-today-pnl" style="font-size:1.6rem; font-weight:800; font-family:Orbitron; color:var(--text);">$0.00</div>
+                                </div>
+                                <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                    <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">This Week P&L</div>
+                                    <div id="risk-week-pnl" style="font-size:1.6rem; font-weight:800; font-family:Orbitron; color:var(--text);">$0.00</div>
+                                </div>
+                            </div>
+
+                            <div id="risk-alarm-status" style="padding:12px; border-radius:10px; text-align:center; font-size:0.9rem; font-weight:700; background:var(--green-dim); color:var(--green);">✅ All limits within range</div>
+                        </div>
+
+                        <!-- Position Size Presets -->
+                        <div class="card">
+                            <h2 style="font-size:1.1rem; margin-bottom:20px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">💾</span> Position Size Presets</h2>
+
+                            <div style="margin-bottom:20px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Preset Name</label>
+                                <input type="text" id="preset-name" placeholder="e.g. Gold Scalp 0.5%" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; margin-bottom:10px;">
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                                    <div>
+                                        <label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:6px; font-weight:700;">Balance</label>
+                                        <input type="number" id="preset-balance" value="10000" step="100" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:0.95rem; font-family:Orbitron;">
+                                    </div>
+                                    <div>
+                                        <label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:6px; font-weight:700;">Risk %</label>
+                                        <input type="number" id="preset-risk" value="1.0" step="0.1" min="0.1" max="10" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:0.95rem; font-family:Orbitron;">
+                                    </div>
+                                    <div>
+                                        <label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:6px; font-weight:700;">Stop Loss (pips)</label>
+                                        <input type="number" id="preset-sl" value="50" min="1" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:0.95rem; font-family:Orbitron;">
+                                    </div>
+                                    <div>
+                                        <label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:6px; font-weight:700;">Take Profit (pips)</label>
+                                        <input type="number" id="preset-tp" value="100" min="1" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:0.95rem; font-family:Orbitron;">
+                                    </div>
+                                    <div>
+                                        <label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:6px; font-weight:700;">Pair</label>
+                                        <select id="preset-pair" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:0.95rem;">
+                                            <option value="XAUUSD">XAU/USD</option>
+                                            <option value="EURUSD" selected>EUR/USD</option>
+                                            <option value="GBPUSD">GBP/USD</option>
+                                            <option value="USDJPY">USD/JPY</option>
+                                            <option value="AUDUSD">AUD/USD</option>
+                                            <option value="USDCAD">USD/CAD</option>
+                                            <option value="USDCHF">USD/CHF</option>
+                                            <option value="NZDUSD">NZD/USD</option>
+                                            <option value="GBPJPY">GBP/JPY</option>
+                                            <option value="EURJPY">EUR/JPY</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:6px; font-weight:700;">Leverage</label>
+                                        <select id="preset-leverage" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:0.95rem;">
+                                            <option value="1">1:1</option>
+                                            <option value="10">1:10</option>
+                                            <option value="20">1:20</option>
+                                            <option value="30">1:30</option>
+                                            <option value="50" selected>1:50</option>
+                                            <option value="100">1:100</option>
+                                            <option value="200">1:200</option>
+                                            <option value="500">1:500</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button onclick="savePreset()" style="width:100%; margin-top:14px; padding:12px; background:linear-gradient(135deg, var(--red), #991b1b); border:none; border-radius:10px; color:white; font-size:0.95rem; font-weight:700; cursor:pointer; font-family:Orbitron;">💾 Save Preset</button>
+                            </div>
+
+                            <h3 style="font-size:0.9rem; margin-bottom:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">Saved Presets</h3>
+                            <div id="preset-list" style="display:flex; flex-direction:column; gap:10px;">
+                                <p style="color:var(--text-muted); text-align:center; padding:20px; font-size:0.9rem;">No presets saved yet.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Drawdown Tracker -->
+                    <div class="card" style="margin-bottom:24px;">
+                        <h2 style="font-size:1.1rem; margin-bottom:20px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📉</span> Drawdown Tracker & Equity Curve</h2>
+
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; margin-bottom:24px;">
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Starting Balance</div>
+                                <div id="dd-start-balance" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--text);">$0.00</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Current Balance</div>
+                                <div id="dd-current-balance" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--text);">$0.00</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Peak Balance</div>
+                                <div id="dd-peak-balance" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--green);">$0.00</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Max Drawdown</div>
+                                <div id="dd-max-drawdown" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--red);">$0.00</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Max DD %</div>
+                                <div id="dd-max-drawdown-pct" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--red);">0.0%</div>
+                            </div>
+                            <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center;">
+                                <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Current DD %</div>
+                                <div id="dd-current-drawdown-pct" style="font-size:1.4rem; font-weight:800; font-family:Orbitron; color:var(--gold);">0.0%</div>
+                            </div>
+                        </div>
+
+                        <!-- Equity Curve Chart -->
+                        <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:20px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                                <h3 style="margin:0; font-size:1rem; color:var(--text);">Equity Curve</h3>
+                                <div style="display:flex; gap:16px; font-size:0.8rem; color:var(--text-muted);">
+                                    <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; background:var(--green); border-radius:2px;"></span> Equity</span>
+                                    <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; background:var(--red); border-radius:2px;"></span> Drawdown</span>
+                                    <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; background:var(--gold); border-radius:2px;"></span> Peak</span>
+                                </div>
+                            </div>
+                            <div id="equity-curve-chart" style="height:280px; position:relative; overflow:hidden;">
+                                <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.9rem;">No trade data to display equity curve.</div>
+                            </div>
+                        </div>
+
+                        <!-- Drawdown Bar -->
+                        <div style="margin-bottom:16px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                <span style="color:var(--text-muted); font-size:0.85rem; font-weight:600;">Current Drawdown from Peak</span>
+                                <span id="dd-bar-label" style="color:var(--red); font-weight:700; font-size:0.9rem;">0%</span>
+                            </div>
+                            <div style="height:20px; background:var(--bg-input); border-radius:10px; overflow:hidden; border:1px solid var(--border);">
+                                <div id="dd-bar-fill" style="height:100%; width:0%; background:linear-gradient(90deg, var(--green), var(--gold), var(--red)); border-radius:10px; transition:width 0.6s ease;"></div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-top:6px;">
+                                <span style="font-size:0.7rem; color:var(--text-dim);">0% (Peak)</span>
+                                <span style="font-size:0.7rem; color:var(--text-dim);">5%</span>
+                                <span style="font-size:0.7rem; color:var(--text-dim);">10%</span>
+                                <span style="font-size:0.7rem; color:var(--text-dim);">15%</span>
+                                <span style="font-size:0.7rem; color:var(--red);">20%+ (Danger)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!-- ===== NEWS PAGE ===== -->
     <div id="page-news" class="page" style="display:none;">
         <div class="app-container" style="padding-top:90px;">
             <h1 style="font-family:Orbitron; font-size:2rem; margin-bottom:8px; text-align:center;">📰 Forex News & Economic Calendar</h1>
@@ -2484,6 +2685,7 @@
                                 if (savedJournalTab === 'j-calendar') renderCalendar();
                                 if (savedJournalTab === 'j-analysis') renderAnalysis();
                                 if (savedJournalTab === 'j-challenge') renderChallenge();
+                                if (savedJournalTab === 'j-risk') renderRiskPanel();
                             } else {
                                 updateDashboard();
                             }
@@ -2988,6 +3190,12 @@
             let dir = document.getElementById('t-dir').value;
             let lot = parseFloat(document.getElementById('t-lot').value) || null;
             let manualPnl = document.getElementById('t-pnl').value;
+
+            if (!manualPnl && (!entry || !exit)) {
+                alert('⚠️ Please enter both Entry Price and Exit Price for auto P&L calculation.\nOr enter a manual P&L value to override.');
+                return;
+            }
+
             let pnl = manualPnl ? parseFloat(manualPnl) : (entry && exit && lot ? calcAutoPnL(dir, entry, exit, lot, pair) : 0);
             let accountType = document.getElementById('t-account-type').value;
             let trade = {
@@ -3346,6 +3554,12 @@
             let dir = document.getElementById('t-dir').value;
             let lot = parseFloat(document.getElementById('t-lot').value) || null;
             let manualPnl = document.getElementById('t-pnl').value;
+
+            if (!manualPnl && (!entry || !exit)) {
+                alert('⚠️ Please enter both Entry Price and Exit Price for auto P&L calculation.\nOr enter a manual P&L value to override.');
+                return;
+            }
+
             let pnl = manualPnl ? parseFloat(manualPnl) : (entry && exit && lot ? calcAutoPnL(dir, entry, exit, lot, pair) : 0);
             let updAccountType = document.getElementById('t-account-type').value;
             trades[idx] = {
@@ -3476,6 +3690,22 @@
         }
         function setTradeRisk(val) { document.getElementById('t-risk').value = val; }
         function setTradeRR(val) { document.getElementById('t-rr-target').value = val; }
+        function parseRRInput(val) {
+            if (!val) return;
+            let normalized = val.trim().replace(',', '.').replace('-', ':');
+            if (!normalized.includes(':') && !isNaN(parseFloat(normalized))) {
+                normalized = '1:' + parseFloat(normalized);
+            }
+            else if (!normalized.includes(':') && normalized.includes('.')) {
+                let num = parseFloat(normalized);
+                if (!isNaN(num)) normalized = '1:' + num;
+            }
+            document.getElementById('t-rr-target').value = normalized;
+        }
+        function setProfRR(val) {
+            document.getElementById('prof-rr').value = val;
+            calcProfitability();
+        }
         function setCalendarView(view) {
             calendarView = view;
             document.getElementById('cal-week-btn').style.background = view === 'week' ? 'var(--red)' : 'transparent';
@@ -3668,7 +3898,210 @@
             if (id === 'j-calendar') renderCalendar();
             if (id === 'j-analysis') renderAnalysis();
             if (id === 'j-challenge') renderChallenge();
+            if (id === 'j-risk') renderRiskPanel();
         };
+
+
+        // ==================== RISK & MONEY MANAGEMENT ====================
+        let riskPresets = JSON.parse(localStorage.getItem('forex_risk_presets') || '[]');
+        let riskLimits = JSON.parse(localStorage.getItem('forex_risk_limits') || '{"daily":100,"weekly":300}');
+
+        function getTodayPnl() {
+            let today = new Date().toISOString().split('T')[0];
+            return trades.filter(t => t.date === today).reduce((s, t) => s + (t.pnl || 0), 0);
+        }
+        function getWeekPnl() {
+            let today = new Date();
+            let startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay());
+            let endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            let startStr = startOfWeek.toISOString().split('T')[0];
+            let endStr = endOfWeek.toISOString().split('T')[0];
+            return trades.filter(t => t.date >= startStr && t.date <= endStr).reduce((s, t) => s + (t.pnl || 0), 0);
+        }
+
+        function checkRiskAlarms() {
+            let dailyLimit = parseFloat(document.getElementById('risk-daily-limit').value) || 100;
+            let weeklyLimit = parseFloat(document.getElementById('risk-weekly-limit').value) || 300;
+            riskLimits = { daily: dailyLimit, weekly: weeklyLimit };
+            localStorage.setItem('forex_risk_limits', JSON.stringify(riskLimits));
+
+            let todayPnl = getTodayPnl();
+            let weekPnl = getWeekPnl();
+            let todayLoss = todayPnl < 0 ? Math.abs(todayPnl) : 0;
+            let weekLoss = weekPnl < 0 ? Math.abs(weekPnl) : 0;
+
+            document.getElementById('risk-today-pnl').textContent = formatJournalMoney(todayPnl);
+            document.getElementById('risk-today-pnl').style.color = todayPnl >= 0 ? 'var(--green)' : 'var(--red)';
+            document.getElementById('risk-week-pnl').textContent = formatJournalMoney(weekPnl);
+            document.getElementById('risk-week-pnl').style.color = weekPnl >= 0 ? 'var(--green)' : 'var(--red)';
+
+            let alarmBanner = document.getElementById('risk-alarm-banner');
+            let alarmStatus = document.getElementById('risk-alarm-status');
+            let alarmTriggered = false;
+            let alarmMsg = '';
+
+            if (todayLoss >= dailyLimit) {
+                alarmTriggered = true;
+                alarmMsg = '⚠️ DAILY LOSS LIMIT EXCEEDED! Stop trading for today.';
+            }
+            if (weekLoss >= weeklyLimit) {
+                alarmTriggered = true;
+                alarmMsg = '⚠️ WEEKLY LOSS LIMIT EXCEEDED! Take a break and review.';
+            }
+            if (todayLoss >= dailyLimit && weekLoss >= weeklyLimit) {
+                alarmMsg = '⚠️ BOTH LIMITS EXCEEDED! Stop trading immediately.';
+            }
+
+            if (alarmTriggered) {
+                alarmBanner.style.display = 'block';
+                alarmBanner.textContent = alarmMsg;
+                alarmStatus.textContent = alarmMsg;
+                alarmStatus.style.background = 'var(--red-dim)';
+                alarmStatus.style.color = 'var(--red)';
+            } else {
+                alarmBanner.style.display = 'none';
+                let dailyPct = dailyLimit > 0 ? ((todayLoss / dailyLimit) * 100).toFixed(0) : 0;
+                let weeklyPct = weeklyLimit > 0 ? ((weekLoss / weeklyLimit) * 100).toFixed(0) : 0;
+                alarmStatus.textContent = '✅ Daily: ' + dailyPct + '% | Weekly: ' + weeklyPct + '% of limit used';
+                alarmStatus.style.background = 'var(--green-dim)';
+                alarmStatus.style.color = 'var(--green)';
+            }
+        }
+
+        function savePreset() {
+            let name = document.getElementById('preset-name').value.trim();
+            if (!name) { alert('Please enter a preset name.'); return; }
+            let preset = {
+                id: Date.now(),
+                name: name,
+                balance: parseFloat(document.getElementById('preset-balance').value) || 10000,
+                risk: parseFloat(document.getElementById('preset-risk').value) || 1.0,
+                sl: parseInt(document.getElementById('preset-sl').value) || 50,
+                tp: parseInt(document.getElementById('preset-tp').value) || 100,
+                pair: document.getElementById('preset-pair').value,
+                leverage: document.getElementById('preset-leverage').value
+            };
+            riskPresets.push(preset);
+            localStorage.setItem('forex_risk_presets', JSON.stringify(riskPresets));
+            renderPresets();
+            document.getElementById('preset-name').value = '';
+            alert('✅ Preset saved!');
+        }
+        function loadPreset(id) {
+            let p = riskPresets.find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('balance').value = p.balance;
+            document.getElementById('riskSlider').value = p.risk;
+            document.getElementById('stopLoss').value = p.sl;
+            document.getElementById('takeProfit').value = p.tp;
+            document.getElementById('currencyPair').value = p.pair;
+            document.getElementById('leverage').value = p.leverage;
+            calculate();
+            showAppTab('calculator');
+            alert('✅ Preset loaded into Calculator!');
+        }
+        function deletePreset(id) {
+            if (!confirm('Delete this preset?')) return;
+            riskPresets = riskPresets.filter(x => x.id !== id);
+            localStorage.setItem('forex_risk_presets', JSON.stringify(riskPresets));
+            renderPresets();
+        }
+        function renderPresets() {
+            let container = document.getElementById('preset-list');
+            if (riskPresets.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:20px; font-size:0.9rem;">No presets saved yet.</p>';
+                return;
+            }
+            container.innerHTML = riskPresets.map(p =>
+                `<div style="display:flex; align-items:center; gap:10px; padding:12px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; transition:all 0.2s;">
+                    <div style="flex:1; min-width:0;">
+                        <div style="font-weight:700; font-size:0.9rem; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</div>
+                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">${p.pair} · ${p.risk}% risk · ${p.sl}pip SL · 1:${p.leverage}</div>
+                    </div>
+                    <button onclick="loadPreset(${p.id})" style="padding:8px 14px; background:var(--green-dim); border:1px solid var(--green); border-radius:8px; color:var(--green); cursor:pointer; font-size:0.8rem; font-weight:700; white-space:nowrap;">Load →</button>
+                    <button onclick="deletePreset(${p.id})" style="padding:8px 12px; background:var(--red-dim); border:1px solid var(--red); border-radius:8px; color:var(--red); cursor:pointer; font-size:0.8rem; font-weight:700;">🗑️</button>
+                </div>`
+            ).join('');
+        }
+
+        function renderEquityCurve() {
+            if (trades.length === 0) {
+                document.getElementById('equity-curve-chart').innerHTML = '<div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.9rem;">No trade data to display equity curve.</div>';
+                document.getElementById('dd-start-balance').textContent = formatJournalMoney(accountBalance);
+                document.getElementById('dd-current-balance').textContent = formatJournalMoney(accountBalance);
+                document.getElementById('dd-peak-balance').textContent = formatJournalMoney(accountBalance);
+                document.getElementById('dd-max-drawdown').textContent = '$0.00';
+                document.getElementById('dd-max-drawdown-pct').textContent = '0.0%';
+                document.getElementById('dd-current-drawdown-pct').textContent = '0.0%';
+                document.getElementById('dd-bar-fill').style.width = '0%';
+                document.getElementById('dd-bar-label').textContent = '0%';
+                return;
+            }
+
+            let sortedTrades = trades.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+            let equity = accountBalance;
+            let equityPoints = [{ equity: equity, date: sortedTrades[0].date }];
+            let peak = equity;
+            let maxDD = 0;
+            let maxDDPct = 0;
+
+            sortedTrades.forEach(t => {
+                equity += (t.pnl || 0);
+                equityPoints.push({ equity: equity, date: t.date, pnl: t.pnl || 0 });
+                if (equity > peak) peak = equity;
+                let dd = peak - equity;
+                let ddPct = peak > 0 ? (dd / peak) * 100 : 0;
+                if (dd > maxDD) { maxDD = dd; maxDDPct = ddPct; }
+            });
+
+            let currentDD = peak - equity;
+            let currentDDPct = peak > 0 ? (currentDD / peak) * 100 : 0;
+
+            document.getElementById('dd-start-balance').textContent = formatJournalMoney(accountBalance);
+            document.getElementById('dd-current-balance').textContent = formatJournalMoney(equity);
+            document.getElementById('dd-peak-balance').textContent = formatJournalMoney(peak);
+            document.getElementById('dd-max-drawdown').textContent = formatJournalMoney(-maxDD);
+            document.getElementById('dd-max-drawdown-pct').textContent = maxDDPct.toFixed(1) + '%';
+            document.getElementById('dd-current-drawdown-pct').textContent = currentDDPct.toFixed(1) + '%';
+
+            let barWidth = Math.min((currentDDPct / 20) * 100, 100);
+            document.getElementById('dd-bar-fill').style.width = barWidth + '%';
+            document.getElementById('dd-bar-label').textContent = currentDDPct.toFixed(1) + '%';
+
+            let minEq = Math.min(...equityPoints.map(e => e.equity), accountBalance);
+            let maxEq = Math.max(...equityPoints.map(e => e.equity), accountBalance);
+            let range = maxEq - minEq || 1;
+            let chartHeight = 280;
+
+            let html = '<div style="display:flex; align-items:flex-end; gap:1px; height:100%; padding:0 4px; position:relative;">';
+
+            let peakY = chartHeight - ((peak - minEq) / range) * chartHeight;
+            html += `<div style="position:absolute; left:0; right:0; top:${peakY}px; height:1px; background:var(--gold); opacity:0.5; z-index:1;"></div>`;
+
+            let zeroY = chartHeight - ((accountBalance - minEq) / range) * chartHeight;
+            html += `<div style="position:absolute; left:0; right:0; top:${zeroY}px; height:1px; background:var(--text-dim); opacity:0.3; z-index:1;"></div>`;
+
+            equityPoints.forEach((pt, i) => {
+                let h = ((pt.equity - minEq) / range) * chartHeight;
+                let color = pt.equity >= accountBalance ? 'var(--green)' : 'var(--red)';
+                if (pt.equity === peak) color = 'var(--gold)';
+                let tooltip = (pt.date || '') + ' — ' + formatJournalMoney(pt.equity);
+                html += `<div style="flex:1; min-width:3px; height:${h}px; background:${color}; border-radius:2px 2px 0 0; opacity:0.85; transition:all 0.2s; position:relative;" title="${tooltip}"></div>`;
+            });
+            html += '</div>';
+            document.getElementById('equity-curve-chart').innerHTML = html;
+        }
+
+        function renderRiskPanel() {
+            let savedLimits = JSON.parse(localStorage.getItem('forex_risk_limits') || '{"daily":100,"weekly":300}');
+            document.getElementById('risk-daily-limit').value = savedLimits.daily || 100;
+            document.getElementById('risk-weekly-limit').value = savedLimits.weekly || 300;
+            checkRiskAlarms();
+            renderPresets();
+            renderEquityCurve();
+        }
 
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', function() {
