@@ -1090,6 +1090,7 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
     <!-- ===== NAVBAR ===== -->
@@ -1469,113 +1470,111 @@
             <!-- JOURNAL -->
             <div id="journal" class="app-panel">
                 <div id="account-setup" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,5,0.95); z-index:1000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
-                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:48px; max-width:480px; width:90%; text-align:center; box-shadow:0 25px 80px rgba(0,0,0,0.6);">
+                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:48px; max-width:560px; width:90%; text-align:center; box-shadow:0 25px 80px rgba(0,0,0,0.6);">
                         <div style="font-size:3.5rem; margin-bottom:20px;">💰</div>
-                        <h2 style="font-size:1.5rem; margin-bottom:10px; color:var(--text); font-family:Orbitron;">Set Your Account</h2>
-                        <p style="color:var(--text-muted); margin-bottom:28px; font-size:0.95rem;">Configure your account to begin tracking your journal.</p>
+                        <h2 style="font-size:1.5rem; margin-bottom:10px; color:var(--text); font-family:Orbitron;">Your Accounts</h2>
+                        <p style="color:var(--text-muted); margin-bottom:28px; font-size:0.95rem;">Manage multiple trading accounts. Select one to journal, or add a new account.</p>
 
-                        <!-- Account Type Toggle -->
-                        <div style="display:flex; gap:8px; margin-bottom:24px; background:var(--bg-input); border-radius:12px; padding:4px; border:1px solid var(--border);">
-                            <button id="setup-type-personal" onclick="setSetupType('personal')" style="flex:1; padding:12px; border-radius:10px; border:none; background:var(--red); color:white; font-weight:700; font-size:0.9rem; cursor:pointer; transition:all 0.2s;">👤 Personal</button>
-                            <button id="setup-type-funded" onclick="setSetupType('funded')" style="flex:1; padding:12px; border-radius:10px; border:none; background:transparent; color:var(--text-muted); font-weight:600; font-size:0.9rem; cursor:pointer; transition:all 0.2s;">🎯 Funded</button>
+                        <!-- Account List -->
+                        <div id="account-list" style="margin-bottom:24px; display:flex; flex-direction:column; gap:10px; max-height:300px; overflow-y:auto; padding-right:8px;">
+                            <!-- Accounts rendered here -->
                         </div>
 
-                        <div style="margin-bottom:24px;">
-                            <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Account Balance</label>
-                            <div style="display:flex; gap:10px; margin-bottom:14px;">
-                                <select id="setup-currency" style="width:100px; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
+                        <div style="display:flex; gap:12px; margin-bottom:20px;">
+                            <button onclick="showAddAccountForm()" style="flex:1; padding:14px; background:linear-gradient(135deg, var(--red), #991b1b); border:none; border-radius:12px; color:white; font-size:1rem; font-weight:700; cursor:pointer; font-family:Orbitron; box-shadow:0 4px 20px rgba(220,38,38,0.4);">➕ Add Account</button>
+                            <button onclick="closeAccountSetup()" style="flex:1; padding:14px; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; color:var(--text-muted); font-size:1rem; font-weight:600; cursor:pointer;">Close</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Account Form (hidden initially) -->
+                <div id="add-account-form" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,5,0.95); z-index:1001; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
+                    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:40px; max-width:480px; width:90%; box-shadow:0 25px 80px rgba(0,0,0,0.6);">
+                        <h2 style="font-size:1.3rem; margin-bottom:8px; color:var(--text); font-family:Orbitron;">➕ Add New Account</h2>
+                        <p style="color:var(--text-muted); margin-bottom:24px; font-size:0.9rem;">Configure a new trading account.</p>
+
+                        <div style="margin-bottom:16px;">
+                            <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Account Name</label>
+                            <input type="text" id="new-acc-name" value="My Account" placeholder="e.g. FTMO 5K Challenge" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-weight:600; text-align:center;">
+                        </div>
+
+                        <div style="display:flex; gap:8px; margin-bottom:16px; background:var(--bg-input); border-radius:12px; padding:4px; border:1px solid var(--border);">
+                            <button id="new-type-personal" onclick="setNewAccountType('personal')" style="flex:1; padding:12px; border-radius:10px; border:none; background:var(--red); color:white; font-weight:700; font-size:0.9rem; cursor:pointer;">👤 Personal</button>
+                            <button id="new-type-funded" onclick="setNewAccountType('funded')" style="flex:1; padding:12px; border-radius:10px; border:none; background:transparent; color:var(--text-muted); font-weight:600; font-size:0.9rem; cursor:pointer;">🎯 Funded</button>
+                        </div>
+
+                        <div style="margin-bottom:16px;">
+                            <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Account Balance</label>
+                            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                                <select id="new-acc-currency" style="width:100px; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
                                     <option value="USD">$ USD</option>
                                     <option value="EUR">€ EUR</option>
                                     <option value="GBP">£ GBP</option>
                                 </select>
-                                <input type="number" id="setup-balance" value="5000" min="100" step="100" style="flex:1; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px 16px; color:var(--text); font-size:1rem; text-align:center; font-weight:700; font-family:Orbitron;">
+                                <input type="number" id="new-acc-balance" value="5000" min="100" step="100" style="flex:1; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; text-align:center; font-weight:700; font-family:Orbitron;">
                             </div>
-                            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
-                                <button onclick="setQuickBalance(1000)" style="padding:10px 18px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; color:var(--text-muted); cursor:pointer; font-size:0.85rem; font-weight:600; transition:all 0.2s;">$1K</button>
-                                <button onclick="setQuickBalance(5000)" style="padding:10px 18px; background:var(--red); border:1px solid var(--red); border-radius:10px; color:white; cursor:pointer; font-size:0.85rem; font-weight:700; transition:all 0.2s;">$5K</button>
-                                <button onclick="setQuickBalance(10000)" style="padding:10px 18px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; color:var(--text-muted); cursor:pointer; font-size:0.85rem; font-weight:600; transition:all 0.2s;">$10K</button>
-                                <button onclick="setQuickBalance(25000)" style="padding:10px 18px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; color:var(--text-muted); cursor:pointer; font-size:0.85rem; font-weight:600; transition:all 0.2s;">$25K</button>
-                                <button onclick="setQuickBalance(50000)" style="padding:10px 18px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; color:var(--text-muted); cursor:pointer; font-size:0.85rem; font-weight:600; transition:all 0.2s;">$50K</button>
-                                <button onclick="setQuickBalance(100000)" style="padding:10px 18px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; color:var(--text-muted); cursor:pointer; font-size:0.85rem; font-weight:600; transition:all 0.2s;">$100K</button>
+                            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+                                <button onclick="document.getElementById('new-acc-balance').value=1000" style="padding:8px 14px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">$1K</button>
+                                <button onclick="document.getElementById('new-acc-balance').value=5000" style="padding:8px 14px; background:var(--red); border:1px solid var(--red); border-radius:8px; color:white; cursor:pointer; font-size:0.8rem; font-weight:700;">$5K</button>
+                                <button onclick="document.getElementById('new-acc-balance').value=10000" style="padding:8px 14px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">$10K</button>
+                                <button onclick="document.getElementById('new-acc-balance').value=25000" style="padding:8px 14px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">$25K</button>
+                                <button onclick="document.getElementById('new-acc-balance').value=50000" style="padding:8px 14px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">$50K</button>
+                                <button onclick="document.getElementById('new-acc-balance').value=100000" style="padding:8px 14px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">$100K</button>
                             </div>
                         </div>
 
-                        <!-- Funded Account Fields (hidden by default) -->
-                        <div id="setup-funded-fields" style="display:none; margin-bottom:24px;">
-                            <div style="margin-bottom:16px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Funded Provider</label>
-                                <input type="text" id="setup-provider" list="provider-list" value="FTMO" placeholder="e.g. FTMO, Alpha Capital, The5ers..." style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center; margin-bottom:8px;">
-                                <datalist id="provider-list">
-                                    <option value="FTMO">
-                                    <option value="Alpha Capital">
-                                    <option value="The5ers">
-                                    <option value="MyForexFunds">
-                                    <option value="True Forex Funds">
-                                    <option value="FundedNext">
-                                    <option value="Apex Trader Funding">
-                                    <option value="Topstep">
-                                    <option value="Lux Trading Firm">
-                                    <option value="SurgeTrader">
-                                    <option value="E8 Funding">
-                                    <option value="Blue Guardian">
-                                    <option value="FunderPro">
-                                    <option value="PropFirmMatch">
-                                    <option value="Other">
+                        <div id="new-funded-fields" style="display:none; margin-bottom:16px;">
+                            <div style="margin-bottom:14px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:6px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Funded Provider</label>
+                                <input type="text" id="new-acc-provider" list="new-provider-list" value="FTMO" placeholder="e.g. FTMO, Alpha Capital..." style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:12px; color:var(--text); font-size:1rem; font-family:Orbitron; text-align:center; margin-bottom:6px;">
+                                <datalist id="new-provider-list">
+                                    <option value="FTMO"><option value="Alpha Capital"><option value="The5ers"><option value="MyForexFunds"><option value="True Forex Funds"><option value="FundedNext"><option value="Apex Trader Funding"><option value="Topstep"><option value="Lux Trading Firm"><option value="SurgeTrader"><option value="E8 Funding"><option value="Blue Guardian"><option value="FunderPro"><option value="PropFirmMatch"><option value="Other">
                                 </datalist>
-                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                    <button type="button" onclick="document.getElementById('setup-provider').value='FTMO'" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">FTMO</button>
-                                    <button type="button" onclick="document.getElementById('setup-provider').value='Alpha Capital'" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">Alpha</button>
-                                    <button type="button" onclick="document.getElementById('setup-provider').value='The5ers'" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">The5ers</button>
-                                    <button type="button" onclick="document.getElementById('setup-provider').value='FundedNext'" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">FundedNext</button>
-                                    <button type="button" onclick="document.getElementById('setup-provider').value='True Forex Funds'" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">TFF</button>
-                                    <button type="button" onclick="document.getElementById('setup-provider').value='MyForexFunds'" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">MFF</button>
-                                    <button type="button" onclick="document.getElementById('setup-provider').value='Apex Trader Funding'" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">Apex</button>
-                                    <button type="button" onclick="document.getElementById('setup-provider').value='Topstep'" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">Topstep</button>
+                                <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                                    <button type="button" onclick="document.getElementById('new-acc-provider').value='FTMO'" style="flex:1; min-width:60px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">FTMO</button>
+                                    <button type="button" onclick="document.getElementById('new-acc-provider').value='Alpha Capital'" style="flex:1; min-width:60px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">Alpha</button>
+                                    <button type="button" onclick="document.getElementById('new-acc-provider').value='The5ers'" style="flex:1; min-width:60px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">The5ers</button>
+                                    <button type="button" onclick="document.getElementById('new-acc-provider').value='FundedNext'" style="flex:1; min-width:60px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">FundedNext</button>
+                                    <button type="button" onclick="document.getElementById('new-acc-provider').value='True Forex Funds'" style="flex:1; min-width:60px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">TFF</button>
+                                    <button type="button" onclick="document.getElementById('new-acc-provider').value='MyForexFunds'" style="flex:1; min-width:60px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">MFF</button>
+                                    <button type="button" onclick="document.getElementById('new-acc-provider').value='Apex Trader Funding'" style="flex:1; min-width:60px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">Apex</button>
+                                    <button type="button" onclick="document.getElementById('new-acc-provider').value='Topstep'" style="flex:1; min-width:60px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">Topstep</button>
                                 </div>
                             </div>
-                            <div style="margin-bottom:16px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Challenge Steps</label>
-                                <select id="setup-steps" onchange="updateStepTargets()" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; margin-bottom:10px;">
-                                    <option value="2" selected>2-Step Challenge (e.g. FTMO)</option>
+                            <div style="margin-bottom:14px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:6px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Challenge Steps</label>
+                                <select id="new-acc-steps" onchange="updateNewStepTargets()" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:12px; color:var(--text); font-size:1rem;">
+                                    <option value="2" selected>2-Step Challenge</option>
                                     <option value="3">3-Step Challenge</option>
                                     <option value="1">1-Step / Instant Funding</option>
                                 </select>
                             </div>
-                            <div style="margin-bottom:16px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Current Phase</label>
-                                <select id="setup-phase" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
+                            <div style="margin-bottom:14px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:6px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Current Phase</label>
+                                <select id="new-acc-phase" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:12px; color:var(--text); font-size:1rem;">
                                     <option value="1">Phase 1 — Step 1</option>
                                     <option value="2">Phase 2 — Step 2</option>
                                     <option value="3">Phase 3 — Step 3 / Funded</option>
                                 </select>
                             </div>
-                            <div style="margin-bottom:16px;">
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Step Targets (%)</label>
-                                <div id="setup-step-targets" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
-                                    <div>
-                                        <label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:6px; font-weight:700;">Step 1 Target</label>
-                                        <input type="number" id="setup-target-1" value="10" min="0" max="100" step="0.5" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:0.95rem; font-family:Orbitron; text-align:center;">
-                                    </div>
-                                    <div>
-                                        <label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:6px; font-weight:700;">Step 2 Target</label>
-                                        <input type="number" id="setup-target-2" value="5" min="0" max="100" step="0.5" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:0.95rem; font-family:Orbitron; text-align:center;">
-                                    </div>
-                                    <div id="setup-target-3-container">
-                                        <label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:6px; font-weight:700;">Step 3 Target</label>
-                                        <input type="number" id="setup-target-3" value="0" min="0" max="100" step="0.5" placeholder="No target" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:12px; color:var(--text); font-size:0.95rem; font-family:Orbitron; text-align:center;">
-                                    </div>
+                            <div style="margin-bottom:14px;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:6px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Step Targets (%)</label>
+                                <div id="new-step-targets" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+                                    <div><label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:4px; font-weight:700;">Step 1</label><input type="number" id="new-target-1" value="10" min="0" max="100" step="0.5" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:10px; color:var(--text); font-size:0.9rem; font-family:Orbitron; text-align:center;"></div>
+                                    <div><label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:4px; font-weight:700;">Step 2</label><input type="number" id="new-target-2" value="5" min="0" max="100" step="0.5" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:10px; color:var(--text); font-size:0.9rem; font-family:Orbitron; text-align:center;"></div>
+                                    <div id="new-target-3-box"><label style="display:block; color:var(--text-muted); font-size:0.7rem; margin-bottom:4px; font-weight:700;">Step 3</label><input type="number" id="new-target-3" value="0" min="0" max="100" step="0.5" placeholder="None" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:10px; color:var(--text); font-size:0.9rem; font-family:Orbitron; text-align:center;"></div>
                                 </div>
-                                <div style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;">
-                                    <button type="button" onclick="setAllTargets(8,5,0)" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">FTMO: 8%/5%</button>
-                                    <button type="button" onclick="setAllTargets(10,5,0)" style="flex:1; min-width:80px; padding:8px; background:var(--red); border:1px solid var(--red); border-radius:8px; color:white; cursor:pointer; font-size:0.8rem; font-weight:700;">FTMO: 10%/5%</button>
-                                    <button type="button" onclick="setAllTargets(10,10,10)" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">3×10%</button>
-                                    <button type="button" onclick="setAllTargets(10,8,5)" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">10/8/5%</button>
-                                    <button type="button" onclick="setAllTargets(15,0,0)" style="flex:1; min-width:80px; padding:8px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-size:0.8rem; font-weight:600;">1-Step 15%</button>
+                                <div style="display:flex; gap:4px; margin-top:8px; flex-wrap:wrap;">
+                                    <button type="button" onclick="setNewTargets(8,5,0)" style="flex:1; min-width:70px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">FTMO 8/5</button>
+                                    <button type="button" onclick="setNewTargets(10,5,0)" style="flex:1; min-width:70px; padding:6px; background:var(--red); border:1px solid var(--red); border-radius:6px; color:white; cursor:pointer; font-size:0.75rem; font-weight:700;">FTMO 10/5</button>
+                                    <button type="button" onclick="setNewTargets(10,10,10)" style="flex:1; min-width:70px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">3×10%</button>
+                                    <button type="button" onclick="setNewTargets(10,8,5)" style="flex:1; min-width:70px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">10/8/5</button>
+                                    <button type="button" onclick="setNewTargets(15,0,0)" style="flex:1; min-width:70px; padding:6px; background:var(--bg-input); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem; font-weight:600;">1-Step 15%</button>
                                 </div>
                             </div>
                             <div>
-                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Challenge Status</label>
-                                <select id="setup-status" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem;">
+                                <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:6px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Challenge Status</label>
+                                <select id="new-acc-status" style="width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:12px; color:var(--text); font-size:1rem;">
                                     <option value="active" selected>🟡 Active — In Progress</option>
                                     <option value="passed">✅ Passed Challenge</option>
                                     <option value="failed">❌ Failed / Blown</option>
@@ -1583,13 +1582,23 @@
                             </div>
                         </div>
 
-                        <button onclick="saveAccountSetup()" style="width:100%; padding:16px; background:linear-gradient(135deg, var(--red), #991b1b); border:none; border-radius:12px; color:white; font-size:1rem; font-weight:700; cursor:pointer; transition:all 0.2s; font-family:Orbitron; box-shadow:0 4px 20px rgba(220,38,38,0.4);">Start Journaling</button>
-                        <p style="color:var(--text-dim); font-size:0.75rem; margin-top:14px;">You can change this anytime in settings</p>
+                        <div style="display:flex; gap:10px;">
+                            <button onclick="saveNewAccount()" style="flex:1; padding:14px; background:linear-gradient(135deg, var(--red), #991b1b); border:none; border-radius:12px; color:white; font-size:1rem; font-weight:700; cursor:pointer; font-family:Orbitron;">Save Account</button>
+                            <button onclick="closeAddAccountForm()" style="flex:1; padding:14px; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; color:var(--text-muted); font-size:1rem; font-weight:600; cursor:pointer;">Cancel</button>
+                        </div>
                     </div>
                 </div>
 
-                <div id="account-settings-bar" style="display:none; margin-bottom:20px; text-align:right;">
-                    <button onclick="showAccountSettings()" style="padding:10px 20px; background:var(--bg-card); border:1px solid var(--border); border-radius:10px; color:var(--text-muted); cursor:pointer; font-size:0.85rem; font-weight:600; transition:all 0.2s;">💰 <span id="account-display">$5,000.00</span> — Edit</button>
+                <div id="account-settings-bar" style="display:none; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <select id="account-selector" onchange="switchAccount(this.value)" style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:10px 14px; color:var(--text); font-size:0.9rem; font-weight:600; min-width:200px; cursor:pointer;">
+                            <!-- Options rendered by JS -->
+                        </select>
+                        <span id="account-badge" style="padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; background:var(--gold-dim); color:var(--gold);">🏢 Funded</span>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button onclick="showAccountSettings()" style="padding:10px 20px; background:var(--bg-card); border:1px solid var(--border); border-radius:10px; color:var(--text-muted); cursor:pointer; font-size:0.85rem; font-weight:600; transition:all 0.2s;">⚙️ Manage Accounts</button>
+                    </div>
                 </div>
 
                 <div class="journal-tabs">
@@ -1626,6 +1635,13 @@
                         <h2 style="font-size:1.1rem; margin-bottom:16px; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">➕</span> Log New Trade</h2>
                         <form id="tradeForm" onsubmit="addTrade(event)">
                             <div class="form-grid">
+                                <div class="form-group full">
+                                    <label>Account</label>
+                                    <select id="t-account-id" onchange="updateTradeAccountInfo(); toggleFundedFields();" style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:14px; color:var(--text); font-size:1rem; font-weight:600;">
+                                        <!-- Rendered by JS -->
+                                    </select>
+                                    <div id="trade-account-info" style="margin-top:8px; font-size:0.8rem; color:var(--text-muted); padding:8px 12px; background:var(--bg-card); border-radius:8px; border:1px solid var(--border);"></div>
+                                </div>
                                 <div class="form-group"><label>Date</label><input type="date" id="t-date" required></div>
                                 <div class="form-group">
                                     <label>Pair</label>
@@ -1728,13 +1744,7 @@
                                         <option value="Overlap">London-NY Overlap</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <label>Account Type</label>
-                                    <select id="t-account-type" onchange="toggleFundedFields()">
-                                        <option value="personal">Personal Account</option>
-                                        <option value="funded">Funded Account</option>
-                                    </select>
-                                </div>
+                                
                                 <div class="form-group" id="funded-provider-group" style="display:none;">
                                     <label>Funded Provider</label>
                                     <input type="text" id="t-provider" list="trade-provider-list" value="FTMO" placeholder="e.g. FTMO, Alpha Capital..." style="text-align:center; font-weight:600; font-family:Orbitron;">
@@ -1821,6 +1831,7 @@
                             <h2 style="margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px; font-family:Orbitron;"><span style="font-size:1.3rem;">📋</span> Trade History</h2>
                             <div style="display:flex; gap:8px; flex-wrap:wrap;">
                                 <select id="filter-pair" onchange="renderTrades()" style="width:auto; min-width:120px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:10px 14px; color:var(--text); font-size:0.9rem;"><option value="">All Pairs</option></select>
+                                <select id="filter-account" onchange="renderTrades()" style="width:auto; min-width:160px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:10px 14px; color:var(--text); font-size:0.9rem;"><option value="">All Accounts</option></select>
                                 <select id="filter-result" onchange="renderTrades()" style="width:auto; min-width:120px; background:var(--bg-input); border:1px solid var(--border); border-radius:10px; padding:10px 14px; color:var(--text); font-size:0.9rem;">
                                     <option value="">All Results</option>
                                     <option value="win">Wins</option>
@@ -3209,6 +3220,297 @@
             document.getElementById('riskBar').style.width = '0%';
         }
 
+        // ==================== MULTI-ACCOUNT SYSTEM ====================
+        let accounts = JSON.parse(localStorage.getItem('forex_journal_accounts') || '[]');
+        let currentAccountId = localStorage.getItem('forex_journal_current_account') || null;
+
+        function getAccounts() {
+            return JSON.parse(localStorage.getItem('forex_journal_accounts') || '[]');
+        }
+        function saveAccounts(accs) {
+            localStorage.setItem('forex_journal_accounts', JSON.stringify(accs));
+            accounts = accs;
+        }
+        function getCurrentAccount() {
+            let accs = getAccounts();
+            return accs.find(a => a.id == currentAccountId) || accs[0] || null;
+        }
+        function setCurrentAccount(id) {
+            currentAccountId = id;
+            localStorage.setItem('forex_journal_current_account', id);
+        }
+        function getAccountById(id) {
+            return getAccounts().find(a => a.id == id);
+        }
+        function getAccountDisplayName(acc) {
+            if (!acc) return 'Unknown';
+            let sym = acc.currency === 'USD' ? '$' : acc.currency === 'EUR' ? '€' : '£';
+            let name = acc.name || 'Account';
+            if (acc.type === 'funded') {
+                let steps = acc.steps || 2;
+                let phase = acc.phase === '1' ? 'S1' : acc.phase === '2' ? 'S2' : 'S3';
+                let status = acc.status === 'passed' ? '✅' : acc.status === 'failed' ? '❌' : '🟡';
+                return name + ' | ' + sym + acc.balance.toLocaleString() + ' | ' + steps + '-Step ' + phase + ' ' + status;
+            }
+            return name + ' | ' + sym + acc.balance.toLocaleString();
+        }
+        function getAccountShortLabel(acc) {
+            if (!acc) return 'Unknown';
+            let sym = acc.currency === 'USD' ? '$' : acc.currency === 'EUR' ? '€' : '£';
+            let name = acc.name || 'Account';
+            if (acc.type === 'funded') {
+                let phase = acc.phase === '1' ? 'S1' : acc.phase === '2' ? 'S2' : 'S3';
+                return name + ' — ' + sym + acc.balance.toLocaleString() + ' (' + (acc.provider || 'Funded') + ' ' + phase + ')';
+            }
+            return name + ' — ' + sym + acc.balance.toLocaleString();
+        }
+
+        function renderAccountList() {
+            let accs = getAccounts();
+            let list = document.getElementById('account-list');
+            if (!list) return;
+            if (accs.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-muted); padding:20px;">No accounts yet. Click "Add Account" to get started.</p>';
+                return;
+            }
+            list.innerHTML = accs.map(acc => {
+                let isCurrent = acc.id == currentAccountId;
+                let sym = acc.currency === 'USD' ? '$' : acc.currency === 'EUR' ? '€' : '£';
+                let statusEmoji = acc.status === 'passed' ? '✅' : acc.status === 'failed' ? '❌' : '🟡';
+                let typeEmoji = acc.type === 'funded' ? '🏢' : '👤';
+                return `<div style="display:flex; align-items:center; gap:12px; padding:14px; background:var(--bg-input); border:1px solid ${isCurrent ? 'var(--red)' : 'var(--border)'}; border-radius:14px; cursor:pointer; transition:all 0.2s;" onclick="selectAccountFromList(${acc.id})" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='${isCurrent ? 'var(--red)' : 'var(--border)'}'">
+                    <div style="font-size:1.5rem;">${typeEmoji}</div>
+                    <div style="flex:1; text-align:left;">
+                        <div style="font-weight:700; font-size:0.95rem; color:var(--text);">${acc.name || 'Account'}</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">${sym}${acc.balance.toLocaleString()} · ${acc.type === 'funded' ? (acc.provider || 'Funded') + ' ' + (acc.steps || 2) + '-Step' : 'Personal'} ${statusEmoji}</div>
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                        ${isCurrent ? '<span style="padding:4px 10px; background:var(--red); color:white; border-radius:6px; font-size:0.75rem; font-weight:700;">ACTIVE</span>' : '<span style="padding:4px 10px; background:var(--bg-card); border:1px solid var(--border); color:var(--text-muted); border-radius:6px; font-size:0.75rem; font-weight:600;">Select</span>'}
+                        <button onclick="event.stopPropagation(); editAccount(${acc.id})" style="padding:6px 10px; background:var(--bg-card); border:1px solid var(--border); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:0.75rem;">✏️</button>
+                        <button onclick="event.stopPropagation(); deleteAccount(${acc.id})" style="padding:6px 10px; background:var(--bg-card); border:1px solid var(--border); border-radius:6px; color:var(--red); cursor:pointer; font-size:0.75rem;">🗑️</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function selectAccountFromList(id) {
+            setCurrentAccount(id);
+            renderAccountList();
+            renderAccountSelector();
+            updateAccountBadge();
+            updateDashboard();
+            renderTrades();
+            renderChallenge();
+            renderRiskPanel();
+            closeAccountSetup();
+        }
+
+        function renderAccountSelector() {
+            let sel = document.getElementById('account-selector');
+            let tAcc = document.getElementById('t-account-id');
+            let accs = getAccounts();
+            if (sel) {
+                sel.innerHTML = accs.map(a => `<option value="${a.id}" ${a.id == currentAccountId ? 'selected' : ''}>${getAccountShortLabel(a)}</option>`).join('');
+            }
+            if (tAcc) {
+                tAcc.innerHTML = accs.map(a => `<option value="${a.id}" ${a.id == currentAccountId ? 'selected' : ''}>${getAccountShortLabel(a)}</option>`).join('');
+                updateTradeAccountInfo();
+            }
+        }
+
+        function updateAccountBadge() {
+            let badge = document.getElementById('account-badge');
+            let acc = getCurrentAccount();
+            if (!badge || !acc) return;
+            if (acc.type === 'funded') {
+                let status = acc.status === 'passed' ? '✅ Passed' : acc.status === 'failed' ? '❌ Failed' : '🟡 Active';
+                badge.textContent = '🏢 ' + (acc.provider || 'Funded') + ' — ' + status;
+                badge.style.background = acc.status === 'passed' ? 'var(--green-dim)' : acc.status === 'failed' ? 'var(--red-dim)' : 'var(--gold-dim)';
+                badge.style.color = acc.status === 'passed' ? 'var(--green)' : acc.status === 'failed' ? 'var(--red)' : 'var(--gold)';
+            } else {
+                badge.textContent = '👤 Personal Account';
+                badge.style.background = 'var(--green-dim)';
+                badge.style.color = 'var(--green)';
+            }
+        }
+
+        function switchAccount(id) {
+            setCurrentAccount(id);
+            updateAccountBadge();
+            updateDashboard();
+            renderTrades();
+            renderChallenge();
+            renderRiskPanel();
+            renderCalendar();
+            updateTradeAccountInfo();
+        }
+
+        function showAddAccountForm() {
+            document.getElementById('add-account-form').style.display = 'flex';
+            setNewAccountType('personal');
+            document.getElementById('new-acc-name').value = 'My Account';
+            document.getElementById('new-acc-balance').value = 5000;
+            document.getElementById('new-acc-currency').value = 'USD';
+            document.getElementById('new-acc-provider').value = 'FTMO';
+            document.getElementById('new-acc-steps').value = 2;
+            document.getElementById('new-acc-phase').value = 1;
+            document.getElementById('new-target-1').value = 10;
+            document.getElementById('new-target-2').value = 5;
+            document.getElementById('new-target-3').value = 0;
+            document.getElementById('new-acc-status').value = 'active';
+            updateNewStepTargets();
+        }
+        function closeAddAccountForm() {
+            document.getElementById('add-account-form').style.display = 'none';
+        }
+        function setNewAccountType(type) {
+            document.getElementById('new-type-personal').style.background = type === 'personal' ? 'var(--red)' : 'transparent';
+            document.getElementById('new-type-personal').style.color = type === 'personal' ? 'white' : 'var(--text-muted)';
+            document.getElementById('new-type-funded').style.background = type === 'funded' ? 'var(--gold)' : 'transparent';
+            document.getElementById('new-type-funded').style.color = type === 'funded' ? 'white' : 'var(--text-muted)';
+            document.getElementById('new-funded-fields').style.display = type === 'funded' ? 'block' : 'none';
+        }
+        function updateNewStepTargets() {
+            let steps = parseInt(document.getElementById('new-acc-steps').value) || 2;
+            let box = document.getElementById('new-target-3-box');
+            if (box) box.style.display = steps >= 3 ? 'block' : 'none';
+        }
+        function setNewTargets(t1, t2, t3) {
+            document.getElementById('new-target-1').value = t1;
+            document.getElementById('new-target-2').value = t2;
+            document.getElementById('new-target-3').value = t3;
+        }
+        function saveNewAccount() {
+            let acc = {
+                id: Date.now(),
+                name: document.getElementById('new-acc-name').value || 'My Account',
+                balance: parseFloat(document.getElementById('new-acc-balance').value) || 5000,
+                currency: document.getElementById('new-acc-currency').value || 'USD',
+                type: document.getElementById('new-type-personal').style.background.includes('red') || document.getElementById('new-type-personal').style.backgroundColor === 'rgb(220, 38, 38)' ? 'personal' : 'funded',
+                provider: document.getElementById('new-acc-provider').value || 'FTMO',
+                steps: parseInt(document.getElementById('new-acc-steps').value) || 2,
+                phase: document.getElementById('new-acc-phase').value || '1',
+                target1: parseFloat(document.getElementById('new-target-1').value) || 10,
+                target2: parseFloat(document.getElementById('new-target-2').value) || 5,
+                target3: parseFloat(document.getElementById('new-target-3').value) || 0,
+                status: document.getElementById('new-acc-status').value || 'active',
+                startDate: new Date().toISOString().split('T')[0]
+            };
+            // Check which button is actually active
+            let pBtn = document.getElementById('new-type-personal');
+            let fBtn = document.getElementById('new-type-funded');
+            if (pBtn && fBtn) {
+                let pActive = pBtn.style.background.includes('linear-gradient') || pBtn.style.backgroundColor === 'rgb(220, 38, 38)' || getComputedStyle(pBtn).backgroundColor === 'rgb(220, 38, 38)';
+                acc.type = pActive ? 'personal' : 'funded';
+            }
+            let accs = getAccounts();
+            accs.push(acc);
+            saveAccounts(accs);
+            if (!currentAccountId) setCurrentAccount(acc.id);
+            renderAccountList();
+            renderAccountSelector();
+            updateAccountBadge();
+            closeAddAccountForm();
+            updateDashboard();
+            renderChallenge();
+            renderRiskPanel();
+        }
+        function deleteAccount(id) {
+            if (!confirm('Delete this account and all its trades? This cannot be undone!')) return;
+            let accs = getAccounts().filter(a => a.id != id);
+            saveAccounts(accs);
+            trades = trades.filter(t => t.accountId != id);
+            localStorage.setItem('forex_journal_trades', JSON.stringify(trades));
+            if (currentAccountId == id) {
+                currentAccountId = accs.length > 0 ? accs[0].id : null;
+                localStorage.setItem('forex_journal_current_account', currentAccountId);
+            }
+            renderAccountList();
+            renderAccountSelector();
+            updateAccountBadge();
+            updateDashboard();
+            renderTrades();
+            renderChallenge();
+        }
+        function editAccount(id) {
+            let acc = getAccountById(id);
+            if (!acc) return;
+            // Populate edit form (reuse add form for simplicity)
+            document.getElementById('new-acc-name').value = acc.name || 'Account';
+            document.getElementById('new-acc-balance').value = acc.balance;
+            document.getElementById('new-acc-currency').value = acc.currency || 'USD';
+            setNewAccountType(acc.type);
+            if (acc.type === 'funded') {
+                document.getElementById('new-acc-provider').value = acc.provider || 'FTMO';
+                document.getElementById('new-acc-steps').value = acc.steps || 2;
+                document.getElementById('new-acc-phase').value = acc.phase || '1';
+                document.getElementById('new-target-1').value = acc.target1 || 10;
+                document.getElementById('new-target-2').value = acc.target2 || 5;
+                document.getElementById('new-target-3').value = acc.target3 || 0;
+                document.getElementById('new-acc-status').value = acc.status || 'active';
+                updateNewStepTargets();
+            }
+            showAddAccountForm();
+            // Override the save button to update instead
+            let oldSave = document.querySelector('#add-account-form button[onclick="saveNewAccount()"]');
+            if (oldSave) {
+                oldSave.textContent = 'Update Account';
+                oldSave.setAttribute('onclick', 'updateExistingAccount(' + id + ')');
+            }
+        }
+        function updateExistingAccount(id) {
+            let accs = getAccounts();
+            let idx = accs.findIndex(a => a.id == id);
+            if (idx === -1) return;
+            let pBtn = document.getElementById('new-type-personal');
+            let fBtn = document.getElementById('new-type-funded');
+            let type = 'personal';
+            if (pBtn && fBtn) {
+                let pActive = pBtn.style.background.includes('linear-gradient') || pBtn.style.backgroundColor === 'rgb(220, 38, 38)' || getComputedStyle(pBtn).backgroundColor === 'rgb(220, 38, 38)';
+                type = pActive ? 'personal' : 'funded';
+            }
+            accs[idx] = {
+                id: id,
+                name: document.getElementById('new-acc-name').value || 'My Account',
+                balance: parseFloat(document.getElementById('new-acc-balance').value) || 5000,
+                currency: document.getElementById('new-acc-currency').value || 'USD',
+                type: type,
+                provider: document.getElementById('new-acc-provider').value || 'FTMO',
+                steps: parseInt(document.getElementById('new-acc-steps').value) || 2,
+                phase: document.getElementById('new-acc-phase').value || '1',
+                target1: parseFloat(document.getElementById('new-target-1').value) || 10,
+                target2: parseFloat(document.getElementById('new-target-2').value) || 5,
+                target3: parseFloat(document.getElementById('new-target-3').value) || 0,
+                status: document.getElementById('new-acc-status').value || 'active',
+                startDate: accs[idx].startDate
+            };
+            saveAccounts(accs);
+            let oldSave = document.querySelector('#add-account-form button[onclick="updateExistingAccount(' + id + ')"]');
+            if (oldSave) {
+                oldSave.textContent = 'Save Account';
+                oldSave.setAttribute('onclick', 'saveNewAccount()');
+            }
+            closeAddAccountForm();
+            renderAccountList();
+            renderAccountSelector();
+            updateAccountBadge();
+            updateDashboard();
+            renderChallenge();
+        }
+        function updateTradeAccountInfo() {
+            let accId = document.getElementById('t-account-id').value;
+            let acc = getAccountById(accId);
+            let info = document.getElementById('trade-account-info');
+            if (!acc || !info) return;
+            let sym = acc.currency === 'USD' ? '$' : acc.currency === 'EUR' ? '€' : '£';
+            if (acc.type === 'funded') {
+                let status = acc.status === 'passed' ? '✅ Passed' : acc.status === 'failed' ? '❌ Failed' : '🟡 Active';
+                info.innerHTML = `🏢 <strong>${acc.provider || 'Funded'}</strong> · ${acc.steps || 2}-Step · Phase ${acc.phase || '1'} · ${sym}${acc.balance.toLocaleString()} · ${status}`;
+            } else {
+                info.innerHTML = `👤 <strong>Personal Account</strong> · ${sym}${acc.balance.toLocaleString()}`;
+            }
+        }
+
         // ==================== JOURNAL ====================
         let trades = JSON.parse(localStorage.getItem('forex_journal_trades') || '[]');
 
@@ -3246,12 +3548,19 @@
         }
 
         function toggleFundedFields() {
-            let type = document.getElementById('t-account-type').value;
-            let display = type === 'funded' ? 'block' : 'none';
+            let accId = document.getElementById('t-account-id').value;
+            let acc = getAccountById(accId);
+            let display = (acc && acc.type === 'funded') ? 'block' : 'none';
             document.getElementById('funded-provider-group').style.display = display;
             document.getElementById('funded-phase-group').style.display = display;
             document.getElementById('funded-target-group').style.display = display;
             document.getElementById('funded-status-group').style.display = display;
+            if (acc && acc.type === 'funded') {
+                document.getElementById('t-provider').value = acc.provider || 'FTMO';
+                document.getElementById('t-phase').value = acc.phase || '1';
+                document.getElementById('t-target').value = acc.target1 || 10;
+                document.getElementById('t-challenge-status').value = acc.status || 'active';
+            }
         }
 
         function selectMood(el) {
@@ -3267,6 +3576,9 @@
 
         function addTrade(e) {
             e.preventDefault();
+            let accId = document.getElementById('t-account-id').value;
+            let acc = getAccountById(accId);
+            if (!acc) { alert('Please select an account first.'); return; }
             let pair = document.getElementById('t-pair').value;
             let entry = parseFloat(document.getElementById('t-entry').value) || null;
             let exit = parseFloat(document.getElementById('t-exit').value) || null;
@@ -3280,18 +3592,19 @@
             }
 
             let pnl = manualPnl ? parseFloat(manualPnl) : (entry && exit && lot ? calcAutoPnL(dir, entry, exit, lot, pair) : 0);
-            let accountType = document.getElementById('t-account-type').value;
+            let accountType = acc.type;
             let trade = {
                 id: Date.now(),
+                accountId: accId,
                 date: document.getElementById('t-date').value,
                 pair: pair,
                 direction: dir,
                 strategy: document.getElementById('t-strategy').value,
                 accountType: accountType,
-                provider: accountType === 'funded' ? (document.getElementById('t-provider').value || setupProvider || 'FTMO') : null,
-                phase: accountType === 'funded' ? document.getElementById('t-phase').value : null,
-                challengeTarget: accountType === 'funded' ? document.getElementById('t-target').value : null,
-                challengeStatus: accountType === 'funded' ? document.getElementById('t-challenge-status').value : null,
+                provider: accountType === 'funded' ? (acc.provider || 'FTMO') : null,
+                phase: accountType === 'funded' ? (acc.phase || '1') : null,
+                challengeTarget: accountType === 'funded' ? (acc.target1 || 10) : null,
+                challengeStatus: accountType === 'funded' ? (acc.status || 'active') : null,
                 entry: entry,
                 sl: parseFloat(document.getElementById('t-sl').value) || null,
                 tp: parseFloat(document.getElementById('t-tp').value) || null,
@@ -3318,9 +3631,10 @@
             updateDashboard();
         }
 
-        function getPairStats() {
+        function getPairStats(tradeList) {
+            tradeList = tradeList || trades;
             let pairMap = {};
-            trades.forEach(t => {
+            tradeList.forEach(t => {
                 if (!pairMap[t.pair]) pairMap[t.pair] = { pnl: 0, count: 0, wins: 0 };
                 pairMap[t.pair].pnl += (t.pnl || 0);
                 pairMap[t.pair].count++;
@@ -3330,11 +3644,13 @@
         }
 
         function updateDashboard() {
-            let total = trades.length;
-            let wins = trades.filter(t => t.status === 'win').length;
-            let losses = trades.filter(t => t.status === 'loss').length;
+            let acc = getCurrentAccount();
+            let accTrades = acc ? trades.filter(t => t.accountId == acc.id) : trades;
+            let total = accTrades.length;
+            let wins = accTrades.filter(t => t.status === 'win').length;
+            let losses = accTrades.filter(t => t.status === 'loss').length;
             let winRate = total > 0 ? ((wins / total) * 100).toFixed(1) : 0;
-            let totalPnl = trades.reduce((s, t) => s + (t.pnl || 0), 0);
+            let totalPnl = accTrades.reduce((s, t) => s + (t.pnl || 0), 0);
             let grossProfit = trades.filter(t => t.pnl > 0).reduce((s, t) => s + t.pnl, 0);
             let grossLoss = Math.abs(trades.filter(t => t.pnl < 0).reduce((s, t) => s + t.pnl, 0));
             let pf = grossLoss > 0 ? (grossProfit / grossLoss).toFixed(2) : (grossProfit > 0 ? '∞' : '0.00');
@@ -3356,7 +3672,7 @@
             document.getElementById('dash-drawdown').textContent = formatJournalMoney(maxDD);
             document.getElementById('dash-rr').textContent = avgRR;
 
-            let pairMap = getPairStats();
+            let pairMap = getPairStats(accTrades);
             let pairHTML = '<div class="form-grid">';
             Object.entries(pairMap).forEach(([pair, data]) => {
                 let wr = ((data.wins / data.count) * 100).toFixed(0);
@@ -3370,7 +3686,7 @@
             if (Object.keys(pairMap).length === 0) pairHTML = '<p style="color:var(--text-muted); text-align:center; padding:40px;">No trades yet. Log your first trade!</p>';
             document.getElementById('pair-stats').innerHTML = pairHTML;
 
-            let notes = trades.filter(t => t.review).slice(0, 5);
+            let notes = accTrades.filter(t => t.review).slice(0, 5);
             document.getElementById('recent-notes').innerHTML = notes.length ? notes.map(t =>
                 `<div style="padding:16px; background:var(--bg-input); border-radius:12px; margin-bottom:10px; border:1px solid var(--border);">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
@@ -3383,9 +3699,11 @@
         }
 
         function renderTrades() {
+            let filterAccount = document.getElementById('filter-account').value;
             let filterPair = document.getElementById('filter-pair').value;
             let filterResult = document.getElementById('filter-result').value;
             let filtered = trades.filter(t => {
+                if (filterAccount && t.accountId != filterAccount) return false;
                 if (filterPair && t.pair !== filterPair) return false;
                 if (filterResult && t.status !== filterResult) return false;
                 return true;
@@ -3402,7 +3720,7 @@
                     <td>${formatDate(t.date)}</td>
                     <td><strong style="font-family:Orbitron;">${t.pair}</strong></td>
                     <td><span class="badge badge-${t.direction === 'Buy' ? 'buy' : 'sell'}">${t.direction}</span></td>
-                    <td>${t.accountType === 'funded' ? '<span style="color:var(--gold); font-weight:700;">🏢 ' + (t.provider || 'Funded') + ' P' + (t.phase || '?') + '</span>' : '<span style="color:var(--text-muted);">Personal</span>'}</td>
+                    <td>${getAccountShortLabel(getAccountById(t.accountId)) || (t.accountType === 'funded' ? '<span style="color:var(--gold); font-weight:700;">🏢 ' + (t.provider || 'Funded') + ' P' + (t.phase || '?') + '</span>' : '<span style="color:var(--text-muted);">Personal</span>')}</td>
                     <td>${t.entry}</td>
                     <td>${t.sl}</td>
                     <td>${t.tp || '-'}</td>
@@ -3424,7 +3742,7 @@
                             <div class="detail-item"><strong>Strategy</strong>${t.strategy || '-'}</div>
                             <div class="detail-item"><strong>Timeframe</strong>${t.tf}</div>
                             <div class="detail-item"><strong>Session</strong>${t.session}</div>
-                            <div class="detail-item"><strong>Account</strong>${t.accountType === 'funded' ? '🏢 ' + (t.provider || 'Funded') + ' — Phase ' + (t.phase || '?') + ' — ' + (t.challengeTarget || '?') + '% Target' : 'Personal Account'}</div>
+                            <div class="detail-item"><strong>Account</strong>${getAccountShortLabel(getAccountById(t.accountId)) || (t.accountType === 'funded' ? '🏢 ' + (t.provider || 'Funded') + ' — Phase ' + (t.phase || '?') : 'Personal Account')}</div>
                             <div class="detail-item"><strong>Provider</strong>${t.provider || '-'}</div>
                             <div class="detail-item"><strong>Challenge Status</strong>${t.challengeStatus === 'passed' ? '✅ Passed' : t.challengeStatus === 'failed' ? '❌ Failed' : t.challengeStatus === 'active' ? '🟡 Active' : '-'}</div>
                             <div class="detail-item"><strong>Risk</strong>${t.risk ? t.risk + '%' : '-'}</div>
@@ -3460,6 +3778,8 @@
         }
 
         function renderCalendar() {
+            let acc = getCurrentAccount();
+            let accTrades = acc ? trades.filter(t => t.accountId == acc.id) : trades;
             let today = new Date();
             let startOfWeek = new Date(today);
             startOfWeek.setDate(today.getDate() - today.getDay());
@@ -3469,7 +3789,7 @@
                 let d = new Date(startOfWeek);
                 d.setDate(startOfWeek.getDate() + i);
                 let dateStr = d.toISOString().split('T')[0];
-                let dayTrades = trades.filter(t => t.date === dateStr);
+                let dayTrades = accTrades.filter(t => t.date === dateStr);
                 let dayPnl = dayTrades.reduce((s, t) => s + (t.pnl || 0), 0);
                 let hasTrade = dayTrades.length > 0;
                 html += `<div class="day-box ${hasTrade ? 'has-trade' : ''}">
@@ -3483,8 +3803,10 @@
         }
 
         function renderAnalysis() {
+            let acc = getCurrentAccount();
+            let accTrades = acc ? trades.filter(t => t.accountId == acc.id) : trades;
             let moodMap = {};
-            trades.forEach(t => {
+            accTrades.forEach(t => {
                 if (t.mood) {
                     if (!moodMap[t.mood]) moodMap[t.mood] = { pnl: 0, count: 0 };
                     moodMap[t.mood].pnl += (t.pnl || 0);
@@ -3501,7 +3823,7 @@
             document.getElementById('psych-analysis').innerHTML = psychHTML;
 
             let stratMap = {};
-            trades.forEach(t => {
+            accTrades.forEach(t => {
                 if (t.strategy) {
                     if (!stratMap[t.strategy]) stratMap[t.strategy] = { pnl: 0, count: 0, wins: 0 };
                     stratMap[t.strategy].pnl += (t.pnl || 0);
@@ -3519,9 +3841,9 @@
             }).join('') + '</div>' : '<p style="color:var(--text-muted); text-align:center; padding:40px;">Log trades with strategy data to see strategy performance.</p>';
             document.getElementById('strategy-stats').innerHTML = stratHTML;
 
-            let pairMap = getPairStats();
+            let pairMap = getPairStats(accTrades);
             let insightsHTML = '';
-            if (trades.length === 0) {
+            if (accTrades.length === 0) {
                 insightsHTML = '<p style="color:var(--text-muted); text-align:center; padding:40px;">Start logging trades to generate insights.</p>';
             } else {
                 let bestPair = Object.entries(pairMap).sort((a, b) => b[1].pnl - a[1].pnl)[0];
@@ -3535,8 +3857,8 @@
                 if (worstPair && worstPair[1].pnl < 0) insightsHTML += `<div style="padding:14px; background:var(--red-dim); border-radius:10px; border-left:3px solid var(--red);"><strong style="color:var(--red);">Worst Pair:</strong> ${worstPair[0]} (${formatJournalMoney(worstPair[1].pnl)})</div>`;
                 if (bestStrat) insightsHTML += `<div style="padding:14px; background:var(--red-dim); border-radius:10px; border-left:3px solid var(--red);"><strong style="color:var(--red);">Best Strategy:</strong> ${bestStrat[0]} (${formatJournalMoney(bestStrat[1].pnl)})</div>`;
                 if (topSession) insightsHTML += `<div style="padding:14px; background:var(--gold-dim); border-radius:10px; border-left:3px solid var(--gold);"><strong style="color:var(--gold);">Best Session:</strong> ${topSession[0]} (${formatJournalMoney(topSession[1].pnl)})</div>`;
-                let checkedTrades = trades.filter(t => t.checklist && t.checklist.some(c => c));
-                let uncheckedTrades = trades.filter(t => !t.checklist || !t.checklist.some(c => c));
+                let checkedTrades = accTrades.filter(t => t.checklist && t.checklist.some(c => c));
+                let uncheckedTrades = accTrades.filter(t => !t.checklist || !t.checklist.some(c => c));
                 if (checkedTrades.length > 0 && uncheckedTrades.length > 0) {
                     let checkedAvg = checkedTrades.reduce((s, t) => s + (t.pnl || 0), 0) / checkedTrades.length;
                     let uncheckedAvg = uncheckedTrades.reduce((s, t) => s + (t.pnl || 0), 0) / uncheckedTrades.length;
@@ -3548,10 +3870,11 @@
         }
 
         function exportCSV() {
-            if (trades.length === 0) { alert('No trades to export.'); return; }
-            let csv = 'Date,Pair,Direction,Strategy,AccountType,Phase,ChallengeTarget,ChallengeStatus,Entry,SL,TP,Exit,Lot,Risk%,RRTarget,PnL,RRActual,Timeframe,Session,Mood,Status\n';
+            if (accTrades.length === 0) { alert('No trades to export.'); return; }
+            let csv = 'Date,Pair,Direction,Strategy,AccountType,AccountName,Phase,ChallengeTarget,ChallengeStatus,Entry,SL,TP,Exit,Lot,Risk%,RRTarget,PnL,RRActual,Timeframe,Session,Mood,Status\n';
             trades.forEach(t => {
-                csv += `${t.date},${t.pair},${t.direction},${t.strategy || ''},${t.accountType || 'personal'},${t.phase || ''},${t.challengeTarget || ''},${t.challengeStatus || ''},${t.entry},${t.sl},${t.tp || ''},${t.exit || ''},${t.lot},${t.risk || ''},${t.rrTarget || ''},${t.pnl || 0},${t.rr || ''},${t.tf},${t.session},${t.mood || ''},${t.status}\n`;
+                let accName = getAccountById(t.accountId)?.name || '';
+                csv += `${t.date},${t.pair},${t.direction},${t.strategy || ''},${t.accountType || 'personal'},${accName},${t.phase || ''},${t.challengeTarget || ''},${t.challengeStatus || ''},${t.entry},${t.sl},${t.tp || ''},${t.exit || ''},${t.lot},${t.risk || ''},${t.rrTarget || ''},${t.pnl || 0},${t.rr || ''},${t.tf},${t.session},${t.mood || ''},${t.status}\n`;
             });
             let blob = new Blob([csv], { type: 'text/csv' });
             let url = URL.createObjectURL(blob);
@@ -3564,15 +3887,26 @@
 
         function initFilters() {
             let pairFilter = document.getElementById('filter-pair');
-            if (!pairFilter) return;
-            pairFilter.innerHTML = '<option value="">All Pairs</option>';
-            let uniquePairs = [...new Set(trades.map(t => t.pair))];
-            uniquePairs.forEach(p => {
-                let opt = document.createElement('option');
-                opt.value = p;
-                opt.textContent = p;
-                pairFilter.appendChild(opt);
-            });
+            let accFilter = document.getElementById('filter-account');
+            if (pairFilter) {
+                pairFilter.innerHTML = '<option value="">All Pairs</option>';
+                let uniquePairs = [...new Set(trades.map(t => t.pair))];
+                uniquePairs.forEach(p => {
+                    let opt = document.createElement('option');
+                    opt.value = p;
+                    opt.textContent = p;
+                    pairFilter.appendChild(opt);
+                });
+            }
+            if (accFilter) {
+                accFilter.innerHTML = '<option value="">All Accounts</option>';
+                getAccounts().forEach(a => {
+                    let opt = document.createElement('option');
+                    opt.value = a.id;
+                    opt.textContent = a.name || 'Account';
+                    accFilter.appendChild(opt);
+                });
+            }
         }
 
         let editingTradeId = null;
@@ -3594,14 +3928,13 @@
             document.getElementById('t-pnl').value = trade.pnl || '';
             document.getElementById('t-tf').value = trade.tf;
             document.getElementById('t-session').value = trade.session;
-            document.getElementById('t-account-type').value = trade.accountType || 'personal';
-            toggleFundedFields();
-            if (trade.accountType === 'funded') {
-                if (trade.provider) document.getElementById('t-provider').value = trade.provider;
-                if (trade.phase) document.getElementById('t-phase').value = trade.phase;
-                if (trade.challengeTarget) document.getElementById('t-target').value = trade.challengeTarget;
-                if (trade.challengeStatus) document.getElementById('t-challenge-status').value = trade.challengeStatus;
+            if (trade.accountId) {
+                let tAccSel = document.getElementById('t-account-id');
+                if (tAccSel) tAccSel.value = trade.accountId;
             }
+            updateTradeAccountInfo();
+            toggleFundedFields();
+            toggleFundedFields();
             document.getElementById('t-setup').value = trade.setup || '';
             document.getElementById('t-review').value = trade.review || '';
             document.getElementById('t-mood').value = trade.mood || '';
@@ -3634,6 +3967,9 @@
             if (!editingTradeId) return;
             let idx = trades.findIndex(t => t.id === editingTradeId);
             if (idx === -1) return;
+            let accId = document.getElementById('t-account-id').value;
+            let acc = getAccountById(accId);
+            if (!acc) { alert('Please select an account.'); return; }
             let pair = document.getElementById('t-pair').value;
             let entry = parseFloat(document.getElementById('t-entry').value) || null;
             let exit = parseFloat(document.getElementById('t-exit').value) || null;
@@ -3647,17 +3983,18 @@
             }
 
             let pnl = manualPnl ? parseFloat(manualPnl) : (entry && exit && lot ? calcAutoPnL(dir, entry, exit, lot, pair) : 0);
-            let updAccountType = document.getElementById('t-account-type').value;
+            let updAccountType = acc.type;
             trades[idx] = {
                 id: editingTradeId,
+                accountId: accId,
                 date: document.getElementById('t-date').value,
                 pair: pair, direction: dir,
                 strategy: document.getElementById('t-strategy').value,
                 accountType: updAccountType,
-                provider: updAccountType === 'funded' ? (document.getElementById('t-provider').value || setupProvider || 'FTMO') : null,
-                phase: updAccountType === 'funded' ? document.getElementById('t-phase').value : null,
-                challengeTarget: updAccountType === 'funded' ? document.getElementById('t-target').value : null,
-                challengeStatus: updAccountType === 'funded' ? document.getElementById('t-challenge-status').value : null,
+                provider: updAccountType === 'funded' ? (acc.provider || 'FTMO') : null,
+                phase: updAccountType === 'funded' ? (acc.phase || '1') : null,
+                challengeTarget: updAccountType === 'funded' ? (acc.target1 || 10) : null,
+                challengeStatus: updAccountType === 'funded' ? (acc.status || 'active') : null,
                 entry: entry, sl: parseFloat(document.getElementById('t-sl').value) || null,
                 tp: parseFloat(document.getElementById('t-tp').value) || null,
                 exit: exit, lot: lot,
@@ -3682,6 +4019,7 @@
             document.getElementById('tradeForm').reset();
             document.querySelectorAll('.mood-option').forEach(m => m.classList.remove('selected'));
             document.querySelectorAll('.check-item').forEach(c => { c.classList.remove('checked'); c.querySelector('input').checked = false; });
+            renderAccountSelector();
             toggleFundedFields();
             let submitBtn = document.querySelector('#tradeForm button[type="submit"]');
             submitBtn.textContent = 'Save Trade';
@@ -3708,113 +4046,28 @@
             document.getElementById('setup-target-3').value = t3;
         }
 
-        let accountBalance = parseFloat(localStorage.getItem('forex_journal_balance')) || 0;
-        let accountCurrency = localStorage.getItem('forex_journal_currency') || 'USD';
         let calendarView = 'week';
 
-        let setupAccountType = localStorage.getItem('forex_journal_account_type') || 'personal';
-        let setupProvider = localStorage.getItem('forex_journal_provider') || 'FTMO';
-        let setupSteps = parseInt(localStorage.getItem('forex_journal_steps')) || 2;
-        let setupPhase = localStorage.getItem('forex_journal_phase') || '1';
-        let setupTarget1 = parseFloat(localStorage.getItem('forex_journal_target1')) || 10;
-        let setupTarget2 = parseFloat(localStorage.getItem('forex_journal_target2')) || 5;
-        let setupTarget3 = parseFloat(localStorage.getItem('forex_journal_target3')) || 0;
-        let setupStatus = localStorage.getItem('forex_journal_status') || 'active';
 
-        function setSetupType(type) {
-            setupAccountType = type;
-            document.getElementById('setup-type-personal').style.background = type === 'personal' ? 'var(--red)' : 'transparent';
-            document.getElementById('setup-type-personal').style.color = type === 'personal' ? 'white' : 'var(--text-muted)';
-            document.getElementById('setup-type-personal').style.fontWeight = type === 'personal' ? '700' : '600';
-            document.getElementById('setup-type-funded').style.background = type === 'funded' ? 'var(--gold)' : 'transparent';
-            document.getElementById('setup-type-funded').style.color = type === 'funded' ? 'white' : 'var(--text-muted)';
-            document.getElementById('setup-type-funded').style.fontWeight = type === 'funded' ? '700' : '600';
-            document.getElementById('setup-funded-fields').style.display = type === 'funded' ? 'block' : 'none';
-        }
 
         function checkAccountSetup() {
-            if (accountBalance <= 0) {
+            let accs = getAccounts();
+            if (accs.length === 0) {
                 document.getElementById('account-setup').style.display = 'flex';
                 document.getElementById('account-settings-bar').style.display = 'none';
-                setSetupType(setupAccountType);
-                document.getElementById('setup-provider').value = setupProvider;
-                document.getElementById('setup-steps').value = setupSteps;
-                document.getElementById('setup-phase').value = setupPhase;
-                document.getElementById('setup-target-1').value = setupTarget1;
-                document.getElementById('setup-target-2').value = setupTarget2;
-                document.getElementById('setup-target-3').value = setupTarget3;
-                document.getElementById('setup-status').value = setupStatus;
-                updateStepTargets();
+                renderAccountList();
             } else {
                 document.getElementById('account-setup').style.display = 'none';
-                document.getElementById('account-settings-bar').style.display = 'block';
-                updateAccountDisplay();
+                document.getElementById('account-settings-bar').style.display = 'flex';
+                renderAccountSelector();
+                updateAccountBadge();
+                if (!currentAccountId) setCurrentAccount(accs[0].id);
             }
         }
-        function setQuickBalance(amount) {
-            document.getElementById('setup-balance').value = amount;
-            document.querySelectorAll('#account-setup button[onclick^="setQuickBalance"]').forEach(btn => {
-                btn.style.background = 'var(--bg-input)'; btn.style.borderColor = 'var(--border)'; btn.style.color = 'var(--text-muted)'; btn.style.fontWeight = '600';
-            });
-            event.target.style.background = 'var(--red)';
-            event.target.style.borderColor = 'var(--red)';
-            event.target.style.color = 'white';
-            event.target.style.fontWeight = '700';
-        }
-        function saveAccountSetup() {
-            let balance = parseFloat(document.getElementById('setup-balance').value) || 5000;
-            let currency = document.getElementById('setup-currency').value;
-            accountBalance = balance; accountCurrency = currency;
-            localStorage.setItem('forex_journal_balance', balance);
-            localStorage.setItem('forex_journal_currency', currency);
-            localStorage.setItem('forex_journal_account_type', setupAccountType);
-            if (setupAccountType === 'funded') {
-                setupProvider = document.getElementById('setup-provider').value || 'FTMO';
-                setupSteps = parseInt(document.getElementById('setup-steps').value) || 2;
-                setupPhase = document.getElementById('setup-phase').value;
-                setupTarget1 = parseFloat(document.getElementById('setup-target-1').value) || 10;
-                setupTarget2 = parseFloat(document.getElementById('setup-target-2').value) || 5;
-                setupTarget3 = parseFloat(document.getElementById('setup-target-3').value) || 0;
-                setupStatus = document.getElementById('setup-status').value;
-                localStorage.setItem('forex_journal_provider', setupProvider);
-                localStorage.setItem('forex_journal_steps', setupSteps);
-                localStorage.setItem('forex_journal_phase', setupPhase);
-                localStorage.setItem('forex_journal_target1', setupTarget1);
-                localStorage.setItem('forex_journal_target2', setupTarget2);
-                localStorage.setItem('forex_journal_target3', setupTarget3);
-                localStorage.setItem('forex_journal_status', setupStatus);
-            }
+        function closeAccountSetup() {
             document.getElementById('account-setup').style.display = 'none';
-            document.getElementById('account-settings-bar').style.display = 'block';
-            updateAccountDisplay();
-            updateDashboard();
         }
-        function showAccountSettings() {
-            document.getElementById('account-setup').style.display = 'flex';
-            document.getElementById('setup-balance').value = accountBalance;
-            document.getElementById('setup-currency').value = accountCurrency;
-            setSetupType(setupAccountType);
-            document.getElementById('setup-provider').value = setupProvider;
-            document.getElementById('setup-steps').value = setupSteps;
-            document.getElementById('setup-phase').value = setupPhase;
-            document.getElementById('setup-target-1').value = setupTarget1;
-            document.getElementById('setup-target-2').value = setupTarget2;
-            document.getElementById('setup-target-3').value = setupTarget3;
-            document.getElementById('setup-status').value = setupStatus;
-            updateStepTargets();
-        }
-        function updateAccountDisplay() {
-            let sym = accountCurrency === 'USD' ? '$' : accountCurrency === 'EUR' ? '€' : '£';
-            let label = sym + accountBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            if (setupAccountType === 'funded') {
-                let provider = setupProvider || 'Funded';
-                let stepsLabel = setupSteps + '-Step';
-                let phaseLabel = setupPhase === '1' ? 'S1' : setupPhase === '2' ? 'S2' : 'S3';
-                let statusEmoji = setupStatus === 'passed' ? '✅' : setupStatus === 'failed' ? '❌' : '🟡';
-                label += ' | 🏢 ' + provider + ' ' + stepsLabel + ' — ' + phaseLabel + ' ' + statusEmoji;
-            }
-            document.getElementById('account-display').textContent = label;
-        }
+
         function setTradeRisk(val) { document.getElementById('t-risk').value = val; }
         function setTradeRR(val) { document.getElementById('t-rr-target').value = val; }
         function parseRRInput(val) {
@@ -3843,6 +4096,8 @@
             else { document.getElementById('week-cal').style.display = 'none'; document.getElementById('day-cal').style.display = 'block'; renderDailyCalendar(); }
         }
         function renderDailyCalendar() {
+            let acc = getCurrentAccount();
+            let accTrades = acc ? trades.filter(t => t.accountId == acc.id) : trades;
             let today = new Date();
             let currentMonth = today.getMonth();
             let currentYear = today.getFullYear();
@@ -3858,7 +4113,7 @@
             for (let i = 0; i < firstDay; i++) html += '<div style="min-height:80px; background:transparent; border-radius:8px;"></div>';
             for (let day = 1; day <= daysInMonth; day++) {
                 let dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                let dayTrades = trades.filter(t => t.date === dateStr);
+                let dayTrades = accTrades.filter(t => t.date === dateStr);
                 let dayPnl = dayTrades.reduce((s, t) => s + (t.pnl || 0), 0);
                 let hasTrade = dayTrades.length > 0;
                 let isToday = day === today.getDate();
@@ -3873,20 +4128,31 @@
 
 
         // ==================== CHALLENGE TRACKER ====================
-        let challengeConfig = JSON.parse(localStorage.getItem('forex_challenge_config') || 'null') || {
-            balance: 5000,
-            steps: 2,
-            phase: '1',
-            target1: 10,
-            target2: 5,
-            target3: 0,
-            drawdown: 10,
-            dailyLimit: 5,
-            startDate: new Date().toISOString().split('T')[0],
-            status: 'active'
-        };
+        function getChallengeConfig() {
+            let acc = getCurrentAccount();
+            if (acc && acc.type === 'funded') {
+                return {
+                    balance: acc.balance || 5000,
+                    steps: acc.steps || 2,
+                    phase: acc.phase || '1',
+                    target1: acc.target1 || 10,
+                    target2: acc.target2 || 5,
+                    target3: acc.target3 || 0,
+                    drawdown: 10,
+                    dailyLimit: 5,
+                    startDate: acc.startDate || new Date().toISOString().split('T')[0],
+                    status: acc.status || 'active'
+                };
+            }
+            let saved = localStorage.getItem('forex_challenge_config');
+            return saved ? JSON.parse(saved) : {
+                balance: 5000, steps: 2, phase: '1', target1: 10, target2: 5, target3: 0,
+                drawdown: 10, dailyLimit: 5, startDate: new Date().toISOString().split('T')[0], status: 'active'
+            };
+        }
 
         function showChallengeSetup() {
+            let challengeConfig = getChallengeConfig();
             document.getElementById('challenge-setup-modal').style.display = 'flex';
             document.getElementById('ch-setup-balance').value = challengeConfig.balance;
             document.getElementById('ch-setup-steps').value = challengeConfig.steps || 2;
@@ -3904,6 +4170,7 @@
         }
 
         function saveChallengeSetup() {
+            let challengeConfig = getChallengeConfig();
             challengeConfig.balance = parseFloat(document.getElementById('ch-setup-balance').value) || 5000;
             challengeConfig.steps = parseInt(document.getElementById('ch-setup-steps').value) || 2;
             challengeConfig.phase = document.getElementById('ch-setup-phase').value;
@@ -3913,12 +4180,32 @@
             challengeConfig.drawdown = parseFloat(document.getElementById('ch-setup-drawdown').value) || 10;
             challengeConfig.dailyLimit = parseFloat(document.getElementById('ch-setup-daily').value) || 5;
             localStorage.setItem('forex_challenge_config', JSON.stringify(challengeConfig));
+            // Also update the current account if it exists
+            let acc = getCurrentAccount();
+            if (acc) {
+                let accs = getAccounts();
+                let idx = accs.findIndex(a => a.id == acc.id);
+                if (idx !== -1) {
+                    accs[idx].balance = challengeConfig.balance;
+                    accs[idx].steps = challengeConfig.steps;
+                    accs[idx].phase = challengeConfig.phase;
+                    accs[idx].target1 = challengeConfig.target1;
+                    accs[idx].target2 = challengeConfig.target2;
+                    accs[idx].target3 = challengeConfig.target3;
+                    accs[idx].status = challengeConfig.status;
+                    saveAccounts(accs);
+                }
+            }
             closeChallengeSetup();
             renderChallenge();
+            renderAccountSelector();
+            updateAccountBadge();
         }
 
         function renderChallenge() {
-            let challengeTrades = trades.filter(t => t.accountType === 'funded');
+            let challengeConfig = getChallengeConfig();
+            let acc = getCurrentAccount();
+            let challengeTrades = trades.filter(t => t.accountId == (acc ? acc.id : null) && t.accountType === 'funded');
             let totalPnl = challengeTrades.reduce((s, t) => s + (t.pnl || 0), 0);
             let steps = challengeConfig.steps || 2;
             let currentPhase = parseInt(challengeConfig.phase) || 1;
@@ -3928,7 +4215,7 @@
             let maxLoss = -(challengeConfig.balance * challengeConfig.drawdown / 100);
             let isFailed = totalPnl <= maxLoss;
 
-            let providerName = setupProvider || 'Funded';
+            let providerName = (acc && acc.provider) || 'Funded';
             document.getElementById('ch-provider-title').textContent = providerName;
             let phaseNames = { '1': 'Step 1', '2': 'Step 2', '3': 'Funded' };
             document.getElementById('ch-steps-display').textContent = steps + '-Step';
@@ -4055,6 +4342,8 @@
 
         
         function renderRiskPanel() {
+            let acc = getCurrentAccount();
+            let accTrades = acc ? trades.filter(t => t.accountId == acc.id) : trades;
             let savedLimits = JSON.parse(localStorage.getItem('forex_risk_limits') || '{"daily":100,"weekly":300}');
             document.getElementById('risk-daily-limit').value = savedLimits.daily || 100;
             document.getElementById('risk-weekly-limit').value = savedLimits.weekly || 300;
@@ -4072,6 +4361,32 @@
             document.getElementById('t-rr-target').value = '';
             let dateInput = document.getElementById('t-date');
             if (dateInput) dateInput.valueAsDate = new Date();
+            // Migrate old single-account data to multi-account if needed
+            let oldBalance = localStorage.getItem('forex_journal_balance');
+            if (oldBalance && getAccounts().length === 0) {
+                let oldAcc = {
+                    id: Date.now(),
+                    name: 'My Account',
+                    balance: parseFloat(oldBalance) || 5000,
+                    currency: localStorage.getItem('forex_journal_currency') || 'USD',
+                    type: localStorage.getItem('forex_journal_account_type') || 'personal',
+                    provider: localStorage.getItem('forex_journal_provider') || 'FTMO',
+                    steps: parseInt(localStorage.getItem('forex_journal_steps')) || 2,
+                    phase: localStorage.getItem('forex_journal_phase') || '1',
+                    target1: parseFloat(localStorage.getItem('forex_journal_target1')) || 10,
+                    target2: parseFloat(localStorage.getItem('forex_journal_target2')) || 5,
+                    target3: parseFloat(localStorage.getItem('forex_journal_target3')) || 0,
+                    status: localStorage.getItem('forex_journal_status') || 'active',
+                    startDate: new Date().toISOString().split('T')[0]
+                };
+                saveAccounts([oldAcc]);
+                setCurrentAccount(oldAcc.id);
+                // Update existing trades to belong to this account
+                trades.forEach(t => { if (!t.accountId) t.accountId = oldAcc.id; });
+                localStorage.setItem('forex_journal_trades', JSON.stringify(trades));
+            }
+            renderAccountSelector();
+            updateAccountBadge();
             restorePage();
             checkAccountSetup();
         });
