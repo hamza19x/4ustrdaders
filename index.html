@@ -3184,7 +3184,7 @@
                 </div>
             </div>
 
-            <!-- Investing.com Extractor -->
+                        <!-- Investing.com Extractor -->
             <div class="card" style="margin-bottom:25px;">
                 <h2 style="color:var(--red); font-family:Orbitron; font-size:1.1rem; margin-bottom:20px; display:flex; align-items:center; gap:10px; text-transform:uppercase; letter-spacing:1px;"><span style="font-size:1.3em;">&#128204;</span> Investing.com Data Extractor</h2>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
@@ -3197,14 +3197,16 @@
                         <label style="display:block; color:var(--text-muted); font-size:0.75rem; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Bookmarklet</label>
                         <div style="background:var(--bg-input); border:1px solid var(--border); border-radius:12px; padding:20px; text-align:center;">
                             <div style="font-size:2.5em; margin-bottom:10px;">&#128204;</div>
-                            <p style="color:var(--text-muted); font-size:0.85em; margin-bottom:15px;">Drag this button to your bookmarks bar.</p>
-                            <a href="javascript:(function(){var rows=document.querySelectorAll('table.ecoCalendarTbl tr, [data-test=\"event-row\"], .economicCalendarRow, tr[id^=\"eventRow\"]');var events=[];for(var i=0;i<rows.length;i++){var row=rows[i];var tds=row.querySelectorAll('td');if(tds.length<5)continue;var time=tds[0]?tds[0].innerText.trim():'';var country=tds[1]?tds[1].innerText.trim():'';var eventName=tds[2]?tds[2].innerText.trim():'';var impact=tds[3]?tds[3].innerText.trim():'';var actual=tds[4]?tds[4].innerText.trim():'';var forecast=tds[5]?tds[5].innerText.trim():'';var previous=tds[6]?tds[6].innerText.trim():'';if(eventName&&eventName.length>2){events.push({time:time,country:country,event:eventName,impact:impact,actual:actual,forecast:forecast,previous:previous});}}var html='<!DOCTYPE html><html><head><meta charset=UTF-8><title>4US Extracted Data</title><style>body{background:#0a0a0a;color:#e0e0e0;font-family:Segoe UI,sans-serif;padding:20px}.container{max-width:1200px;margin:0 auto}h1{color:#fff;border-bottom:2px solid #cc0000;padding-bottom:15px}table{width:100%;border-collapse:collapse;margin-top:20px;font-size:0.9em}th{background:#1a1a1a;padding:12px;text-align:left;color:#888;text-transform:uppercase;font-size:0.8em;border-bottom:1px solid #333}td{padding:12px;border-bottom:1px solid #222;color:#ccc}tr:hover td{background:#1a1a1a}.high{color:#cc0000;font-weight:bold}.med{color:#ffaa00}.low{color:#666}</style></head><body><div class=container><h1>4US Traders - Extracted Calendar</h1><p style=color:#888>'+events.length+' events found</p><table><thead><tr><th>Time</th><th>Country</th><th>Event</th><th>Impact</th><th>Actual</th><th>Forecast</th><th>Previous</th></tr></thead><tbody>';for(var j=0;j<events.length;j++){var e=events[j];var impClass=e.impact.toLowerCase().includes('high')?'high':(e.impact.toLowerCase().includes('medium')?'med':'low');html+='<tr><td>'+e.time+'</td><td>'+e.country+'</td><td>'+e.event+'</td><td class='+impClass+'>'+e.impact+'</td><td>'+e.actual+'</td><td>'+e.forecast+'</td><td>'+e.previous+'</td></tr>';}html+='</tbody></table></div></body></html>';var newTab=window.open('about:blank','_blank');newTab.document.write(html);newTab.document.close();alert('Extracted '+events.length+' events from investing.com!');})();" style="display:inline-block; padding:12px 24px; background:linear-gradient(135deg, var(--red), #991b1b); color:white; border-radius:10px; font-weight:700; text-decoration:none; font-family:Orbitron; text-transform:uppercase; letter-spacing:1px; cursor:move;">&#128204; 4US Extract Calendar</a>
+                            <p style="color:var(--text-muted); font-size:0.85em; margin-bottom:15px;">Copy this code and create a bookmark in your browser.</p>
+                            <textarea id="bookmarklet-code" readonly style="width:100%; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:10px; color:var(--text-dim); font-size:0.7rem; font-family:monospace; height:60px; resize:none; margin-bottom:10px; overflow:hidden;">javascript:(function(){var rows=document.querySelectorAll('table.ecoCalendarTbl tr, [data-test="event-row"], .economicCalendarRow, tr[id^="eventRow"]');var events=[];for(var i=0;i<rows.length;i++){var row=rows[i];var tds=row.querySelectorAll('td');if(tds.length<5)continue;var time=tds[0]?tds[0].innerText.trim():'';var country=tds[1]?tds[1].innerText.trim():'';var eventName=tds[2]?tds[2].innerText.trim():'';var impact=tds[3]?tds[3].innerText.trim():'';var actual=tds[4]?tds[4].innerText.trim():'';var forecast=tds[5]?tds[5].innerText.trim():'';var previous=tds[6]?tds[6].innerText.trim():'';if(eventName&&eventName.length>2){events.push({time:time,country:country,event:eventName,impact:impact,actual:actual,forecast:forecast,previous:previous});}}var html='<!DOCTYPE html><html><head><meta charset=UTF-8><title>4US Extracted Data</title><style>body{background:#0a0a0a;color:#e0e0e0;font-family:Segoe UI,sans-serif;padding:20px}.container{max-width:1200px;margin:0 auto}h1{color:#fff;border-bottom:2px solid #cc0000;padding-bottom:15px}table{width:100%;border-collapse:collapse;margin-top:20px;font-size:0.9em}th{background:#1a1a1a;padding:12px;text-align:left;color:#888;text-transform:uppercase;font-size:0.8em;border-bottom:1px solid #333}td{padding:12px;border-bottom:1px solid #222;color:#ccc}tr:hover td{background:#1a1a1a}.high{color:#cc0000;font-weight:bold}.med{color:#ffaa00}.low{color:#666}</style></head><body><div class=container><h1>4US Traders - Extracted Calendar</h1><p style=color:#888>'+events.length+' events found</p><table><thead><tr><th>Time</th><th>Country</th><th>Event</th><th>Impact</th><th>Actual</th><th>Forecast</th><th>Previous</th></tr></thead><tbody>';for(var j=0;j<events.length;j++){var e=events[j];var impClass=e.impact.toLowerCase().includes('high')?'high':(e.impact.toLowerCase().includes('medium')?'med':'low');html+='<tr><td>'+e.time+'</td><td>'+e.country+'</td><td>'+e.event+'</td><td class='+impClass+'>'+e.impact+'</td><td>'+e.actual+'</td><td>'+e.forecast+'</td><td>'+e.previous+'</td></tr>';}html+='</tbody></table></div></body></html>';var newTab=window.open('about:blank','_blank');newTab.document.write(html);newTab.document.close();alert('Extracted '+events.length+' events from investing.com!');})();</textarea>
+                            <button onclick="copyBookmarklet()" style="width:100%; padding:12px; background:linear-gradient(135deg, var(--red), #991b1b); border:none; border-radius:10px; color:white; font-weight:700; cursor:pointer; font-family:Orbitron; text-transform:uppercase; letter-spacing:1px;">📋 Copy Bookmarklet</button>
+                            <p id="copy-feedback" style="color:var(--green); font-size:0.8rem; margin-top:8px; display:none;">✅ Copied to clipboard!</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Disclaimer -->
+<!-- Disclaimer -->
             <div style="margin-top:30px; padding:20px; background:var(--red-dim); border:1px solid rgba(220,38,38,0.3); border-radius:10px; color:#aa6666; font-size:0.85em; line-height:1.6; text-align:center;">
                 <strong>&#9888; DISCLAIMER:</strong> This tool uses historical correlations and publicly available leading indicators to generate probability-based biases. It does NOT predict the future. Always use this as a <strong>directional bias tool only</strong>, combined with your technical analysis (CRT, FVG, Order Flow). Never risk more than 1-2% of your account on any news-based trade.
             </div>
@@ -5100,24 +5102,42 @@
     }
 
     function calculatePrediction() {
-        const eventType = document.getElementById('eventType').value;
-        if (!eventType) {
-            alert('Please select an event first.');
-            return;
+        try {
+            const eventType = document.getElementById('eventType').value;
+            if (!eventType) {
+                alert('Please select an event first.');
+                return;
+            }
+            const loading = document.getElementById('predictionLoading');
+            const resultArea = document.getElementById('predictionResultArea');
+            if (loading) loading.style.display = 'block';
+            if (resultArea) resultArea.innerHTML = '';
+            setTimeout(() => {
+                try {
+                    if (loading) loading.style.display = 'none';
+                    const score = computePredictionScore(eventType);
+                    displayPredictionResult(score, eventType);
+                } catch (err) {
+                    console.error('Prediction error:', err);
+                    if (loading) loading.style.display = 'none';
+                    if (resultArea) {
+                        resultArea.innerHTML = '<div style="padding:20px; background:var(--red-dim); border-radius:10px; color:var(--red); text-align:center;"><strong>Error:</strong> Could not calculate prediction. Check console (F12) for details.</div>';
+                    }
+                }
+            }, 800);
+        } catch (err) {
+            console.error('CalculatePrediction error:', err);
+            alert('Something went wrong. Check console (F12) for details.');
         }
-
-        document.getElementById('predictionLoading').style.display = 'block';
-        document.getElementById('predictionResultArea').innerHTML = '';
-
-        setTimeout(() => {
-            document.getElementById('predictionLoading').style.display = 'none';
-            const score = computePredictionScore(eventType);
-            displayPredictionResult(score, eventType);
-        }, 800);
     }
 
     function computePredictionScore(eventType) {
-        const config = PREDICTOR_CONFIGS[eventType];
+        try {
+            const config = PREDICTOR_CONFIGS[eventType];
+            if (!config) {
+                console.warn('No config found for event type:', eventType);
+                return { finalScore: 50, bias: 'neutral', confidence: 0, details: [] };
+            }
         const fields = config.indicators;
         let totalWeight = 0;
         let weightedScore = 0;
@@ -5402,7 +5422,23 @@
         }
     }
 
-    // Add spin animation
+        function copyBookmarklet() {
+        const code = document.getElementById('bookmarklet-code').value;
+        navigator.clipboard.writeText(code).then(() => {
+            const feedback = document.getElementById('copy-feedback');
+            feedback.style.display = 'block';
+            setTimeout(() => feedback.style.display = 'none', 3000);
+        }).catch(() => {
+            const textarea = document.getElementById('bookmarklet-code');
+            textarea.select();
+            document.execCommand('copy');
+            const feedback = document.getElementById('copy-feedback');
+            feedback.style.display = 'block';
+            setTimeout(() => feedback.style.display = 'none', 3000);
+        });
+    }
+
+// Add spin animation
     const style = document.createElement('style');
     style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
     document.head.appendChild(style);
