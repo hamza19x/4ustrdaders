@@ -4967,481 +4967,420 @@
 
     <!-- ==================== NEWS PREDICTION ENGINE JS ==================== -->
     <script>
-    // Event configurations
-    const PREDICTOR_CONFIGS = {
-        nfp: {
-            indicators: [
-                { id: 'adp', label: 'ADP Employment (Previous vs Forecast)', type: 'select', options: ['Beat (Actual > Forecast)', 'Miss (Actual < Forecast)', 'Neutral'] },
-                { id: 'claims', label: 'Jobless Claims Trend', type: 'select', options: ['Decreasing (Good for USD)', 'Increasing (Bad for USD)', 'Stable'] },
-                { id: 'ism_emp', label: 'ISM Manufacturing Employment', type: 'number', placeholder: 'Enter index value (e.g. 52.3)' },
-                { id: 'jolts', label: 'JOLTS Job Openings Trend', type: 'select', options: ['Rising', 'Falling', 'Stable'] }
-            ],
-            weights: { adp: 0.35, claims: 0.25, ism_emp: 0.20, jolts: 0.20 },
-            direction: 'same'
-        },
-        cpi: {
-            indicators: [
-                { id: 'ppi', label: 'PPI Result (vs Forecast)', type: 'select', options: ['Beat (Hotter)', 'Miss (Cooler)', 'Neutral'] },
-                { id: 'oil', label: 'Oil Price Change (Month)', type: 'select', options: ['Up >5%', 'Up 0-5%', 'Down 0-5%', 'Down >5%'] },
-                { id: 'import_prices', label: 'Import Prices Trend', type: 'select', options: ['Rising', 'Falling', 'Stable'] },
-                { id: 'wage_growth', label: 'Average Hourly Earnings Trend', type: 'select', options: ['Accelerating', 'Decelerating', 'Stable'] }
-            ],
-            weights: { ppi: 0.40, oil: 0.25, import_prices: 0.20, wage_growth: 0.15 },
-            direction: 'same'
-        },
-        fomc: {
-            indicators: [
-                { id: 'fedwatch', label: 'CME FedWatch: Hike/Cut Probability', type: 'number', placeholder: 'Enter % (e.g. 85 for 85% chance)' },
-                { id: 'cpi_trend', label: 'Last 3 CPI Readings Trend', type: 'select', options: ['Rising (Hotter)', 'Falling (Cooler)', 'Mixed'] },
-                { id: 'jobs_trend', label: 'Last 3 NFP Readings Trend', type: 'select', options: ['Strong/Beating', 'Weak/Missing', 'Mixed'] }
-            ],
-            weights: { fedwatch: 0.50, cpi_trend: 0.25, jobs_trend: 0.25 },
-            direction: 'same'
-        },
-        retail: {
-            indicators: [
-                { id: 'consumer_conf', label: 'Consumer Confidence (vs Forecast)', type: 'select', options: ['Beat', 'Miss', 'Neutral'] },
-                { id: 'adp', label: 'ADP / Jobs Data', type: 'select', options: ['Strong', 'Weak', 'Neutral'] },
-                { id: 'credit', label: 'Consumer Credit Growth', type: 'select', options: ['Increasing', 'Decreasing', 'Stable'] },
-                { id: 'gas', label: 'Gasoline Prices (Month)', type: 'select', options: ['Falling (Good for spending)', 'Rising (Bad for spending)', 'Stable'] }
-            ],
-            weights: { consumer_conf: 0.35, adp: 0.25, credit: 0.25, gas: 0.15 },
-            direction: 'same'
-        },
-        gdp: {
-            indicators: [
-                { id: 'retail', label: 'Retail Sales Trend', type: 'select', options: ['Strong', 'Weak', 'Mixed'] },
-                { id: 'ism', label: 'ISM Manufacturing PMI', type: 'number', placeholder: 'e.g. 51.2' },
-                { id: 'durable_goods', label: 'Durable Goods Orders', type: 'select', options: ['Beat', 'Miss', 'Neutral'] },
-                { id: 'housing', label: 'Housing Starts / Building Permits', type: 'select', options: ['Rising', 'Falling', 'Stable'] }
-            ],
-            weights: { retail: 0.30, ism: 0.30, durable_goods: 0.25, housing: 0.15 },
-            direction: 'same'
-        },
-        cad_emp: {
-            indicators: [
-                { id: 'us_nfp', label: 'US NFP Result (Same Week)', type: 'select', options: ['Strong', 'Weak', 'Neutral'] },
-                { id: 'ivey_pmi', label: 'Ivey PMI', type: 'number', placeholder: 'e.g. 55.0' },
-                { id: 'building_permits', label: 'Building Permits Trend', type: 'select', options: ['Rising', 'Falling', 'Stable'] }
-            ],
-            weights: { us_nfp: 0.40, ivey_pmi: 0.30, building_permits: 0.30 },
-            direction: 'same'
-        },
-        ecb: {
-            indicators: [
-                { id: 'euro_cpi', label: 'Eurozone CPI YoY', type: 'number', placeholder: 'e.g. 2.4' },
-                { id: 'euro_gdp', label: 'Eurozone GDP Trend', type: 'select', options: ['Accelerating', 'Decelerating', 'Stable'] },
-                { id: 'euro_unemp', label: 'Eurozone Unemployment Trend', type: 'select', options: ['Falling', 'Rising', 'Stable'] }
-            ],
-            weights: { euro_cpi: 0.40, euro_gdp: 0.30, euro_unemp: 0.30 },
-            direction: 'same'
-        },
-        boe: {
-            indicators: [
-                { id: 'uk_cpi', label: 'UK CPI YoY', type: 'number', placeholder: 'e.g. 3.2' },
-                { id: 'uk_jobs', label: 'UK Employment Change', type: 'select', options: ['Positive', 'Negative', 'Neutral'] },
-                { id: 'uk_gdp', label: 'UK GDP Trend', type: 'select', options: ['Growing', 'Shrinking', 'Flat'] }
-            ],
-            weights: { uk_cpi: 0.40, uk_jobs: 0.30, uk_gdp: 0.30 },
-            direction: 'same'
-        },
-        boj: {
-            indicators: [
-                { id: 'japan_cpi', label: 'Japan CPI YoY (ex Food & Energy)', type: 'number', placeholder: 'e.g. 2.1' },
-                { id: 'wage_data', label: 'Spring Wage Negotiation Result', type: 'select', options: ['Strong (>3%)', 'Moderate (2-3%)', 'Weak (<2%)'] },
-                { id: 'usd_jpy', label: 'USD/JPY Trend (Last 2 Weeks)', type: 'select', options: ['Rising (Yen Weak)', 'Falling (Yen Strong)', 'Sideways'] }
-            ],
-            weights: { japan_cpi: 0.35, wage_data: 0.35, usd_jpy: 0.30 },
-            direction: 'same'
-        }
-    };
+    // ==================== OPTIMIZED AI PREDICTION ENGINE ====================
+    (function() {
+        'use strict';
 
-    const EVENT_NAMES = {
-        nfp: 'NFP (Non-Farm Payrolls)',
-        cpi: 'CPI (Consumer Price Index)',
-        fomc: 'FOMC Rate Decision',
-        retail: 'Retail Sales',
-        gdp: 'GDP',
-        cad_emp: 'Canada Employment',
-        ecb: 'ECB Rate Decision',
-        boe: 'BoE Rate Decision',
-        boj: 'BoJ Rate Decision'
-    };
-
-    function updatePredictionFields() {
-        const eventType = document.getElementById('eventType').value;
-        const container = document.getElementById('predictionInputFields');
-
-        if (!eventType || !PREDICTOR_CONFIGS[eventType]) {
-            container.innerHTML = '';
-            return;
-        }
-
-        const fields = PREDICTOR_CONFIGS[eventType].indicators;
-        let html = '<div style="margin-top:15px; border-top:1px solid var(--border); padding-top:20px;">';
-        html += '<div style="color:var(--red); font-size:0.8em; text-transform:uppercase; margin-bottom:15px; letter-spacing:1px; font-weight:700;">Leading Indicators</div>';
-
-        fields.forEach(field => {
-            html += '<div style="margin-bottom:18px;">';
-            html += '<label style="display:block; color:var(--text-muted); font-size:0.75em; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px; font-weight:700;">' + field.label + '</label>';
-            if (field.type === 'select') {
-                html += '<select id="pred_' + field.id + '" style="width:100%; padding:12px; background:var(--bg-input); border:1px solid var(--border); color:var(--text); border-radius:8px; font-size:0.95em; font-family:inherit;">';
-                html += '<option value="">-- Select --</option>';
-                field.options.forEach(opt => {
-                    html += '<option value="' + opt + '">' + opt + '</option>';
-                });
-                html += '</select>';
-            } else {
-                html += '<input type="' + field.type + '" id="pred_' + field.id + '" placeholder="' + field.placeholder + '" step="0.1" style="width:100%; padding:12px; background:var(--bg-input); border:1px solid var(--border); color:var(--text); border-radius:8px; font-size:0.95em; font-family:inherit;">';
+        const PREDICTOR_CONFIGS = {
+            nfp: {
+                indicators: [
+                    { id: 'adp', label: 'ADP Employment (Previous vs Forecast)', type: 'select', options: ['Beat (Actual > Forecast)', 'Miss (Actual < Forecast)', 'Neutral'] },
+                    { id: 'claims', label: 'Jobless Claims Trend', type: 'select', options: ['Decreasing (Good for USD)', 'Increasing (Bad for USD)', 'Stable'] },
+                    { id: 'ism_emp', label: 'ISM Manufacturing Employment', type: 'number', placeholder: 'Enter index value (e.g. 52.3)' },
+                    { id: 'jolts', label: 'JOLTS Job Openings Trend', type: 'select', options: ['Rising', 'Falling', 'Stable'] }
+                ],
+                weights: { adp: 0.35, claims: 0.25, ism_emp: 0.20, jolts: 0.20 },
+                direction: 'same'
+            },
+            cpi: {
+                indicators: [
+                    { id: 'ppi', label: 'PPI Result (vs Forecast)', type: 'select', options: ['Beat (Hotter)', 'Miss (Cooler)', 'Neutral'] },
+                    { id: 'oil', label: 'Oil Price Change (Month)', type: 'select', options: ['Up >5%', 'Up 0-5%', 'Down 0-5%', 'Down >5%'] },
+                    { id: 'import_prices', label: 'Import Prices Trend', type: 'select', options: ['Rising', 'Falling', 'Stable'] },
+                    { id: 'wage_growth', label: 'Average Hourly Earnings Trend', type: 'select', options: ['Accelerating', 'Decelerating', 'Stable'] }
+                ],
+                weights: { ppi: 0.40, oil: 0.25, import_prices: 0.20, wage_growth: 0.15 },
+                direction: 'same'
+            },
+            fomc: {
+                indicators: [
+                    { id: 'fedwatch', label: 'CME FedWatch: Hike/Cut Probability', type: 'number', placeholder: 'Enter % (e.g. 85 for 85% chance)' },
+                    { id: 'cpi_trend', label: 'Last 3 CPI Readings Trend', type: 'select', options: ['Rising (Hotter)', 'Falling (Cooler)', 'Mixed'] },
+                    { id: 'jobs_trend', label: 'Last 3 NFP Readings Trend', type: 'select', options: ['Strong/Beating', 'Weak/Missing', 'Mixed'] }
+                ],
+                weights: { fedwatch: 0.50, cpi_trend: 0.25, jobs_trend: 0.25 },
+                direction: 'same'
+            },
+            retail: {
+                indicators: [
+                    { id: 'consumer_conf', label: 'Consumer Confidence (vs Forecast)', type: 'select', options: ['Beat', 'Miss', 'Neutral'] },
+                    { id: 'adp', label: 'ADP / Jobs Data', type: 'select', options: ['Strong', 'Weak', 'Neutral'] },
+                    { id: 'credit', label: 'Consumer Credit Growth', type: 'select', options: ['Increasing', 'Decreasing', 'Stable'] },
+                    { id: 'gas', label: 'Gasoline Prices (Month)', type: 'select', options: ['Falling (Good for spending)', 'Rising (Bad for spending)', 'Stable'] }
+                ],
+                weights: { consumer_conf: 0.35, adp: 0.25, credit: 0.25, gas: 0.15 },
+                direction: 'same'
+            },
+            gdp: {
+                indicators: [
+                    { id: 'retail', label: 'Retail Sales Trend', type: 'select', options: ['Strong', 'Weak', 'Mixed'] },
+                    { id: 'ism', label: 'ISM Manufacturing PMI', type: 'number', placeholder: 'e.g. 51.2' },
+                    { id: 'durable_goods', label: 'Durable Goods Orders', type: 'select', options: ['Beat', 'Miss', 'Neutral'] },
+                    { id: 'housing', label: 'Housing Starts / Building Permits', type: 'select', options: ['Rising', 'Falling', 'Stable'] }
+                ],
+                weights: { retail: 0.30, ism: 0.30, durable_goods: 0.25, housing: 0.15 },
+                direction: 'same'
+            },
+            cad_emp: {
+                indicators: [
+                    { id: 'us_nfp', label: 'US NFP Result (Same Week)', type: 'select', options: ['Strong', 'Weak', 'Neutral'] },
+                    { id: 'ivey_pmi', label: 'Ivey PMI', type: 'number', placeholder: 'e.g. 55.0' },
+                    { id: 'building_permits', label: 'Building Permits Trend', type: 'select', options: ['Rising', 'Falling', 'Stable'] }
+                ],
+                weights: { us_nfp: 0.40, ivey_pmi: 0.30, building_permits: 0.30 },
+                direction: 'same'
+            },
+            ecb: {
+                indicators: [
+                    { id: 'euro_cpi', label: 'Eurozone CPI YoY', type: 'number', placeholder: 'e.g. 2.4' },
+                    { id: 'euro_gdp', label: 'Eurozone GDP Trend', type: 'select', options: ['Accelerating', 'Decelerating', 'Stable'] },
+                    { id: 'euro_unemp', label: 'Eurozone Unemployment Trend', type: 'select', options: ['Falling', 'Rising', 'Stable'] }
+                ],
+                weights: { euro_cpi: 0.40, euro_gdp: 0.30, euro_unemp: 0.30 },
+                direction: 'same'
+            },
+            boe: {
+                indicators: [
+                    { id: 'uk_cpi', label: 'UK CPI YoY', type: 'number', placeholder: 'e.g. 3.2' },
+                    { id: 'uk_jobs', label: 'UK Employment Change', type: 'select', options: ['Positive', 'Negative', 'Neutral'] },
+                    { id: 'uk_gdp', label: 'UK GDP Trend', type: 'select', options: ['Growing', 'Shrinking', 'Flat'] }
+                ],
+                weights: { uk_cpi: 0.40, uk_jobs: 0.30, uk_gdp: 0.30 },
+                direction: 'same'
+            },
+            boj: {
+                indicators: [
+                    { id: 'japan_cpi', label: 'Japan CPI YoY (ex Food & Energy)', type: 'number', placeholder: 'e.g. 2.1' },
+                    { id: 'wage_data', label: 'Spring Wage Negotiation Result', type: 'select', options: ['Strong (>3%)', 'Moderate (2-3%)', 'Weak (<2%)'] },
+                    { id: 'usd_jpy', label: 'USD/JPY Trend (Last 2 Weeks)', type: 'select', options: ['Rising (Yen Weak)', 'Falling (Yen Strong)', 'Sideways'] }
+                ],
+                weights: { japan_cpi: 0.35, wage_data: 0.35, usd_jpy: 0.30 },
+                direction: 'same'
             }
-            html += '</div>';
-        });
+        };
 
-        html += '</div>';
-        container.innerHTML = html;
-    }
+        const EVENT_NAMES = {
+            nfp: 'NFP (Non-Farm Payrolls)',
+            cpi: 'CPI (Consumer Price Index)',
+            fomc: 'FOMC Rate Decision',
+            retail: 'Retail Sales',
+            gdp: 'GDP',
+            cad_emp: 'Canada Employment',
+            ecb: 'ECB Rate Decision',
+            boe: 'BoE Rate Decision',
+            boj: 'BoJ Rate Decision'
+        };
 
-    function calculatePrediction() {
-        try {
+        // Expose to global scope for onclick handlers
+        window.updatePredictionFields = function() {
             const eventType = document.getElementById('eventType').value;
-            if (!eventType) {
-                alert('Please select an event first.');
+            const container = document.getElementById('predictionInputFields');
+            if (!eventType || !PREDICTOR_CONFIGS[eventType]) {
+                container.innerHTML = '';
                 return;
             }
-            const loading = document.getElementById('predictionLoading');
-            const resultArea = document.getElementById('predictionResultArea');
-            if (loading) loading.style.display = 'block';
-            if (resultArea) resultArea.innerHTML = '';
-            setTimeout(() => {
-                try {
-                    if (loading) loading.style.display = 'none';
-                    const score = computePredictionScore(eventType);
-                    displayPredictionResult(score, eventType);
-                } catch (err) {
-                    console.error('Prediction error:', err);
-                    if (loading) loading.style.display = 'none';
-                    if (resultArea) {
-                        resultArea.innerHTML = '<div style="padding:20px; background:var(--red-dim); border-radius:10px; color:var(--red); text-align:center;"><strong>Error:</strong> Could not calculate prediction. Check console (F12) for details.</div>';
-                    }
-                }
-            }, 800);
-        } catch (err) {
-            console.error('CalculatePrediction error:', err);
-            alert('Something went wrong. Check console (F12) for details.');
-        }
-    }
-
-    function computePredictionScore(eventType) {
-        try {
-            const config = PREDICTOR_CONFIGS[eventType];
-            if (!config) {
-                console.warn('No config found for event type:', eventType);
-                return { finalScore: 50, bias: 'neutral', confidence: 0, details: [] };
-            }
-        const fields = config.indicators;
-        let totalWeight = 0;
-        let weightedScore = 0;
-        let details = [];
-
-        fields.forEach(field => {
-            const el = document.getElementById('pred_' + field.id);
-            if (!el || !el.value) return;
-
-            const val = el.value;
-            const weight = config.weights[field.id];
-            if (!weight) return;
-
-            let indicatorScore = 50;
-            let interpretation = '';
-
-            if (field.type === 'select') {
-                const lowerVal = val.toLowerCase();
-                if (lowerVal.includes('beat') || lowerVal.includes('strong') || lowerVal.includes('rising') || 
-                    lowerVal.includes('increasing') || lowerVal.includes('accelerating') || lowerVal.includes('good') ||
-                    lowerVal.includes('positive') || lowerVal.includes('growing') || lowerVal.includes('yen weak') ||
-                    lowerVal.includes('above') || lowerVal.includes('hotter')) {
-                    indicatorScore = 75;
-                    interpretation = 'Bullish signal';
-                } else if (lowerVal.includes('miss') || lowerVal.includes('weak') || lowerVal.includes('falling') || 
-                           lowerVal.includes('decreasing') || lowerVal.includes('decelerating') || lowerVal.includes('bad') ||
-                           lowerVal.includes('negative') || lowerVal.includes('shrinking') || lowerVal.includes('yen strong') ||
-                           lowerVal.includes('below') || lowerVal.includes('cooler')) {
-                    indicatorScore = 25;
-                    interpretation = 'Bearish signal';
+            const fields = PREDICTOR_CONFIGS[eventType].indicators;
+            let html = '<div style="margin-top:15px; border-top:1px solid var(--border); padding-top:20px;">';
+            html += '<div style="color:var(--red); font-size:0.8em; text-transform:uppercase; margin-bottom:15px; letter-spacing:1px; font-weight:700;">Leading Indicators</div>';
+            fields.forEach(field => {
+                html += '<div style="margin-bottom:18px;">';
+                html += '<label style="display:block; color:var(--text-muted); font-size:0.75em; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px; font-weight:700;">' + field.label + '</label>';
+                if (field.type === 'select') {
+                    html += '<select id="pred_' + field.id + '" style="width:100%; padding:12px; background:var(--bg-input); border:1px solid var(--border); color:var(--text); border-radius:8px; font-size:0.95em; font-family:inherit;">';
+                    html += '<option value="">-- Select --</option>';
+                    field.options.forEach(opt => { html += '<option value="' + opt + '">' + opt + '</option>'; });
+                    html += '</select>';
                 } else {
-                    indicatorScore = 50;
-                    interpretation = 'Neutral';
+                    html += '<input type="' + field.type + '" id="pred_' + field.id + '" placeholder="' + field.placeholder + '" step="0.1" style="width:100%; padding:12px; background:var(--bg-input); border:1px solid var(--border); color:var(--text); border-radius:8px; font-size:0.95em; font-family:inherit;">';
                 }
-            } else if (field.type === 'number') {
-                const numVal = parseFloat(val);
-                if (!isNaN(numVal)) {
-                    if (numVal > 50) {
-                        indicatorScore = 70;
-                        interpretation = 'Above threshold';
-                    } else if (numVal > 0) {
-                        indicatorScore = 60;
-                        interpretation = 'Positive reading';
-                    } else {
-                        indicatorScore = 40;
-                        interpretation = 'Below threshold';
-                    }
-                }
-            }
-
-            weightedScore += indicatorScore * weight;
-            totalWeight += weight;
-            details.push({ name: field.label, score: indicatorScore, weight: weight, interp: interpretation });
-        });
-
-        if (totalWeight === 0) {
-            return { finalScore: 50, bias: 'neutral', confidence: 0, details: [] };
-        }
-
-        const finalScore = Math.round(weightedScore / totalWeight);
-        let bias = 'neutral';
-        if (finalScore >= 60) bias = 'bullish';
-        else if (finalScore <= 40) bias = 'bearish';
-
-        const totalConfigWeight = Object.values(config.weights).reduce((a, b) => a + b, 0);
-        const confidence = Math.round((totalWeight / totalConfigWeight) * 100);
-
-        return { finalScore, bias, confidence, details };
-    }
-
-    function displayPredictionResult(score, eventType) {
-        const resultArea = document.getElementById('predictionResultArea');
-        const eventName = EVENT_NAMES[eventType] || 'Unknown';
-        const isUSDEvent = ['nfp', 'cpi', 'fomc', 'retail', 'gdp'].includes(eventType);
-
-        let biasColor, biasText, fillClass, barText;
-        if (score.bias === 'bullish') {
-            biasColor = 'var(--green)';
-            biasText = isUSDEvent ? 'BULLISH USD BIAS' : 'HAWKISH BIAS';
-            fillClass = 'linear-gradient(90deg, #004d1a, var(--green))';
-            barText = 'Actual Likely > Forecast';
-        } else if (score.bias === 'bearish') {
-            biasColor = 'var(--red)';
-            biasText = isUSDEvent ? 'BEARISH USD BIAS' : 'DOVISH BIAS';
-            fillClass = 'linear-gradient(90deg, #4d0000, var(--red))';
-            barText = 'Actual Likely < Forecast';
-        } else {
-            biasColor = 'var(--gold)';
-            biasText = 'NEUTRAL / COIN FLIP';
-            fillClass = 'linear-gradient(90deg, #4d3d00, var(--gold))';
-            barText = 'No Clear Edge';
-        }
-
-        let tradePlan = '';
-        if (score.bias === 'bullish') {
-            tradePlan = '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--green); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Direction Bias:</strong> Expect USD strength. ' + (isUSDEvent ? 'XAU/USD likely to drop. USD pairs pump.' : 'Local currency strengthens vs USD.') + ' <span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:0.75em; margin-left:8px; text-transform:uppercase; background:#004d1a; color:#66ff99;">TRADE</span></div>' +
-                '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--green); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">CRT Setup:</strong> Look for bearish setups on XAU/USD (sweep of Asian highs, bearish FVG). For USD pairs, look for bullish continuation.</div>' +
-                '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--green); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Timing:</strong> If entering before news, use HALF size. If trading the reaction, wait for 1M/5M FVG retest after spike.</div>' +
-                '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--green); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Risk:</strong> Set SL at recent structure. If score < 70, don't hold through the release — close before or move to BE.</div>';
-        } else if (score.bias === 'bearish') {
-            tradePlan = '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--red); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Direction Bias:</strong> Expect USD weakness. ' + (isUSDEvent ? 'XAU/USD likely to pump. USD pairs drop.' : 'Local currency weakens vs USD.') + ' <span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:0.75em; margin-left:8px; text-transform:uppercase; background:#4d0000; color:#ff6666;">TRADE</span></div>' +
-                '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--red); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">CRT Setup:</strong> Look for bullish setups on XAU/USD (sweep of Asian lows, bullish FVG). For USD pairs, look for bearish continuation.</div>' +
-                '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--red); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Timing:</strong> If entering before news, use HALF size. If trading the reaction, wait for 1M/5M FVG retest after spike.</div>' +
-                '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--red); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Risk:</strong> Set SL at recent structure. If score < 70, don't hold through the release — close before or move to BE.</div>';
-        } else {
-            tradePlan = '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--gold); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Direction Bias:</strong> No clear edge. The model is 50/50. <span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:0.75em; margin-left:8px; text-transform:uppercase; background:#4d3d00; color:#ffcc66;">CAUTION</span></div>' +
-                '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--gold); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">CRT Setup:</strong> Trade only if you have a VERY clean technical setup. Reduce size by 50%.</div>' +
-                '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--gold); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Timing:</strong> AVOID entering 30 min before the news. Wait for the 5M candle to close after release.</div>' +
-                '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--gold); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Risk:</strong> This is a high-uncertainty environment. Consider skipping this event entirely.</div>';
-        }
-
-        let detailsHtml = '';
-        if (score.details.length > 0) {
-            detailsHtml = '<div style="margin-top:20px;"><div style="color:var(--text-muted); font-size:0.8em; text-transform:uppercase; margin-bottom:10px; font-weight:700; letter-spacing:1px;">Indicator Breakdown</div>';
-            score.details.forEach(d => {
-                const color = d.score >= 60 ? 'var(--green)' : d.score <= 40 ? 'var(--red)' : 'var(--gold)';
-                detailsHtml += '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--bg-input); border-radius:6px; margin-bottom:8px; font-size:0.85em; border:1px solid var(--border);">' +
-                    '<div><div style="color:var(--text); font-weight:700;">' + d.name + '</div><div style="color:var(--text-muted); font-size:0.8em;">' + d.interp + '</div></div>' +
-                    '<div style="color:' + color + '; font-weight:700; font-size:1.1em; font-family:Orbitron;">' + d.score + '%</div></div>';
+                html += '</div>';
             });
-            detailsHtml += '</div>';
-        }
+            html += '</div>';
+            container.innerHTML = html;
+        };
 
-        resultArea.innerHTML = '<div style="background:var(--bg-input); border-radius:10px; padding:20px; border-left:4px solid ' + biasColor + ';">' +
-            '<div style="text-align:center; padding:25px; margin-bottom:20px; border-radius:10px; background:var(--bg-card); border:1px solid var(--border);">' +
-                '<div style="font-size:4em; font-weight:800; color:' + biasColor + '; line-height:1; font-family:Orbitron;">' + score.finalScore + '%</div>' +
-                '<div style="color:var(--text-muted); font-size:0.9em; margin-top:10px; text-transform:uppercase; letter-spacing:2px; font-weight:700;">Probability Score</div>' +
-                '<div style="font-size:1.5em; font-weight:700; margin-top:15px; color:' + biasColor + ';">' + biasText + '</div>' +
-                '<div style="color:var(--text-muted); font-size:0.8em; margin-top:8px;">Confidence: ' + score.confidence + '% of indicators used</div>' +
-            '</div>' +
-            '<div style="width:100%; height:30px; background:var(--bg-card); border-radius:15px; overflow:hidden; margin:15px 0; border:1px solid var(--border);">' +
-                '<div style="height:100%; width:' + score.finalScore + '%; background:' + fillClass + '; border-radius:15px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85em; color:#fff; transition:width 1s ease;">' + barText + '</div>' +
-            '</div>' +
-            '<div style="background:var(--bg-card); border-radius:8px; padding:15px; margin-top:15px; border:1px solid var(--border);">' +
-                '<strong style="color:var(--text); font-family:Orbitron; text-transform:uppercase; letter-spacing:1px;">&#127919; Trade Plan for ' + eventName + '</strong><br><br>' + tradePlan +
-            '</div>' + detailsHtml +
-        '</div>';
-    }
+        window.calculatePrediction = function() {
+            try {
+                const eventType = document.getElementById('eventType').value;
+                if (!eventType) {
+                    alert('Please select an event first.');
+                    return;
+                }
+                const loading = document.getElementById('predictionLoading');
+                const resultArea = document.getElementById('predictionResultArea');
+                if (loading) loading.style.display = 'block';
+                if (resultArea) resultArea.innerHTML = '';
 
-    // Investing.com data parser
-    function parseInvestingData() {
-        const raw = document.getElementById('investingPaste').value.trim();
-        if (!raw) {
-            alert('Please paste calendar data first.');
-            return;
-        }
-
-        const lines = raw.split('\n').filter(l => l.trim());
-        let parsed = [];
-
-        lines.forEach(line => {
-            // Try to parse pipe-delimited or tab-delimited
-            let parts = line.split('|').map(p => p.trim());
-            if (parts.length < 4) {
-                parts = line.split('\t').map(p => p.trim());
+                setTimeout(() => {
+                    try {
+                        if (loading) loading.style.display = 'none';
+                        const score = computePredictionScore(eventType);
+                        displayPredictionResult(score, eventType);
+                    } catch (err) {
+                        console.error('Prediction error:', err);
+                        if (loading) loading.style.display = 'none';
+                        if (resultArea) {
+                            resultArea.innerHTML = '<div style="padding:20px; background:var(--red-dim); border-radius:10px; color:var(--red); text-align:center;"><strong>Error:</strong> ' + err.message + '</div>';
+                        }
+                    }
+                }, 800);
+            } catch (err) {
+                console.error('CalculatePrediction error:', err);
+                alert('Something went wrong: ' + err.message);
             }
-            if (parts.length >= 4) {
-                parsed.push({
-                    time: parts[0] || '',
-                    country: parts[1] || '',
-                    event: parts[2] || '',
-                    impact: parts[3] || '',
-                    actual: parts[4] || '',
-                    forecast: parts[5] || '',
-                    previous: parts[6] || ''
-                });
-            }
-        });
+        };
 
-        if (parsed.length === 0) {
-            alert('Could not parse data. Please use the format: Time | Country | Event | Impact | Actual | Forecast | Previous');
-            return;
-        }
+        function computePredictionScore(eventType) {
+            try {
+                const config = PREDICTOR_CONFIGS[eventType];
+                if (!config) {
+                    return { finalScore: 50, bias: 'neutral', confidence: 0, details: [] };
+                }
+                const fields = config.indicators;
+                let totalWeight = 0;
+                let weightedScore = 0;
+                let details = [];
 
-        // Try to auto-detect event type and fill fields
-        const eventSelect = document.getElementById('eventType');
-        let detectedType = '';
+                fields.forEach(field => {
+                    const el = document.getElementById('pred_' + field.id);
+                    if (!el || !el.value) return;
+                    const val = el.value;
+                    const weight = config.weights[field.id];
+                    if (!weight) return;
 
-        for (let row of parsed) {
-            const evt = row.event.toLowerCase();
-            const country = row.country.toLowerCase();
+                    let indicatorScore = 50;
+                    let interpretation = '';
 
-            if (evt.includes('nonfarm') || evt.includes('payrolls') || evt.includes('nfp')) {
-                detectedType = 'nfp';
-                break;
-            } else if (evt.includes('cpi') || evt.includes('consumer price')) {
-                detectedType = 'cpi';
-                break;
-            } else if (evt.includes('fomc') || evt.includes('fed interest') || evt.includes('federal funds')) {
-                detectedType = 'fomc';
-                break;
-            } else if (evt.includes('retail sales')) {
-                detectedType = 'retail';
-                break;
-            } else if (evt.includes('gdp')) {
-                detectedType = 'gdp';
-                break;
-            } else if ((evt.includes('employment') || evt.includes('employment change')) && country.includes('ca')) {
-                detectedType = 'cad_emp';
-                break;
-            } else if (evt.includes('ecb') || (country.includes('eu') && evt.includes('rate'))) {
-                detectedType = 'ecb';
-                break;
-            } else if (evt.includes('boe') || (country.includes('gb') && evt.includes('rate'))) {
-                detectedType = 'boe';
-                break;
-            } else if (evt.includes('boj') || (country.includes('jp') && evt.includes('rate'))) {
-                detectedType = 'boj';
-                break;
-            }
-        }
-
-        if (detectedType) {
-            eventSelect.value = detectedType;
-            updatePredictionFields();
-
-            // Try to auto-fill leading indicators from the data
-            setTimeout(() => {
-                const config = PREDICTOR_CONFIGS[detectedType];
-                if (!config) return;
-
-                config.indicators.forEach(ind => {
-                    const el = document.getElementById('pred_' + ind.id);
-                    if (!el) return;
-
-                    // Try to match indicator name with parsed events
-                    for (let row of parsed) {
-                        const evt = row.event.toLowerCase();
-                        const indName = ind.id.toLowerCase();
-
-                        let match = false;
-                        if (indName.includes('adp') && evt.includes('adp')) match = true;
-                        else if (indName.includes('claims') && (evt.includes('jobless') || evt.includes('claims'))) match = true;
-                        else if (indName.includes('ism') && evt.includes('ism')) match = true;
-                        else if (indName.includes('jolts') && evt.includes('jolts')) match = true;
-                        else if (indName.includes('ppi') && evt.includes('ppi')) match = true;
-                        else if (indName.includes('oil') && evt.includes('oil')) match = true;
-                        else if (indName.includes('import') && evt.includes('import')) match = true;
-                        else if (indName.includes('wage') && evt.includes('hourly')) match = true;
-                        else if (indName.includes('fedwatch') && evt.includes('fedwatch')) match = true;
-                        else if (indName.includes('consumer_conf') && (evt.includes('consumer confidence') || evt.includes('consumer sentiment'))) match = true;
-                        else if (indName.includes('credit') && evt.includes('credit')) match = true;
-                        else if (indName.includes('retail') && evt.includes('retail')) match = true;
-                        else if (indName.includes('durable') && evt.includes('durable')) match = true;
-                        else if (indName.includes('housing') && (evt.includes('housing') || evt.includes('building'))) match = true;
-                        else if (indName.includes('us_nfp') && evt.includes('nonfarm')) match = true;
-                        else if (indName.includes('ivey') && evt.includes('ivey')) match = true;
-                        else if (indName.includes('euro_cpi') && (evt.includes('euro') && evt.includes('cpi'))) match = true;
-                        else if (indName.includes('euro_gdp') && (evt.includes('euro') && evt.includes('gdp'))) match = true;
-                        else if (indName.includes('uk_cpi') && (evt.includes('uk') || evt.includes('british')) && evt.includes('cpi')) match = true;
-                        else if (indName.includes('uk_jobs') && (evt.includes('uk') || evt.includes('british')) && (evt.includes('employment') || evt.includes('unemployment'))) match = true;
-                        else if (indName.includes('japan_cpi') && evt.includes('tokyo') && evt.includes('cpi')) match = true;
-
-                        if (match) {
-                            if (ind.type === 'select') {
-                                // Try to determine if beat/miss based on actual vs forecast
-                                const actual = parseFloat(row.actual.replace('%', '').replace('K', '').replace('M', '').replace('B', '').replace(',', '').trim());
-                                const forecast = parseFloat(row.forecast.replace('%', '').replace('K', '').replace('M', '').replace('B', '').replace(',', '').trim());
-
-                                if (!isNaN(actual) && !isNaN(forecast)) {
-                                    let isInverse = evt.includes('unemployment') || evt.includes('jobless');
-                                    let beat = isInverse ? (actual < forecast) : (actual > forecast);
-                                    let miss = isInverse ? (actual > forecast) : (actual < forecast);
-
-                                    for (let opt of el.options) {
-                                        if (beat && opt.text.toLowerCase().includes('beat')) { el.value = opt.value; break; }
-                                        if (miss && opt.text.toLowerCase().includes('miss')) { el.value = opt.value; break; }
-                                    }
-                                }
-                            } else if (ind.type === 'number') {
-                                const val = parseFloat(row.actual.replace('%', '').replace('K', '').replace('M', '').replace('B', '').replace(',', '').trim());
-                                if (!isNaN(val)) el.value = val;
+                    if (field.type === 'select') {
+                        const lowerVal = val.toLowerCase();
+                        if (lowerVal.includes('beat') || lowerVal.includes('strong') || lowerVal.includes('rising') ||
+                            lowerVal.includes('increasing') || lowerVal.includes('accelerating') || lowerVal.includes('good') ||
+                            lowerVal.includes('positive') || lowerVal.includes('growing') || lowerVal.includes('yen weak') ||
+                            lowerVal.includes('above') || lowerVal.includes('hotter')) {
+                            indicatorScore = 75;
+                            interpretation = 'Bullish signal';
+                        } else if (lowerVal.includes('miss') || lowerVal.includes('weak') || lowerVal.includes('falling') ||
+                                   lowerVal.includes('decreasing') || lowerVal.includes('decelerating') || lowerVal.includes('bad') ||
+                                   lowerVal.includes('negative') || lowerVal.includes('shrinking') || lowerVal.includes('yen strong') ||
+                                   lowerVal.includes('below') || lowerVal.includes('cooler')) {
+                            indicatorScore = 25;
+                            interpretation = 'Bearish signal';
+                        } else {
+                            indicatorScore = 50;
+                            interpretation = 'Neutral';
+                        }
+                    } else if (field.type === 'number') {
+                        const numVal = parseFloat(val);
+                        if (!isNaN(numVal)) {
+                            if (numVal > 50) {
+                                indicatorScore = 70;
+                                interpretation = 'Above threshold';
+                            } else if (numVal > 0) {
+                                indicatorScore = 60;
+                                interpretation = 'Positive reading';
+                            } else {
+                                indicatorScore = 40;
+                                interpretation = 'Below threshold';
                             }
                         }
                     }
+
+                    weightedScore += indicatorScore * weight;
+                    totalWeight += weight;
+                    details.push({ name: field.label, score: indicatorScore, weight: weight, interp: interpretation });
                 });
 
-                alert('Parsed ' + parsed.length + ' events. Auto-detected: ' + EVENT_NAMES[detectedType] + '. Check and adjust the inputs, then click Calculate.');
-            }, 100);
-        } else {
-            alert('Parsed ' + parsed.length + ' events. Could not auto-detect the main event type. Please select manually.');
+                if (totalWeight === 0) {
+                    return { finalScore: 50, bias: 'neutral', confidence: 0, details: [] };
+                }
+
+                const finalScore = Math.round(weightedScore / totalWeight);
+                let bias = 'neutral';
+                if (finalScore >= 60) bias = 'bullish';
+                else if (finalScore <= 40) bias = 'bearish';
+
+                const totalConfigWeight = Object.values(config.weights).reduce((a, b) => a + b, 0);
+                const confidence = Math.round((totalWeight / totalConfigWeight) * 100);
+
+                return { finalScore, bias, confidence, details };
+            } catch (err) {
+                console.error('computePredictionScore error:', err);
+                return { finalScore: 50, bias: 'neutral', confidence: 0, details: [] };
+            }
         }
-    }
 
-        function copyBookmarklet() {
-        const code = document.getElementById('bookmarklet-code').value;
-        navigator.clipboard.writeText(code).then(() => {
-            const feedback = document.getElementById('copy-feedback');
-            feedback.style.display = 'block';
-            setTimeout(() => feedback.style.display = 'none', 3000);
-        }).catch(() => {
-            const textarea = document.getElementById('bookmarklet-code');
-            textarea.select();
-            document.execCommand('copy');
-            const feedback = document.getElementById('copy-feedback');
-            feedback.style.display = 'block';
-            setTimeout(() => feedback.style.display = 'none', 3000);
-        });
-    }
+        function displayPredictionResult(score, eventType) {
+            try {
+                const resultArea = document.getElementById('predictionResultArea');
+                if (!resultArea) return;
+                const eventName = EVENT_NAMES[eventType] || 'Unknown';
+                const isUSDEvent = ['nfp', 'cpi', 'fomc', 'retail', 'gdp'].includes(eventType);
 
-// Add spin animation
-    const style = document.createElement('style');
-    style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
-    document.head.appendChild(style);
+                let biasColor, biasText, fillClass, barText;
+                if (score.bias === 'bullish') {
+                    biasColor = 'var(--green)'; biasText = isUSDEvent ? 'BULLISH USD BIAS' : 'HAWKISH BIAS';
+                    fillClass = 'linear-gradient(90deg, #004d1a, var(--green))'; barText = 'Actual Likely > Forecast';
+                } else if (score.bias === 'bearish') {
+                    biasColor = 'var(--red)'; biasText = isUSDEvent ? 'BEARISH USD BIAS' : 'DOVISH BIAS';
+                    fillClass = 'linear-gradient(90deg, #4d0000, var(--red))'; barText = 'Actual Likely < Forecast';
+                } else {
+                    biasColor = 'var(--gold)'; biasText = 'NEUTRAL / COIN FLIP';
+                    fillClass = 'linear-gradient(90deg, #4d3d00, var(--gold))'; barText = 'No Clear Edge';
+                }
+
+                let tradePlan = '';
+                if (score.bias === 'bullish') {
+                    tradePlan = '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--green); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Direction Bias:</strong> Expect USD strength. ' + (isUSDEvent ? 'XAU/USD likely to drop. USD pairs pump.' : 'Local currency strengthens vs USD.') + ' <span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:0.75em; margin-left:8px; text-transform:uppercase; background:#004d1a; color:#66ff99;">TRADE</span></div>' +
+                        '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--green); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">CRT Setup:</strong> Look for bearish setups on XAU/USD (sweep of Asian highs, bearish FVG). For USD pairs, look for bullish continuation.</div>' +
+                        '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--green); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Timing:</strong> If entering before news, use HALF size. If trading the reaction, wait for 1M/5M FVG retest after spike.</div>' +
+                        '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--green); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Risk:</strong> Set SL at recent structure. If score < 70, don't hold through the release — close before or move to BE.</div>';
+                } else if (score.bias === 'bearish') {
+                    tradePlan = '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--red); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Direction Bias:</strong> Expect USD weakness. ' + (isUSDEvent ? 'XAU/USD likely to pump. USD pairs drop.' : 'Local currency weakens vs USD.') + ' <span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:0.75em; margin-left:8px; text-transform:uppercase; background:#4d0000; color:#ff6666;">TRADE</span></div>' +
+                        '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--red); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">CRT Setup:</strong> Look for bullish setups on XAU/USD (sweep of Asian lows, bullish FVG). For USD pairs, look for bearish continuation.</div>' +
+                        '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--red); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Timing:</strong> If entering before news, use HALF size. If trading the reaction, wait for 1M/5M FVG retest after spike.</div>' +
+                        '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--red); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Risk:</strong> Set SL at recent structure. If score < 70, don't hold through the release — close before or move to BE.</div>';
+                } else {
+                    tradePlan = '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--gold); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Direction Bias:</strong> No clear edge. The model is 50/50. <span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:0.75em; margin-left:8px; text-transform:uppercase; background:#4d3d00; color:#ffcc66;">CAUTION</span></div>' +
+                        '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--gold); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">CRT Setup:</strong> Trade only if you have a VERY clean technical setup. Reduce size by 50%.</div>' +
+                        '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--gold); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Timing:</strong> AVOID entering 30 min before the news. Wait for the 5M candle to close after release.</div>' +
+                        '<div style="padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:10px; border-left:3px solid var(--gold); font-size:0.9em; line-height:1.6;"><strong style="color:var(--text);">Risk:</strong> This is a high-uncertainty environment. Consider skipping this event entirely.</div>';
+                }
+
+                let detailsHtml = '';
+                if (score.details.length > 0) {
+                    detailsHtml = '<div style="margin-top:20px;"><div style="color:var(--text-muted); font-size:0.8em; text-transform:uppercase; margin-bottom:10px; font-weight:700; letter-spacing:1px;">Indicator Breakdown</div>';
+                    score.details.forEach(d => {
+                        const color = d.score >= 60 ? 'var(--green)' : d.score <= 40 ? 'var(--red)' : 'var(--gold)';
+                        detailsHtml += '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--bg-input); border-radius:6px; margin-bottom:8px; font-size:0.85em; border:1px solid var(--border);">' +
+                            '<div><div style="color:var(--text); font-weight:700;">' + d.name + '</div><div style="color:var(--text-muted); font-size:0.8em;">' + d.interp + '</div></div>' +
+                            '<div style="color:' + color + '; font-weight:700; font-size:1.1em; font-family:Orbitron;">' + d.score + '%</div></div>';
+                    });
+                    detailsHtml += '</div>';
+                }
+
+                resultArea.innerHTML = '<div style="background:var(--bg-input); border-radius:10px; padding:20px; border-left:4px solid ' + biasColor + ';">' +
+                    '<div style="text-align:center; padding:25px; margin-bottom:20px; border-radius:10px; background:var(--bg-card); border:1px solid var(--border);">' +
+                        '<div style="font-size:4em; font-weight:800; color:' + biasColor + '; line-height:1; font-family:Orbitron;">' + score.finalScore + '%</div>' +
+                        '<div style="color:var(--text-muted); font-size:0.9em; margin-top:10px; text-transform:uppercase; letter-spacing:2px; font-weight:700;">Probability Score</div>' +
+                        '<div style="font-size:1.5em; font-weight:700; margin-top:15px; color:' + biasColor + ';">' + biasText + '</div>' +
+                        '<div style="color:var(--text-muted); font-size:0.8em; margin-top:8px;">Confidence: ' + score.confidence + '% of indicators used</div>' +
+                    '</div>' +
+                    '<div style="width:100%; height:30px; background:var(--bg-card); border-radius:15px; overflow:hidden; margin:15px 0; border:1px solid var(--border);">' +
+                        '<div style="height:100%; width:' + score.finalScore + '%; background:' + fillClass + '; border-radius:15px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85em; color:#fff; transition:width 1s ease;">' + barText + '</div>' +
+                    '</div>' +
+                    '<div style="background:var(--bg-card); border-radius:8px; padding:15px; margin-top:15px; border:1px solid var(--border);">' +
+                        '<strong style="color:var(--text); font-family:Orbitron; text-transform:uppercase; letter-spacing:1px;">&#127919; Trade Plan for ' + eventName + '</strong><br><br>' + tradePlan +
+                    '</div>' + detailsHtml +
+                '</div>';
+            } catch (err) {
+                console.error('displayPredictionResult error:', err);
+                const resultArea = document.getElementById('predictionResultArea');
+                if (resultArea) {
+                    resultArea.innerHTML = '<div style="padding:20px; background:var(--red-dim); border-radius:10px; color:var(--red); text-align:center;"><strong>Error:</strong> ' + err.message + '</div>';
+                }
+            }
+        }
+
+        window.parseInvestingData = function() {
+            try {
+                const raw = document.getElementById('investingPaste').value.trim();
+                if (!raw) { alert('Please paste calendar data first.'); return; }
+                const lines = raw.split('\n').filter(l => l.trim());
+                let parsed = [];
+                lines.forEach(line => {
+                    let parts = line.split('|').map(p => p.trim());
+                    if (parts.length < 4) parts = line.split('\t').map(p => p.trim());
+                    if (parts.length >= 4) {
+                        parsed.push({ time: parts[0]||'', country: parts[1]||'', event: parts[2]||'', impact: parts[3]||'', actual: parts[4]||'', forecast: parts[5]||'', previous: parts[6]||'' });
+                    }
+                });
+                if (parsed.length === 0) { alert('Could not parse data. Use format: Time | Country | Event | Impact | Actual | Forecast | Previous'); return; }
+
+                let detectedType = '';
+                for (let row of parsed) {
+                    const evt = row.event.toLowerCase();
+                    if (evt.includes('nonfarm') || evt.includes('payrolls') || evt.includes('nfp')) { detectedType = 'nfp'; break; }
+                    else if (evt.includes('cpi') || evt.includes('consumer price')) { detectedType = 'cpi'; break; }
+                    else if (evt.includes('fomc') || evt.includes('fed interest') || evt.includes('federal funds')) { detectedType = 'fomc'; break; }
+                    else if (evt.includes('retail sales')) { detectedType = 'retail'; break; }
+                    else if (evt.includes('gdp')) { detectedType = 'gdp'; break; }
+                    else if ((evt.includes('employment') || evt.includes('employment change')) && row.country.toLowerCase().includes('ca')) { detectedType = 'cad_emp'; break; }
+                    else if (evt.includes('ecb') || (row.country.toLowerCase().includes('eu') && evt.includes('rate'))) { detectedType = 'ecb'; break; }
+                    else if (evt.includes('boe') || (row.country.toLowerCase().includes('gb') && evt.includes('rate'))) { detectedType = 'boe'; break; }
+                    else if (evt.includes('boj') || (row.country.toLowerCase().includes('jp') && evt.includes('rate'))) { detectedType = 'boj'; break; }
+                }
+
+                if (detectedType) {
+                    document.getElementById('eventType').value = detectedType;
+                    window.updatePredictionFields();
+                    setTimeout(() => {
+                        const config = PREDICTOR_CONFIGS[detectedType];
+                        if (!config) return;
+                        config.indicators.forEach(ind => {
+                            const el = document.getElementById('pred_' + ind.id);
+                            if (!el) return;
+                            for (let row of parsed) {
+                                const evt = row.event.toLowerCase();
+                                const indName = ind.id.toLowerCase();
+                                let match = false;
+                                if (indName.includes('adp') && evt.includes('adp')) match = true;
+                                else if (indName.includes('claims') && (evt.includes('jobless') || evt.includes('claims'))) match = true;
+                                else if (indName.includes('ism') && evt.includes('ism')) match = true;
+                                else if (indName.includes('jolts') && evt.includes('jolts')) match = true;
+                                else if (indName.includes('ppi') && evt.includes('ppi')) match = true;
+                                else if (indName.includes('oil') && evt.includes('oil')) match = true;
+                                else if (indName.includes('import') && evt.includes('import')) match = true;
+                                else if (indName.includes('wage') && evt.includes('hourly')) match = true;
+                                else if (indName.includes('fedwatch') && evt.includes('fedwatch')) match = true;
+                                else if (indName.includes('consumer_conf') && (evt.includes('consumer confidence') || evt.includes('consumer sentiment'))) match = true;
+                                else if (indName.includes('credit') && evt.includes('credit')) match = true;
+                                else if (indName.includes('retail') && evt.includes('retail')) match = true;
+                                else if (indName.includes('durable') && evt.includes('durable')) match = true;
+                                else if (indName.includes('housing') && (evt.includes('housing') || evt.includes('building'))) match = true;
+                                else if (indName.includes('us_nfp') && evt.includes('nonfarm')) match = true;
+                                else if (indName.includes('ivey') && evt.includes('ivey')) match = true;
+                                else if (indName.includes('euro_cpi') && (evt.includes('euro') && evt.includes('cpi'))) match = true;
+                                else if (indName.includes('euro_gdp') && (evt.includes('euro') && evt.includes('gdp'))) match = true;
+                                else if (indName.includes('uk_cpi') && (evt.includes('uk') || evt.includes('british')) && evt.includes('cpi')) match = true;
+                                else if (indName.includes('uk_jobs') && (evt.includes('uk') || evt.includes('british')) && (evt.includes('employment') || evt.includes('unemployment'))) match = true;
+                                else if (indName.includes('japan_cpi') && evt.includes('tokyo') && evt.includes('cpi')) match = true;
+
+                                if (match) {
+                                    if (ind.type === 'select') {
+                                        const actual = parseFloat(row.actual.replace('%','').replace('K','').replace('M','').replace('B','').replace(',','').trim());
+                                        const forecast = parseFloat(row.forecast.replace('%','').replace('K','').replace('M','').replace('B','').replace(',','').trim());
+                                        if (!isNaN(actual) && !isNaN(forecast)) {
+                                            let isInverse = evt.includes('unemployment') || evt.includes('jobless');
+                                            let beat = isInverse ? (actual < forecast) : (actual > forecast);
+                                            let miss = isInverse ? (actual > forecast) : (actual < forecast);
+                                            for (let opt of el.options) {
+                                                if (beat && opt.text.toLowerCase().includes('beat')) { el.value = opt.value; break; }
+                                                if (miss && opt.text.toLowerCase().includes('miss')) { el.value = opt.value; break; }
+                                            }
+                                        }
+                                    } else if (ind.type === 'number') {
+                                        const val = parseFloat(row.actual.replace('%','').replace('K','').replace('M','').replace('B','').replace(',','').trim());
+                                        if (!isNaN(val)) el.value = val;
+                                    }
+                                }
+                            }
+                        });
+                        alert('Parsed ' + parsed.length + ' events. Auto-detected: ' + EVENT_NAMES[detectedType] + '. Check inputs and click Calculate.');
+                    }, 100);
+                } else {
+                    alert('Parsed ' + parsed.length + ' events. Could not auto-detect event type. Please select manually.');
+                }
+            } catch (err) {
+                console.error('parseInvestingData error:', err);
+                alert('Error parsing data: ' + err.message);
+            }
+        };
+
+        // Add spin animation style
+        const style = document.createElement('style');
+        style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+        document.head.appendChild(style);
+    })();
     </script>
     <script>
     // Session Clocks
